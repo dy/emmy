@@ -27,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/dfcreative/muevent/issues"
   },
-  "homepage": "https://github.com/dfcreative/muevent"
+  "homepage": "https://github.com/dfcreative/muevent",
+  "dependencies": {
+    "mutypes": "*"
+  }
 }

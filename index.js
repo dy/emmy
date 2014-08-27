@@ -9,7 +9,7 @@ var _ = require('mutypes');
 
 
 //jquery guarant
-var $ = typeof jQuery === 'undefined' ? jQuery : undefined;
+var $ = typeof jQuery === 'undefined' ? undefined : jQuery;
 
 //set of target callbacks, {target: [cb1, cb2, ...]}
 var targetCbCache = new WeakMap;
@@ -120,7 +120,7 @@ function fire(target, eventName, data, bubbles){
 			if (eventName instanceof Event) {
 				evt = eventName;
 			} else {
-				evt =  doc.createEvent('CustomEvent');
+				evt =  document.createEvent('CustomEvent');
 				evt.initCustomEvent(eventName, bubbles, null, data)
 			}
 
