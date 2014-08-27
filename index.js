@@ -7,6 +7,10 @@ module.exports = {
 var _ = require('mutypes');
 
 
+
+//jquery guarant
+var $ = typeof jQuery === 'undefined' ? jQuery : undefined;
+
 //set of target callbacks, {target: [cb1, cb2, ...]}
 var targetCbCache = new WeakMap;
 
