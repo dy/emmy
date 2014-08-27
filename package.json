@@ -1,0 +1,31 @@
+{
+  "name": "muevent",
+  "version": "0.0.0",
+  "description": "`on`, `off` and `emit`. Use native event system or jQuery, if any.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:dfcreative/muevent.git"
+  },
+  "keywords": [
+    "emitter",
+    "event",
+    "jquery",
+    "browser",
+    "on",
+    "off",
+    "emit",
+    "fire",
+    "bind",
+    "unbind"
+  ],
+  "author": "dfcreative",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dfcreative/muevent/issues"
+  },
+  "homepage": "https://github.com/dfcreative/muevent"
+}
