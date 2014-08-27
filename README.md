@@ -1,6 +1,4 @@
-Micro event emitter.
-
-Targets existing event tool, if possible: jQuery, DOM events, Backbone events (pending).
+Uses existing event system, if possible: jQuery, DOM events, Backbone events (pending).
 
 
 ```
