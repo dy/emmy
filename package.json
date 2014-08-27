@@ -1,5 +1,5 @@
 {
-  "name": "muevent",
+  "name": "muevents",
   "version": "0.0.2",
   "description": "`on`, `off` and `emit`. Use native event system or jQuery, if any.",
   "main": "index.js",
@@ -30,5 +30,8 @@
   "homepage": "https://github.com/dfcreative/muevent",
   "dependencies": {
     "mutypes": "*"
+  },
+  "devDependencies": {
+    "mocha": "~1.21.4"
   }
 }

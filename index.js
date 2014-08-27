@@ -60,13 +60,13 @@ function unbind(target, evt, fn){
 		var callbacks = targetCbCache.get(target);
 		if (!callbacks) return;
 		//unbind all if no evtRef defined
-		if (evtRef === undefined) {
+		if (evt === undefined) {
 			for (var evtName in callbacks) {
 				off(target, evtName, callbacks[evtName]);
 			}
 		}
 		else {
-			off(target, evtRef, callbacks[evtRef]);
+			off(target, evt, callbacks[evt]);
 		}
 		return;
 	}
