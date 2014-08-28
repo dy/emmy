@@ -4,7 +4,7 @@
   "description": "`on`, `off` and `emit`. Use native event system or jQuery, if any.",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "mocha-phantomjs test/index.html"
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,11 @@
     "polymer-weakmap": "~1.0.0"
   },
   "devDependencies": {
-    "mocha": "~1.21.4"
+    "mocha": "~1.21.4",
+    "chai": "~1.9.1",
+    "phantomjs": "~1.9.7-15",
+    "mocha-phantomjs": "~3.5.0",
+    "require-stub": "0.0.14",
+    "jquery": "~2.1.1"
   }
 }

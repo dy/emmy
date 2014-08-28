@@ -62,11 +62,11 @@ function unbind(target, evt, fn){
 		//unbind all if no evtRef defined
 		if (evt === undefined) {
 			for (var evtName in callbacks) {
-				off(target, evtName, callbacks[evtName]);
+				unbind(target, evtName, callbacks[evtName]);
 			}
 		}
 		else {
-			off(target, evt, callbacks[evt]);
+			unbind(target, evt, callbacks[evt]);
 		}
 		return;
 	}
