@@ -65,7 +65,7 @@ function unbind(target, evt, fn){
 				unbind(target, evtName, callbacks[evtName]);
 			}
 		}
-		else {
+		else if (callbacks[evt]) {
 			unbind(target, evt, callbacks[evt]);
 		}
 		return;

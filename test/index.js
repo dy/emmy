@@ -13,4 +13,10 @@ describe('MicroEvents', function(){
 		evt.emit(a, 'click');
 		assert.equal(i, 1)
 	})
+
+	it ("recursion in unbind all", function(){
+		var a = {};
+		evt.on(a, 'y', function(){})
+		evt.off(a, 'x')
+	})
 })
