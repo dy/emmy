@@ -106,6 +106,8 @@ function unbind(target, evt, fn){
 * Event trigger
 */
 function fire(target, eventName, data, bubbles){
+	if (!target) return;
+
 	//DOM events
 	if (isEventTarget(target)) {
 		if ($){
@@ -142,7 +144,7 @@ function fire(target, eventName, data, bubbles){
 		//copy callbacks to fire because list can change in some handler
 		var fireList = evtCallbacks.slice();
 		for (var i = 0; i < fireList.length; i++ ) {
-			evtCallbacks[i] && evtCallbacks[i].call(target, {
+			fireList[i] && fireList[i].call(target, {
 				detail: data,
 				type: eventName
 			});
