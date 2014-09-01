@@ -138,7 +138,10 @@ function fire(target, eventName, data, bubbles){
 		var evtCallbacks = targetCbCache.get(target)[eventName];
 
 		if (!evtCallbacks) return;
-		for (var i = evtCallbacks.length; i--; ) {
+
+		//copy callbacks to fire because list can change in some handler
+		var fireList = evtCallbacks.slice();
+		for (var i = 0; i < fireList.length; i++ ) {
 			evtCallbacks[i] && evtCallbacks[i].call(target, {
 				detail: data,
 				type: eventName
