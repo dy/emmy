@@ -19,4 +19,8 @@ describe('MicroEvents', function(){
 		evt.on(a, 'y', function(){})
 		evt.off(a, 'x')
 	})
+
+	it.skip("emit click in IE8, IE9", function(){
+
+	})
 })

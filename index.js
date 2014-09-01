@@ -134,11 +134,11 @@ function fire(target, eventName, data, bubbles){
 	else {
 		//ignore if no event specified
 		if (!targetCbCache.has(target)) return;
+
 		var evtCallbacks = targetCbCache.get(target)[eventName];
 
 		if (!evtCallbacks) return;
-
-		for (var i = 0, len = evtCallbacks.length; i < len; i++) {
+		for (var i = evtCallbacks.length; i--; ) {
 			evtCallbacks[i] && evtCallbacks[i].call(target, {
 				detail: data,
 				type: eventName
