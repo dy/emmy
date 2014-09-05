@@ -1,3 +1,4 @@
+/** @module muevents */
 module.exports = {
 	on: bind,
 	off: unbind,
@@ -17,6 +18,7 @@ var targetCbCache = new WeakMap;
 
 /**
 * Bind fn to a target
+* @todo  recognize jquery object
 */
 function bind(target, evt, fn){
 	//DOM events
@@ -123,7 +125,7 @@ function fire(target, eventName, data, bubbles){
 				evt = eventName;
 			} else {
 				evt =  document.createEvent('CustomEvent');
-				evt.initCustomEvent(eventName, bubbles, null, data)
+				evt.initCustomEvent(eventName, bubbles, true, data)
 			}
 
 			// var evt = new CustomEvent(eventName, { detail: data, bubbles: bubbles })
@@ -155,8 +157,10 @@ function fire(target, eventName, data, bubbles){
 
 
 
-//detects whether element is able to emit/dispatch events
-//TODO: detect eventful objects in a more wide way
+/**
+ * detects whether element is able to emit/dispatch events
+ * @todo detect eventful objects in a more wide way
+ */
 function isEventTarget (target){
 	return target && !!target.addEventListener;
 }
