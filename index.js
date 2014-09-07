@@ -125,7 +125,7 @@ function fire(target, eventName, data, bubbles){
 				evt = eventName;
 			} else {
 				evt =  document.createEvent('CustomEvent');
-				evt.initCustomEvent(eventName, bubbles, true, data)
+				evt.initCustomEvent(eventName, bubbles, true, data);
 			}
 
 			// var evt = new CustomEvent(eventName, { detail: data, bubbles: bubbles })

@@ -1,5 +1,5 @@
 var evt = require('../index');
-var assert = require('chai').assert;
+// var evt = muevents;
 
 describe('MicroEvents', function(){
 	it('fire plain objects', function(){
