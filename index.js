@@ -15,11 +15,19 @@ var targetCbCache = new WeakMap;
 
 
 /**
-* Bind fn to a target
+* Bind fn to the target
 * @todo  recognize jquery object
 * @chainable
 */
 function bind(target, evt, fn){
+	//bind all listeners passed
+	if (fn instanceof Array){
+		for (var i = fn.length; i--;){
+			bind(target, evt, fn[i]);
+		}
+		return;
+	}
+
 	//DOM events
 	if (isEventTarget(target)) {
 		//bind target fn
