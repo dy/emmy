@@ -5,20 +5,19 @@ module.exports = {
 	emit: fire
 };
 
-var _ = require('mutypes');
 
-
-
-//jquery guarant
+/** jquery guarant */
 var $ = typeof jQuery === 'undefined' ? undefined : jQuery;
 
-//set of target callbacks, {target: [cb1, cb2, ...]}
+
+/** set of target callbacks, {target: [cb1, cb2, ...]} */
 var targetCbCache = new WeakMap;
 
 
 /**
 * Bind fn to a target
 * @todo  recognize jquery object
+* @chainable
 */
 function bind(target, evt, fn){
 	//DOM events
@@ -29,7 +28,7 @@ function bind(target, evt, fn){
 			$(target).on(evt, fn);
 		} else {
 			//listen element
-			target.addEventListener(evt, fn)
+			target.addEventListener(evt, fn);
 		}
 		//FIXME: old IE
 	}
@@ -41,16 +40,19 @@ function bind(target, evt, fn){
 
 	//save callback
 	(targetCallbacks[evt] = targetCallbacks[evt] || []).push(fn);
+
+	return this;
 }
 
 
 
 /**
 * Bind fn to a target
+* @chainable
 */
 function unbind(target, evt, fn){
 	//unbind all listeners passed
-	if (_.isArray(fn)){
+	if (fn instanceof Array){
 		for (var i = fn.length; i--;){
 			unbind(target, evt, fn[i]);
 		}
@@ -82,7 +84,7 @@ function unbind(target, evt, fn){
 
 		//listen element
 		else {
-			target.removeEventListener(evt, fn)
+			target.removeEventListener(evt, fn);
 		}
 	}
 
@@ -100,12 +102,15 @@ function unbind(target, evt, fn){
 			break;
 		}
 	}
+
+	return this;
 }
 
 
 
 /**
 * Event trigger
+* @chainable
 */
 function fire(target, eventName, data, bubbles){
 	if (!target) return;
@@ -152,6 +157,8 @@ function fire(target, eventName, data, bubbles){
 			});
 		}
 	}
+
+	return this;
 }
 
 
@@ -162,5 +169,5 @@ function fire(target, eventName, data, bubbles){
  * @todo detect eventful objects in a more wide way
  */
 function isEventTarget (target){
-	return target && !!target.addEventListener;
+	return target && (!!target.addEventListener || (target.on && target.off && target.trigger));
 }

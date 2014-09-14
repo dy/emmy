@@ -29,7 +29,6 @@
   },
   "homepage": "https://github.com/dfcreative/muevent",
   "dependencies": {
-    "mutypes": "*"
   },
   "devDependencies": {
     "mocha": "~1.21.4",
