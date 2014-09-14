@@ -1,6 +1,6 @@
 {
   "name": "muevents",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "`on`, `off` and `emit`. Use native event system or jQuery, if any.",
   "main": "index.js",
   "scripts": {
@@ -28,8 +28,7 @@
     "url": "https://github.com/dfcreative/muevent/issues"
   },
   "homepage": "https://github.com/dfcreative/muevent",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "mocha": "~1.21.4",
     "chai": "~1.9.1",
