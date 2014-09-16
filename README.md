@@ -2,7 +2,7 @@
 
 Inobtrusive events for any object.
 
-Uses passed object events, if possible: jQuery, DOM events, Backbone or any other EventEmitter interface. If object isn’t an eventable, uses events wrapper.
+Uses target events, if possible: jQuery, DOM events, Backbone or any other EventEmitter interface. If object has no event system, uses events wrapper.
 
 
 ## Use
