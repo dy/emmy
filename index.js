@@ -16,7 +16,6 @@ var targetCbCache = new WeakMap;
 
 /**
 * Bind fn to the target
-* @todo  recognize jquery object
 * @chainable
 */
 function bind(target, evt, fn){

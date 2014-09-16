@@ -1,8 +1,8 @@
 # μEvents
 
-Events for any object.
+Inobtrusive events for any object.
 
-Uses passed object events, if possible: jQuery, DOM events, Backbone or any other EventEmitter interface. If object isn’t an eventable, uses inobstructive events wrapper.
+Uses passed object events, if possible: jQuery, DOM events, Backbone or any other EventEmitter interface. If object isn’t an eventable, uses events wrapper.
 
 
 ## Use
@@ -32,6 +32,7 @@ evt.emit(target, 'a')
 ## TODO
 
 * Add testling table
+* Provide EventTarget class for obtrusive use
 
 
 ## License
