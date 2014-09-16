@@ -20,7 +20,7 @@ var targetCbCache = new WeakMap;
 * @chainable
 */
 function bind(target, evt, fn){
-	//bind all listeners passed
+	//walk by list of instances
 	if (fn instanceof Array){
 		for (var i = fn.length; i--;){
 			bind(target, evt, fn[i]);
@@ -28,26 +28,38 @@ function bind(target, evt, fn){
 		return;
 	}
 
+
 	//DOM events
-	if (isEventTarget(target)) {
+	if (isDOMEventTarget(target)) {
 		//bind target fn
 		if ($){
 			//delegate to jquery
 			$(target).on(evt, fn);
 		} else {
-			//listen element
+			//listen to element
 			target.addEventListener(evt, fn);
 		}
 		//FIXME: old IE
 	}
 
-	//Non-DOM events
+	//target events
+	else {
+		var onMethod = getOn(target);
+
+		//use target event system, if possible
+		if (onMethod) {
+			onMethod.call(target, evt, fn);
+		}
+	}
+
+
+	//Save callback
 	//ensure callbacks array for target exist
 	if (!targetCbCache.has(target)) targetCbCache.set(target, {});
 	var targetCallbacks = targetCbCache.get(target);
 
-	//save callback
 	(targetCallbacks[evt] = targetCallbacks[evt] || []).push(fn);
+
 
 	return this;
 }
@@ -67,6 +79,7 @@ function unbind(target, evt, fn){
 		return;
 	}
 
+
 	//unbind all listeners if no fn specified
 	if (fn === undefined) {
 		var callbacks = targetCbCache.get(target);
@@ -83,19 +96,32 @@ function unbind(target, evt, fn){
 		return;
 	}
 
-	//DOM events on elements
-	if (isEventTarget(target)) {
+
+	//DOM events
+	if (isDOMEventTarget(target)) {
 		//delegate to jquery
 		if ($){
 			$(target).off(evt, fn);
 		}
 
-		//listen element
+		//listen to element
 		else {
 			target.removeEventListener(evt, fn);
 		}
 	}
 
+	//target events
+	else {
+		var offMethod = getOff(target);
+
+		//use target event system, if possible
+		if (offMethod) {
+			offMethod.call(target, evt, fn);
+		}
+	}
+
+
+	//Forget callback
 	//ignore if no event specified
 	if (!targetCbCache.has(target)) return;
 
@@ -111,6 +137,7 @@ function unbind(target, evt, fn){
 		}
 	}
 
+
 	return this;
 }
 
@@ -123,8 +150,9 @@ function unbind(target, evt, fn){
 function fire(target, eventName, data, bubbles){
 	if (!target) return;
 
+
 	//DOM events
-	if (isEventTarget(target)) {
+	if (isDOMEventTarget(target)) {
 		if ($){
 			//TODO: decide how to pass data
 			var evt = $.Event( eventName, data );
@@ -149,6 +177,16 @@ function fire(target, eventName, data, bubbles){
 
 	//no-DOM events
 	else {
+		//Target events
+		var emitMethod = getEmit(target);
+
+		//use target event system, if possible
+		if (emitMethod) {
+			return emitMethod.call(target, eventName, data);
+		}
+
+
+		//fall back to default event system
 		//ignore if no event specified
 		if (!targetCbCache.has(target)) return;
 
@@ -166,16 +204,40 @@ function fire(target, eventName, data, bubbles){
 		}
 	}
 
+
 	return this;
 }
 
 
 
-
 /**
- * detects whether element is able to emit/dispatch events
+ * detect whether DOM element implements EventTarget interface
  * @todo detect eventful objects in a more wide way
  */
-function isEventTarget (target){
-	return target && (!!target.addEventListener || (target.on && target.off && target.trigger));
+function isDOMEventTarget (target){
+	return target && (!!target.addEventListener);
+}
+
+
+/**
+ * Return target’s `on` method, if it is eventable
+ */
+function getOn (target){
+	return target.on || target.bind || target.addEventListener || target.addListener;
+}
+
+
+/**
+ * Return target’s `off` method, if it is eventable
+ */
+function getOff (target){
+	return target.off || target.unbind || target.removeEventListener || target.removeListener;
+}
+
+
+/**
+ * Return target’s `emit` method, if it is eventable
+ */
+function getEmit (target){
+	return target.emit || target.trigger || target.fire || target.dispatchEvent || target.dispatch;
 }

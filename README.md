@@ -1,9 +1,16 @@
-Uses existing event system, if possible: jQuery, DOM events, Backbone events (pending).
+# μEvents
 
+Events for any object.
+
+Uses passed object events, if possible: jQuery, DOM events, Backbone or any other EventEmitter interface. If object isn’t an eventable, uses inobstructive events wrapper.
+
+
+## Use
 
 ```
 $ npm install muevents
 ```
+
 
 ```js
 var evt = require('muevents');
@@ -20,6 +27,11 @@ evt.off(target, 'event', handler)
 evt.emit(target, 'a')
 .emit(otherTarget, 'b', data, bubbles)
 ```
+
+
+## TODO
+
+* Add testling table
 
 
 ## License
