@@ -66,7 +66,7 @@ function bind(target, evt, fn){
 
 
 /**
-* Bind fn to a target
+* Unbind fn from the target
 * @chainable
 */
 function unbind(target, evt, fn){
