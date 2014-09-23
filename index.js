@@ -1,3 +1,5 @@
+var icicle = require('icicle');
+
 /** @module muevents */
 module.exports = {
 	on: bind,
@@ -47,8 +49,12 @@ function bind(target, evt, fn){
 		var onMethod = getMethodOneOf(target, onNames);
 
 		//use target event system, if possible
+		//avoid self-recursions from the outside
 		if (onMethod) {
+			//if it’s frozen - ignore call
+			if (!icicle.freeze(target, onFlag)) return this;
 			onMethod.call(target, evt, fn);
+			icicle.unfreeze(target, onFlag);
 		}
 	}
 
@@ -115,8 +121,12 @@ function unbind(target, evt, fn){
 		var offMethod = getMethodOneOf(target, offNames);
 
 		//use target event system, if possible
+		//avoid self-recursion from the outside
 		if (offMethod) {
+			//if it’s frozen - ignore call
+			if (!icicle.freeze(target, offFlag)) return this;
 			offMethod.call(target, evt, fn);
+			icicle.unfreeze(target, offFlag);
 		}
 	}
 
@@ -150,6 +160,7 @@ function unbind(target, evt, fn){
 function fire(target, eventName, data, bubbles){
 	if (!target) return;
 
+
 	//DOM events
 	if (isDOMEventTarget(target)) {
 		if ($){
@@ -179,19 +190,25 @@ function fire(target, eventName, data, bubbles){
 		//Target events
 		var emitMethod = getMethodOneOf(target, emitNames);
 
-		//use target event system, if possible
+		//use locks to avoid self-recursion on objects wrapping this method (e. g. mod instances)
 		if (emitMethod) {
-			return emitMethod.call(target, eventName, data);
+			if (icicle.freeze(target, emitFlag)) {
+				//use target event system, if possible
+				emitMethod.call(target, eventName, data);
+				icicle.unfreeze(target, emitFlag);
+				return this;
+			}
+			//if event was frozen - perform normal callback
 		}
 
 
 		//fall back to default event system
 		//ignore if no event specified
-		if (!targetCbCache.has(target)) return;
+		if (!targetCbCache.has(target)) return this;
 
 		var evtCallbacks = targetCbCache.get(target)[eventName];
 
-		if (!evtCallbacks) return;
+		if (!evtCallbacks) return this;
 
 		//copy callbacks to fire because list can change in some handler
 		var fireList = evtCallbacks.slice();
@@ -214,7 +231,7 @@ function fire(target, eventName, data, bubbles){
  * @todo detect eventful objects in a more wide way
  */
 function isDOMEventTarget (target){
-	return target && (!!target.addEventListener);
+	return target && target.addEventListener;
 }
 
 
@@ -224,9 +241,17 @@ var offNames = ['off', 'unbind', 'removeEventListener', 'removeListener'];
 var emitNames = ['emit', 'trigger', 'fire', 'dispatchEvent'];
 
 
+/** Locker flags */
+var emitFlag = emitNames[0], onFlag = onNames[0], offFlag = offNames[0];
+
+
 /**
  * Return target’s method one of passed list, if it is eventable
  */
 function getMethodOneOf (target, list){
-	for (var i = list.length; i--;) {if (target[list[i]]) return true;}
+	var result;
+	for (var i = 0, l = list.length; i < l; i++) {
+		result = target[list[i]];
+		if (result) return result;
+	}
 }

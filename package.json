@@ -28,12 +28,14 @@
     "url": "https://github.com/dfcreative/muevent/issues"
   },
   "homepage": "https://github.com/dfcreative/muevent",
-  "dependencies": {},
+  "dependencies": {
+    "icicle": "~0.1.1"
+  },
   "devDependencies": {
-    "mocha": "~1.21.4",
+    "mocha": "*",
     "chai": "~1.9.1",
     "phantomjs": "~1.9.7-15",
-    "mocha-phantomjs": "~3.5.0",
+    "mocha-phantomjs": "*",
     "require-stub": "0.0.14",
     "jquery": "~2.1.1"
   }

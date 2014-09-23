@@ -6,9 +6,9 @@
 <div id="mocha"></div>
 
 <!-- set up tests environment -->
+<script src="../node_modules/es6-collections/es6-collections.js"></script>
 <script src="../node_modules/jquery/dist/jquery.min.js"></script>
 
-<script src="../node_modules/polymer-weakmap/weakmap.js"></script>
 <script src="../node_modules/mocha/mocha.js"></script>
 <script src="../node_modules/chai/chai.js"></script>
 <script>
@@ -18,15 +18,13 @@
 
 <!-- dev tests: uncomment for dev -->
 <script src="../node_modules/require-stub/index.js"></script>
-<script src="../node_modules/mutypes/index.js"></script>
+<script src="../node_modules/icicle/index.js"></script>
 <script src="../index.js"></script>
-<!-- <script src="../bundle.js"></script> -->
 
 <!-- test suites -->
 <script src="./index.js"></script>
 
 
-<!-- run tests -->
 <script>
 	mocha.checkLeaks();
 	if (typeof mochaPhantomJS !== 'undefined') {
