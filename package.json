@@ -1,6 +1,6 @@
 {
   "name": "muevents",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "`on`, `off` and `emit`. Use native event system or jQuery, if any.",
   "main": "index.js",
   "scripts": {
