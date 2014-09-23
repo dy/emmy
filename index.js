@@ -16,6 +16,7 @@ var targetCbCache = new WeakMap;
 
 /**
 * Bind fn to the target
+* @todo  recognize jquery object
 * @chainable
 */
 function bind(target, evt, fn){
@@ -43,7 +44,7 @@ function bind(target, evt, fn){
 
 	//target events
 	else {
-		var onMethod = getOn(target);
+		var onMethod = getMethodOneOf(target, onNames);
 
 		//use target event system, if possible
 		if (onMethod) {
@@ -111,7 +112,7 @@ function unbind(target, evt, fn){
 
 	//target events
 	else {
-		var offMethod = getOff(target);
+		var offMethod = getMethodOneOf(target, offNames);
 
 		//use target event system, if possible
 		if (offMethod) {
@@ -149,7 +150,6 @@ function unbind(target, evt, fn){
 function fire(target, eventName, data, bubbles){
 	if (!target) return;
 
-
 	//DOM events
 	if (isDOMEventTarget(target)) {
 		if ($){
@@ -177,7 +177,7 @@ function fire(target, eventName, data, bubbles){
 	//no-DOM events
 	else {
 		//Target events
-		var emitMethod = getEmit(target);
+		var emitMethod = getMethodOneOf(target, emitNames);
 
 		//use target event system, if possible
 		if (emitMethod) {
@@ -218,25 +218,15 @@ function isDOMEventTarget (target){
 }
 
 
-/**
- * Return target’s `on` method, if it is eventable
- */
-function getOn (target){
-	return target.on || target.bind || target.addEventListener || target.addListener;
-}
+/** List of methods */
+var onNames = ['on', 'bind', 'addEventListener', 'addListener'];
+var offNames = ['off', 'unbind', 'removeEventListener', 'removeListener'];
+var emitNames = ['emit', 'trigger', 'fire', 'dispatchEvent'];
 
 
 /**
- * Return target’s `off` method, if it is eventable
+ * Return target’s method one of passed list, if it is eventable
  */
-function getOff (target){
-	return target.off || target.unbind || target.removeEventListener || target.removeListener;
-}
-
-
-/**
- * Return target’s `emit` method, if it is eventable
- */
-function getEmit (target){
-	return target.emit || target.trigger || target.fire || target.dispatchEvent || target.dispatch;
+function getMethodOneOf (target, list){
+	for (var i = list.length; i--;) {if (target[list[i]]) return true;}
 }
