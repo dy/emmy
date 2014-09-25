@@ -12,11 +12,17 @@ $ npm install emmy
 ```js
 var Emmy = require('emmy');
 
-//Hand emmy to someone
-var someone.prototype = Object.create(Emmy);
+
+function Actor(){};
 
 
-someone
+//Hand emmy to an actor
+Actor.prototype = Object.create(Emmy);
+
+
+var actor = new Actor();
+
+actor
 
 //Bind events
 .on('event', handler)
