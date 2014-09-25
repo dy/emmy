@@ -1,38 +1,47 @@
-# μEvents
+# Emmy
 
-Inobtrusive events for any object.
+A prominent event emitter.
 
-Uses target’s events, if possible: jQuery, DOM events, Backbone or any other EventEmitter interface. If object has no event system, uses events wrapper.
+Uses target’s events, if possible: jQuery, DOM events, Backbone or any other EventEmitter, if implemented. If isn’t - uses own events.
 
 
 ## Use
 
 ```
-$ npm install muevents
+$ npm install emmy
 ```
 
-
 ```js
-var evt = require('muevents');
+var Emmy = require('emmy');
 
-evt.on(target, 'event', handler)
-.on(otherTarget, 'otherEvent', handler);
-.on(target, 'event2', [handler1, handler2]); //bind list of handlers
+//Hand emmy
+var target.prototype = Object.create(Emmy);
 
-evt.off(target, 'event', handler)
+
+target
+
+//Bind events
+.on(target, 'event', handler)
+.on(otherTarget, 'otherEvent', handler)
+.on(target, 'event2', [handler1, handler2]) //bind list of handlers
+
+
+//Unbind events
+.off(target, 'event', handler)
 .off(otherTarget, 'otherEvent') //unbind all 'otherEvent' callbacks
 .off(target, 'event2', [handler1, handler2]); //unbind list of handlers
 .off(target) //unbind all events
 
-evt.emit(target, 'a')
-.emit(otherTarget, 'b', data, bubbles)
+
+//Emit events
+.emit(target, 'a')
+.emit(otherTarget, 'b', data, bubbles);
 ```
 
 
 ## TODO
 
 * Add testling table
-* Provide EventTarget class for obtrusive use
 
 
 ## License

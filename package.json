@@ -1,14 +1,14 @@
 {
-  "name": "muevents",
+  "name": "emmy",
   "version": "0.2.1",
-  "description": "`on`, `off` and `emit`. Use native event system or jQuery, if any.",
+  "description": "A prominent event emitter",
   "main": "index.js",
   "scripts": {
     "test": "mocha-phantomjs test/index.html"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:dfcreative/muevent.git"
+    "url": "git@github.com:dfcreative/emmy.git"
   },
   "keywords": [
     "emitter",
@@ -20,14 +20,15 @@
     "emit",
     "fire",
     "bind",
-    "unbind"
+    "unbind",
+    "emmitt"
   ],
   "author": "dfcreative",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dfcreative/muevent/issues"
+    "url": "https://github.com/dfcreative/emmy/issues"
   },
-  "homepage": "https://github.com/dfcreative/muevent",
+  "homepage": "https://github.com/dfcreative/emmy",
   "dependencies": {
     "icicle": "~0.1.1"
   },
