@@ -59,6 +59,8 @@ evt.emit(target, 'evt');
 evt.off(target, 'evt');
 ```
 
+For more comprehentive events notation, give a glance at [ENot — event notation system](https://github.com/dfcreative/enot).
+
 
 ## License
 
