@@ -78,4 +78,8 @@ describe('MicroEvents', function(){
 		a.emit('fn');
 		assert.equal(i, 1);
 	});
+
+	it('EventEmitter compliance', function(){
+		// xxx
+	});
 });
