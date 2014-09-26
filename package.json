@@ -1,6 +1,6 @@
 {
   "name": "emmy",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A prominent event emitter",
   "main": "index.js",
   "scripts": {
@@ -44,7 +44,7 @@
     "browserify": "~5.12.0"
   },
   "testling": {
-    "files":"test/index.js",
+    "files": "test/index.js",
     "scripts": "node_modules/polymer-weakmap/weakmap.js",
     "harness": "mocha",
     "browsers": [
