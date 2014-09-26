@@ -8,19 +8,19 @@ describe('MicroEvents', function(){
 	it('fire plain objects', function(){
 		var a = {};
 		var i = 0;
-		emmy.on.call(a, 'click', function(){i++});
-		emmy.emit.call(a, 'click');
+		Emmy.on(a, 'click', function(){i++});
+		Emmy.emit(a, 'click');
 		assert.equal(i, 1);
 
-		emmy.off.call(a, 'click');
-		emmy.emit.call(a, 'click');
+		Emmy.off(a, 'click');
+		Emmy.emit(a, 'click');
 		assert.equal(i, 1);
 	});
 
 	it ("recursion in unbind all", function(){
 		var a = {};
-		emmy.on.call(a, 'y', function(){});
-		emmy.off.call(a, 'x');
+		Emmy.on(a, 'y', function(){});
+		Emmy.off(a, 'x');
 	});
 
 	it.skip("emit click in IE8, IE9", function(){
@@ -30,20 +30,20 @@ describe('MicroEvents', function(){
 	it("changed call list", function(){
 		var a = {}, log = [];
 
-		emmy.on.call(a, 'x', function(){
-			emmy.off.call(a, 'x');
+		Emmy.on(a, 'x', function(){
+			Emmy.off(a, 'x');
 			log.push(1);
 		});
 
-		emmy.on.call(a, 'x', function(){
+		Emmy.on(a, 'x', function(){
 			log.push(2)
 		})
 
-		emmy.on.call(a, 'x', function(){
+		Emmy.on(a, 'x', function(){
 			log.push(3)
 		})
 
-		emmy.emit.call(a, 'x')
+		Emmy.emit(a, 'x')
 
 		assert.deepEqual(log, [1,2,3])
 	});
@@ -52,13 +52,13 @@ describe('MicroEvents', function(){
 		var i = 0;
 		var a = {
 			emit: function(a){
-				emmy.emit.call(this, a);
+				Emmy.emit(this, a);
 			},
 			fn: function(){
 				i++;
 			},
 			on: function(a, b){
-				emmy.on.call(this, a, b);
+				Emmy.on(this, a, b);
 			}
 		};
 

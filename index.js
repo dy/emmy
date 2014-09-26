@@ -1,10 +1,6 @@
 var icicle = require('icicle');
 
 
-/** @module muevents */
-module.exports = Emmy;
-
-
 /** jquery guarant */
 var $ = typeof jQuery === 'undefined' ? undefined : jQuery;
 
@@ -236,6 +232,11 @@ proto.emit = function(eventName, data, bubbles){
 };
 
 
+/** Static aliases for old API compliance */
+Emmy.on = function(a,b,c){proto.on.call(a,b,c)};
+Emmy.off = function(a,b,c){proto.off.call(a,b,c)};
+Emmy.emit = function(a,b,c){proto.emit.call(a,b,c)};
+
 
 /**
  * detect whether DOM element implements EventTarget interface
@@ -266,3 +267,8 @@ function getMethodOneOf(target, list){
 		if (result) return result;
 	}
 }
+
+
+
+/** @module muevents */
+module.exports = Emmy;
