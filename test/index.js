@@ -1,5 +1,6 @@
 var Emmy = require('../index');
 var icicle = require('icicle');
+var assert = require('chai').assert;
 
 var emmy = new Emmy;
 

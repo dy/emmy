@@ -1,13 +1,19 @@
-# Emmy
+# Emmy [![Build Status](https://travis-ci.org/dfcreative/emmy.svg?branch=master)](https://travis-ci.org/dfcreative/emmy)
 
-An event emitter with target events harness: jQuery, DOM events, Backbone or any other EventEmitter interface, if implemented. If isn’t - uses own events.
+[![browser support](https://ci.testling.com/dfcreative/emmy.png)
+](https://ci.testling.com/dfcreative/emmy)
+
+Emits an event which everyone knows about. Tries to use target event system: jQuery, DOM events, Backbone or any other EventEmitter interface, if implemented. If is not - uses own events.
 
 
 ## Use
 
-```
-$ npm install emmy
-```
+1. Install
+
+`$ npm install emmy`
+
+
+Inherit:
 
 ```js
 var Emmy = require('emmy');
@@ -40,6 +46,17 @@ actor
 //Emit events
 .emit('a')
 .emit('b', data, bubbles);
+```
+
+
+Or use static API:
+
+```js
+var evt = require('emmy');
+
+evt.on(target, 'evt', function(){});
+evt.emit(target, 'evt');
+evt.off(target, 'evt');
 ```
 
 

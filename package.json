@@ -39,7 +39,23 @@
     "mocha-phantomjs": "*",
     "require-stub": "0.0.14",
     "jquery": "~2.1.1",
-    "es6-collections": "~0.3.2",
-    "polymer-weakmap": "~1.0.0"
+    "polymer-weakmap": "~1.0.0",
+    "testling": "~1.7.1",
+    "browserify": "~5.12.0"
+  },
+  "testling": {
+    "files":"test/index.js",
+    "scripts": "node_modules/polymer-weakmap/weakmap.js",
+    "harness": "mocha",
+    "browsers": [
+      "ie/6..latest",
+      "chrome/22..latest",
+      "firefox/16..latest",
+      "safari/latest",
+      "opera/11.0..latest",
+      "iphone/6",
+      "ipad/6",
+      "android-browser/latest"
+    ]
   }
 }
