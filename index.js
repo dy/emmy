@@ -1,15 +1,23 @@
 var icicle = require('icicle');
 
+
 /** @module muevents */
-module.exports = {
-	on: bind,
-	off: unbind,
-	emit: fire
-};
+module.exports = Emmy;
 
 
 /** jquery guarant */
 var $ = typeof jQuery === 'undefined' ? undefined : jQuery;
+
+
+
+/**
+ * @constructor
+ *
+ * Main EventEmitter interface
+ */
+function Emmy(){}
+
+var proto = Emmy.prototype;
 
 
 /** set of target callbacks, {target: [cb1, cb2, ...]} */
@@ -21,11 +29,13 @@ var targetCbCache = new WeakMap;
 * @todo  recognize jquery object
 * @chainable
 */
-function bind(target, evt, fn){
+proto.on = function(evt, fn){
+	var target = this;
+
 	//walk by list of instances
 	if (fn instanceof Array){
 		for (var i = fn.length; i--;){
-			bind(target, evt, fn[i]);
+			proto.on.call(target, evt, fn[i]);
 		}
 		return;
 	}
@@ -68,7 +78,7 @@ function bind(target, evt, fn){
 
 
 	return this;
-}
+};
 
 
 
@@ -76,11 +86,13 @@ function bind(target, evt, fn){
 * Bind fn to a target
 * @chainable
 */
-function unbind(target, evt, fn){
+proto.off = function (evt, fn){
+	var target = this;
+
 	//unbind all listeners passed
 	if (fn instanceof Array){
 		for (var i = fn.length; i--;){
-			unbind(target, evt, fn[i]);
+			proto.off.call(target, evt, fn[i]);
 		}
 		return;
 	}
@@ -93,11 +105,11 @@ function unbind(target, evt, fn){
 		//unbind all if no evtRef defined
 		if (evt === undefined) {
 			for (var evtName in callbacks) {
-				unbind(target, evtName, callbacks[evtName]);
+				proto.off.call(target, evtName, callbacks[evtName]);
 			}
 		}
 		else if (callbacks[evt]) {
-			unbind(target, evt, callbacks[evt]);
+			proto.off.call(target, evt, callbacks[evt]);
 		}
 		return;
 	}
@@ -147,9 +159,8 @@ function unbind(target, evt, fn){
 		}
 	}
 
-
 	return this;
-}
+};
 
 
 
@@ -157,9 +168,10 @@ function unbind(target, evt, fn){
 * Event trigger
 * @chainable
 */
-function fire(target, eventName, data, bubbles){
-	if (!target) return;
+proto.emit = function(eventName, data, bubbles){
+	var target = this;
 
+	if (!target) return;
 
 	//DOM events
 	if (isDOMEventTarget(target)) {
@@ -220,9 +232,8 @@ function fire(target, eventName, data, bubbles){
 		}
 	}
 
-
 	return this;
-}
+};
 
 
 
@@ -248,7 +259,7 @@ var emitFlag = emitNames[0], onFlag = onNames[0], offFlag = offNames[0];
 /**
  * Return target’s method one of passed list, if it is eventable
  */
-function getMethodOneOf (target, list){
+function getMethodOneOf(target, list){
 	var result;
 	for (var i = 0, l = list.length; i < l; i++) {
 		result = target[list[i]];

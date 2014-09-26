@@ -16,7 +16,7 @@ var Emmy = require('emmy');
 function Actor(){};
 
 
-//Hand emmy to an actor
+//Give out emmy to an actor
 Actor.prototype = Object.create(Emmy);
 
 

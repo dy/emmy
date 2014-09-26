@@ -39,6 +39,7 @@
     "mocha-phantomjs": "*",
     "require-stub": "0.0.14",
     "jquery": "~2.1.1",
-    "es6-collections": "~0.3.2"
+    "es6-collections": "~0.3.2",
+    "polymer-weakmap": "~1.0.0"
   }
 }
