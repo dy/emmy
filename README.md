@@ -60,11 +60,6 @@ evt.off(target, 'evt');
 ```
 
 
-## TODO
-
-* Add testling table
-
-
 ## License
 
 MIT
