@@ -3,9 +3,10 @@
 [![browser support](https://ci.testling.com/dfcreative/emmy.png)
 ](https://ci.testling.com/dfcreative/emmy)
 
-Emits an event which everyone knows about.<br/>
-Tries to use target event system: jQuery, DOM events, Backbone or any other EventEmitter interface, if implemented. If is not - uses own events.<br/>
+Emits an event which everyone knows about. Tries to use target event system: jQuery, DOM events, Backbone or any other EventEmitter interface, if implemented. If is not - uses own events.<br/>
 Provides an EventEmitter interface.
+
+You also might be interesting in more comprehensive events notation, give a glance at [ENot — event notation system](https://github.com/dfcreative/enot).
 
 
 ## Use
@@ -61,9 +62,6 @@ actor
 .emit('b', data, bubbles);
 ```
 
-
-
-For more comprehentive events notation, give a glance at [ENot — event notation system](https://github.com/dfcreative/enot).
 
 
 ## License
