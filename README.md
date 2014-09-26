@@ -3,7 +3,8 @@
 [![browser support](https://ci.testling.com/dfcreative/emmy.png)
 ](https://ci.testling.com/dfcreative/emmy)
 
-Emits an event which everyone knows about. Tries to use target event system: jQuery, DOM events, Backbone or any other EventEmitter interface, if implemented. If is not - uses own events.
+Emits an event which everyone knows about.<br/>
+Tries to use target event system: jQuery, DOM events, Backbone or any other EventEmitter interface, if implemented. If is not - uses own events.<br/>
 Provides an EventEmitter interface.
 
 
