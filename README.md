@@ -4,16 +4,28 @@
 ](https://ci.testling.com/dfcreative/emmy)
 
 Emits an event which everyone knows about. Tries to use target event system: jQuery, DOM events, Backbone or any other EventEmitter interface, if implemented. If is not - uses own events.
+Provides an EventEmitter interface.
 
 
 ## Use
 
-1. Install
+Install:
 
 `$ npm install emmy`
 
 
-Inherit:
+Use static API:
+
+```js
+var evt = require('emmy');
+
+evt.on(target, 'evt', function(){});
+evt.emit(target, 'evt');
+evt.off(target, 'evt');
+```
+
+
+Or inherit enhanced EventEmitter:
 
 ```js
 var Emmy = require('emmy');
@@ -49,15 +61,6 @@ actor
 ```
 
 
-Or use static API:
-
-```js
-var evt = require('emmy');
-
-evt.on(target, 'evt', function(){});
-evt.emit(target, 'evt');
-evt.off(target, 'evt');
-```
 
 For more comprehentive events notation, give a glance at [ENot — event notation system](https://github.com/dfcreative/enot).
 
