@@ -27,17 +27,17 @@ function Emmy(target){
 	if (!target) return;
 
 	//create emitter methods on target, if none
-	if (!getMethodOneOf(target, onNames)) target.on = proto.on.bind(target);
-	if (!getMethodOneOf(target, offNames)) target.off = proto.off.bind(target);
-	if (!getMethodOneOf(target, oneNames)) target.one = target.once = proto.one.bind(target);
-	if (!getMethodOneOf(target, emitNames)) target.emit = proto.emit.bind(target);
+	if (!getMethodOneOf(target, onNames)) target.on = EmmyPrototype.on.bind(target);
+	if (!getMethodOneOf(target, offNames)) target.off = EmmyPrototype.off.bind(target);
+	if (!getMethodOneOf(target, oneNames)) target.one = target.once = EmmyPrototype.one.bind(target);
+	if (!getMethodOneOf(target, emitNames)) target.emit = EmmyPrototype.emit.bind(target);
 
 	return target;
 }
 
 
 /** Make DOM objects be wrapped as jQuery objects, if jQuery is enabled */
-var proto = Emmy.prototype;
+var EmmyPrototype = Emmy.prototype;
 
 
 /**
@@ -62,14 +62,14 @@ var targetCbCache = new WeakMap;
 * @todo  recognize jquery object
 * @chainable
 */
-proto.on =
-proto.addEventListener = function(evt, fn){
+EmmyPrototype.on =
+EmmyPrototype.addEventListener = function(evt, fn){
 	var target = this;
 
 	//walk by list of instances
 	if (fn instanceof Array){
 		for (var i = fn.length; i--;){
-			proto.on.call(target, evt, fn[i]);
+			EmmyPrototype.on.call(target, evt, fn[i]);
 		}
 		return target;
 	}
@@ -107,14 +107,14 @@ proto.addEventListener = function(evt, fn){
  * @return {Emmy}
  * @chainable
  */
-proto.once =
-proto.one = function(evt, fn){
+EmmyPrototype.once =
+EmmyPrototype.one = function(evt, fn){
 	var target = this;
 
 	//walk by list of instances
 	if (fn instanceof Array){
 		for (var i = fn.length; i--;){
-			proto.one.call(target, evt, fn[i]);
+			EmmyPrototype.one.call(target, evt, fn[i]);
 		}
 		return;
 	}
@@ -135,13 +135,13 @@ proto.one = function(evt, fn){
 
 	//wrap callback to once-call
 	function cb() {
-		proto.off.call(target, evt, fn);
+		EmmyPrototype.off.call(target, evt, fn);
 		fn.apply(target, arguments);
 	}
 
 	cb.fn = fn;
 
-	proto.on.call(target, evt, cb);
+	EmmyPrototype.on.call(target, evt, cb);
 
 	return target;
 };
@@ -151,16 +151,16 @@ proto.one = function(evt, fn){
 * Bind fn to a target
 * @chainable
 */
-proto.off =
-proto.removeListener =
-proto.removeAllListeners =
-proto.removeEventListener = function (evt, fn){
+EmmyPrototype.off =
+EmmyPrototype.removeListener =
+EmmyPrototype.removeAllListeners =
+EmmyPrototype.removeEventListener = function (evt, fn){
 	var target = this;
 
 	//unbind all listeners passed
 	if (fn instanceof Array){
 		for (var i = fn.length; i--;){
-			proto.off.call(target, evt, fn[i]);
+			EmmyPrototype.off.call(target, evt, fn[i]);
 		}
 		return target;
 	}
@@ -173,11 +173,11 @@ proto.removeEventListener = function (evt, fn){
 		//unbind all if no evtRef defined
 		if (evt === undefined) {
 			for (var evtName in callbacks) {
-				proto.off.call(target, evtName, callbacks[evtName]);
+				EmmyPrototype.off.call(target, evtName, callbacks[evtName]);
 			}
 		}
 		else if (callbacks[evt]) {
-			proto.off.call(target, evt, callbacks[evt]);
+			EmmyPrototype.off.call(target, evt, callbacks[evt]);
 		}
 		return target;
 	}
@@ -223,16 +223,15 @@ proto.removeEventListener = function (evt, fn){
 * Event trigger
 * @chainable
 */
-proto.emit =
-proto.dispatchEvent = function(eventName, data, bubbles){
-	var target = this, emitMethod;
+EmmyPrototype.emit =
+EmmyPrototype.dispatchEvent = function(eventName, data, bubbles){
+	var target = this, emitMethod, evt = eventName;
 
 	if (!target) return;
 
 	//Create proper event for DOM objects
 	if (target.nodeType || target === doc || target === win) {
 		//NOTE: this doesnot bubble on disattached elements
-		var evt;
 
 		if (eventName instanceof Event) {
 			evt = eventName;
@@ -264,7 +263,7 @@ proto.dispatchEvent = function(eventName, data, bubbles){
 	if (emitMethod) {
 		if (icicle.freeze(target, emitFlag)) {
 			//use target event system, if possible
-			emitMethod.call(target, eventName, data);
+			emitMethod.call(target, evt, data);
 			icicle.unfreeze(target, emitFlag);
 			return target;
 		}
@@ -276,7 +275,7 @@ proto.dispatchEvent = function(eventName, data, bubbles){
 	//ignore if no event specified
 	if (!targetCbCache.has(target)) return target;
 
-	var evtCallbacks = targetCbCache.get(target)[eventName];
+	var evtCallbacks = targetCbCache.get(target)[evt];
 
 	if (!evtCallbacks) return target;
 
@@ -301,7 +300,7 @@ proto.dispatchEvent = function(eventName, data, bubbles){
  * @api public
  */
 
-proto.listeners = function(evt){
+EmmyPrototype.listeners = function(evt){
 	var callbacks = targetCbCache.get(this);
 	return callbacks && callbacks[evt] || [];
 };
@@ -314,18 +313,18 @@ proto.listeners = function(evt){
  * @api public
  */
 
-proto.hasListeners = function(evt){
-	return !!proto.listeners.call(this, evt).length;
+EmmyPrototype.hasListeners = function(evt){
+	return !!EmmyPrototype.listeners.call(this, evt).length;
 };
 
 
 
 /** Static aliases for old API compliance */
-Emmy.on = function(a,b,c){proto.on.call(a,b,c); return this;};
+Emmy.on = function(a,b,c){EmmyPrototype.on.call(a,b,c); return this;};
 Emmy.one =
-Emmy.once = function(a,b,c){proto.one.call(a,b,c); return this;};
-Emmy.off = function(a,b,c){proto.off.call(a,b,c); return this;};
-Emmy.emit = function(a,b,c){proto.emit.call(a,b,c); return this;};
+Emmy.once = function(a,b,c){EmmyPrototype.one.call(a,b,c); return this;};
+Emmy.off = function(a,b,c){EmmyPrototype.off.call(a,b,c); return this;};
+Emmy.emit = function(a,b,c){EmmyPrototype.emit.call(a,b,c); return this;};
 
 
 /** @module muevents */
