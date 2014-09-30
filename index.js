@@ -223,7 +223,8 @@ proto.removeEventListener = function (evt, fn){
 * Event trigger
 * @chainable
 */
-proto.emit = function(eventName, data, bubbles){
+proto.emit =
+proto.dispatchEvent = function(eventName, data, bubbles){
 	var target = this, emitMethod;
 
 	if (!target) return;

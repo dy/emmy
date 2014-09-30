@@ -87,11 +87,15 @@ actor
 Method | Alias | Description |
 --- | --- | --- |
 `on(event, handler)` | `addEventListener`, `addListener` | Register an `event` `handler`.
+`on(event, handlers)` | | Register an `event` each callback from `handlers` list.
 `one(event, handler)` | `addOnceListener` | Register a single-shot `event` `handler`.
+`one(event, handlers)` | | Register a single-shot `event` `handlers`.
 `off(event, handler)`| `removeEventListener`, `removeListener` | Remove an `event` `handler`.
 `off(event)`|  | Remove all listeners for an `event`.
 `off()`|  | Remove all listeners on target.
-`emit(event, data, bubbles)`| `fire` | Emit an `event` with params passed.
+`emit(event, data, bubbles)`| `fire`, `dispatchEvent` | Emit an `event` with params passed.
+`listeners(event)`| | Get list of listeners for an `event`
+`hasListeners(event)`| | Check if emitter has `event` handlers
 
 
 ---
