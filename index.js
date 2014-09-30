@@ -200,11 +200,11 @@ EmmyPrototype.removeEventListener = function (evt, fn){
 
 	//Forget callback
 	//ignore if no event specified
-	if (!targetCbCache.has(target)) return;
+	if (!targetCbCache.has(target)) return target;
 
 	var evtCallbacks = targetCbCache.get(target)[evt];
 
-	if (!evtCallbacks) return;
+	if (!evtCallbacks) return target;
 
 	//remove specific handler
 	for (var i = 0; i < evtCallbacks.length; i++) {
