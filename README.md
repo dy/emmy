@@ -56,18 +56,14 @@ Or inherit Emitter:
 ```js
 var Emitter = require('emmy');
 
-
 function Actor(){};
-
 
 //Give out emmy to an actor :)
 Actor.prototype = Object.create(Emitter);
 
-
 var actor = new Actor();
 
 actor
-
 //Bind events
 .on('event', handler)
 .on('otherEvent', handler)
@@ -85,6 +81,17 @@ actor
 .emit('a')
 .emit('b', data, bubbles);
 ```
+
+## API
+
+Method | Alias | Description |
+--- | --- | --- |
+`on(event, handler)` | `addEventListener`, `addListener` | Register an `event` `handler`.
+`one(event, handler)` | `addOnceListener` | Register a single-shot `event` `handler`.
+`off(event, handler)`| `removeEventListener`, `removeListener` | Remove an `event` `handler`.
+`off(event)`|  | Remove all listeners for an `event`.
+`off()`|  | Remove all listeners on target.
+`emit(event, data, bubbles)`| `fire` | Emit an `event` with params passed.
 
 
 ---
