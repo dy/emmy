@@ -155,4 +155,9 @@ describe('MicroEvents', function(){
 		assert.ok(a.hasListeners('x'));
 		assert.notOk(a.hasListeners('z'));
 	});
+
+	it.skip('pass data & bubbles to emit', function(){
+		var a = new Emitter;
+		//TODO
+	});
 });

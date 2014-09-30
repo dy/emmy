@@ -226,7 +226,6 @@ EmmyPrototype.removeEventListener = function (evt, fn){
 EmmyPrototype.emit =
 EmmyPrototype.dispatchEvent = function(eventName, data, bubbles){
 	var target = this, emitMethod, evt = eventName;
-
 	if (!target) return;
 
 	//Create proper event for DOM objects
@@ -263,7 +262,7 @@ EmmyPrototype.dispatchEvent = function(eventName, data, bubbles){
 	if (emitMethod) {
 		if (icicle.freeze(target, emitFlag)) {
 			//use target event system, if possible
-			emitMethod.call(target, evt, data);
+			emitMethod.call(target, evt, data, bubbles);
 			icicle.unfreeze(target, emitFlag);
 			return target;
 		}
@@ -324,7 +323,7 @@ Emmy.on = function(a,b,c){EmmyPrototype.on.call(a,b,c); return this;};
 Emmy.one =
 Emmy.once = function(a,b,c){EmmyPrototype.one.call(a,b,c); return this;};
 Emmy.off = function(a,b,c){EmmyPrototype.off.call(a,b,c); return this;};
-Emmy.emit = function(a,b,c){EmmyPrototype.emit.call(a,b,c); return this;};
+Emmy.emit = function(a,b,c,d){EmmyPrototype.emit.call(a,b,c,d); return this;};
 
 
 /** @module muevents */
