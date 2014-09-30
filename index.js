@@ -304,6 +304,7 @@ EmmyPrototype.listeners = function(evt){
 	return callbacks && callbacks[evt] || [];
 };
 
+
 /**
  * Check if this emitter has `event` handlers.
  *
