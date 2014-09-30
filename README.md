@@ -6,6 +6,8 @@
 
 Emmy is an EventEmitter which first tries to use target event system - jQuery, DOM events, Backbone or other EventEmitter interface, if implemented, ond only then uses own events.
 
+Emmy fully implements [component-emitter](https://github.com/component/emitter) interface, as well as jQuery events and ony other emitter interface, so you can safely replace existing emitter with _Emmy_.
+
 
 ## Use
 
@@ -17,25 +19,49 @@ Install:
 Use static API:
 
 ```js
-var evt = require('emmy');
+var Emitter = require('emmy');
 
-evt.on(target, 'evt', function(){});
-evt.emit(target, 'evt');
-evt.off(target, 'evt');
+Emitter.on(target, 'evt', function(){});
+Emitter.emit(target, 'evt');
+Emitter.off(target, 'evt');
 ```
 
-
-Or inherit enhanced EventEmitter:
+Create `Emitter` instance:
 
 ```js
-var Emmy = require('emmy');
+var Emitter = require('emmy');
+
+var emitter = new Emitter;
+emitter.emit('something');
+```
+
+Mixin object:
+```js
+var Emitter = requre('emmy');
+
+user = {name: 'John'};
+
+Emitter(user);
+
+user.emit('hello');
+```
+
+Mixin prototype:
+```js
+var Emitter = require('emmy');
+Emitter(User.prototype);
+```
+
+Or inherit Emitter:
+```js
+var Emitter = require('emmy');
 
 
 function Actor(){};
 
 
-//Give out emmy to an actor
-Actor.prototype = Object.create(Emmy);
+//Give out emmy to an actor :)
+Actor.prototype = Object.create(Emitter);
 
 
 var actor = new Actor();
@@ -63,7 +89,7 @@ actor
 
 ---
 
-You also might be interesting in more comprehensive event emitter - give a glance at [ENot — event notation system](https://github.com/dfcreative/enot).
+You also might be interesting in more comprehensive emitter - give a glance at [ENot — event notation system](https://github.com/dfcreative/enot).
 
 
 ## License

@@ -1,27 +1,24 @@
-var Emmy = require('../index');
-var icicle = require('icicle');
+var Emitter = require('../index');
 var assert = require('chai').assert;
-
-var emmy = new Emmy;
 
 
 describe('MicroEvents', function(){
 	it('fire plain objects', function(){
 		var a = {};
 		var i = 0;
-		Emmy.on(a, 'click', function(){i++});
-		Emmy.emit(a, 'click');
+		Emitter.on(a, 'click', function(){i++});
+		Emitter.emit(a, 'click');
 		assert.equal(i, 1);
 
-		Emmy.off(a, 'click');
-		Emmy.emit(a, 'click');
+		Emitter.off(a, 'click');
+		Emitter.emit(a, 'click');
 		assert.equal(i, 1);
 	});
 
 	it ("recursion in unbind all", function(){
 		var a = {};
-		Emmy.on(a, 'y', function(){});
-		Emmy.off(a, 'x');
+		Emitter.on(a, 'y', function(){});
+		Emitter.off(a, 'x');
 	});
 
 	it.skip("emit click in IE8, IE9", function(){
@@ -31,35 +28,35 @@ describe('MicroEvents', function(){
 	it("changed call list", function(){
 		var a = {}, log = [];
 
-		Emmy.on(a, 'x', function(){
-			Emmy.off(a, 'x');
+		Emitter.on(a, 'x', function(){
+			Emitter.off(a, 'x');
 			log.push(1);
 		});
 
-		Emmy.on(a, 'x', function(){
-			log.push(2)
-		})
+		Emitter.on(a, 'x', function(){
+			log.push(2);
+		});
 
-		Emmy.on(a, 'x', function(){
-			log.push(3)
-		})
+		Emitter.on(a, 'x', function(){
+			log.push(3);
+		});
 
-		Emmy.emit(a, 'x')
+		Emitter.emit(a, 'x');
 
-		assert.deepEqual(log, [1,2,3])
+		assert.deepEqual(log, [1,2,3]);
 	});
 
 	it("Objects artifically implementing Emitter interface", function(){
 		var i = 0;
 		var a = {
 			emit: function(a){
-				Emmy.emit(this, a);
+				Emitter.emit(this, a);
 			},
 			fn: function(){
 				i++;
 			},
 			on: function(a, b){
-				Emmy.on(this, a, b);
+				Emitter.on(this, a, b);
 			}
 		};
 
@@ -70,7 +67,7 @@ describe('MicroEvents', function(){
 
 	it('Object inheriting Emitter interface', function(){
 		var A = function (){};
-		A.prototype = Object.create(Emmy.prototype);
+		A.prototype = Object.create(Emitter.prototype);
 
 		var i = 0;
 		var a = new A;
@@ -80,6 +77,82 @@ describe('MicroEvents', function(){
 	});
 
 	it('EventEmitter compliance', function(){
-		// xxx
+	});
+
+	it('Mixin prototype', function(){
+		function User(name){
+			this.name = name || 'tobi';
+		}
+
+		var user = new User;
+
+		Emitter(User.prototype);
+
+		var i = 0;
+
+		user.on('hello', function(){i++});
+		user.emit('hello');
+
+		assert.equal(i, 1);
+	});
+
+	it('Mixin object', function(){
+		var user = { name: 'tobi' };
+		Emitter(user);
+
+		var i = 0;
+
+		user.on('hello dude', function(){i++});
+		user.emit('hello dude');
+
+		assert.equal(i, 1);
+	});
+
+	it('Emitter instance', function(){
+		var emitter = new Emitter, i = 0;
+		emitter.on('something', function(){i++});
+		emitter.emit('something');
+		assert.equal(i, 1);
+	});
+
+	it('Once method', function(){
+		var a = {}, i = 0, inc = function(){i++};
+
+		Emitter.once(a, 'x', inc);
+		Emitter.emit(a, 'x');
+		Emitter.emit(a, 'x');
+		assert.equal(i, 1);
+	});
+
+	it('Chainable static calls', function(){
+		var a = {}, i = 0;
+
+		function inc(){i++};
+
+		Emitter.on(a, 'x', inc).one(a, 'x', inc).emit(a, 'x').emit(a, 'x');
+		assert.equal(i, 3);
+	});
+
+	it('Chainable instance calls', function(){
+		var a = new Emitter, i = 0;
+
+		function inc(){i++};
+
+		a.on('x', inc).one('x', inc).emit('x').emit('x');
+
+		assert.equal(i, 3);
+	});
+
+	it('listeners && hasListeners', function(){
+		var a = new Emitter;
+
+		function fn(){};
+		function fn2(){};
+
+		a.on('x', fn).on('y', fn).on('x', fn2);
+
+		assert.sameMembers(a.listeners('x'), [fn, fn2]);
+		assert.ok(a.hasListeners('x'));
+		assert.notOk(a.hasListeners('z'));
 	});
 });

@@ -1,22 +1,59 @@
 var icicle = require('icicle');
 
 
-/** jquery guarant */
+/** environment guarant */
 var $ = typeof jQuery === 'undefined' ? undefined : jQuery;
+var doc = typeof document === 'undefined' ? undefined : document;
+var win = typeof window === 'undefined' ? undefined : window;
 
+
+/** Lists of methods */
+var onNames = ['on', 'bind', 'addEventListener', 'addListener'];
+var oneNames = ['one', 'once', 'addOnceEventListener', 'addOnceListener'];
+var offNames = ['off', 'unbind', 'removeEventListener', 'removeListener'];
+var emitNames = ['emit', 'trigger', 'fire', 'dispatchEvent'];
+
+/** Locker flags */
+var emitFlag = emitNames[0], onFlag = onNames[0], oneFlag = onNames[0], offFlag = offNames[0];
 
 
 /**
  * @constructor
  *
- * Main EventEmitter interface
+ * Main EventEmitter interface.
+ * Wraps any target passed to an Emitter interface
  */
-function Emmy(){}
+function Emmy(target){
+	if (!target) return;
 
+	//create emitter methods on target, if none
+	if (!getMethodOneOf(target, onNames)) target.on = proto.on.bind(target);
+	if (!getMethodOneOf(target, offNames)) target.off = proto.off.bind(target);
+	if (!getMethodOneOf(target, oneNames)) target.one = target.once = proto.one.bind(target);
+	if (!getMethodOneOf(target, emitNames)) target.emit = proto.emit.bind(target);
+
+	return target;
+}
+
+
+/** Make DOM objects be wrapped as jQuery objects, if jQuery is enabled */
 var proto = Emmy.prototype;
 
 
-/** set of target callbacks, {target: [cb1, cb2, ...]} */
+/**
+ * Return target’s method one of the passed in list, if target is eventable
+ * Use to detect whether target has some fn
+ */
+function getMethodOneOf(target, list){
+	var result;
+	for (var i = 0, l = list.length; i < l; i++) {
+		result = target[list[i]];
+		if (result) return result;
+	}
+}
+
+
+/** Set of target callbacks, {target: [cb1, cb2, ...]} */
 var targetCbCache = new WeakMap;
 
 
@@ -25,7 +62,8 @@ var targetCbCache = new WeakMap;
 * @todo  recognize jquery object
 * @chainable
 */
-proto.on = function(evt, fn){
+proto.on =
+proto.addEventListener = function(evt, fn){
 	var target = this;
 
 	//walk by list of instances
@@ -33,56 +71,90 @@ proto.on = function(evt, fn){
 		for (var i = fn.length; i--;){
 			proto.on.call(target, evt, fn[i]);
 		}
-		return;
-	}
-
-
-	//DOM events
-	if (isDOMEventTarget(target)) {
-		//bind target fn
-		if ($){
-			//delegate to jquery
-			$(target).on(evt, fn);
-		} else {
-			//listen to element
-			target.addEventListener(evt, fn);
-		}
-		//FIXME: old IE
+		return target;
 	}
 
 	//target events
-	else {
-		var onMethod = getMethodOneOf(target, onNames);
+	var onMethod = getMethodOneOf(target, onNames);
 
-		//use target event system, if possible
-		//avoid self-recursions from the outside
-		if (onMethod) {
-			//if it’s frozen - ignore call
-			if (!icicle.freeze(target, onFlag)) return this;
+	//use target event system, if possible
+	//avoid self-recursions from the outside
+	if (onMethod) {
+		//if it’s frozen - ignore call
+		if (icicle.freeze(target, onFlag)){
 			onMethod.call(target, evt, fn);
 			icicle.unfreeze(target, onFlag);
+			return target;
 		}
 	}
 
 
 	//Save callback
-	//ensure callbacks array for target exist
+	//ensure callbacks array for target exists
 	if (!targetCbCache.has(target)) targetCbCache.set(target, {});
 	var targetCallbacks = targetCbCache.get(target);
 
 	(targetCallbacks[evt] = targetCallbacks[evt] || []).push(fn);
 
 
-	return this;
+	return target;
 };
 
+
+/**
+ * Add an event listener that will be invoked once and then removed.
+ *
+ * @return {Emmy}
+ * @chainable
+ */
+proto.once =
+proto.one = function(evt, fn){
+	var target = this;
+
+	//walk by list of instances
+	if (fn instanceof Array){
+		for (var i = fn.length; i--;){
+			proto.one.call(target, evt, fn[i]);
+		}
+		return;
+	}
+
+	//target events
+	var oneMethod = getMethodOneOf(target, oneNames);
+
+	//use target event system, if possible
+	//avoid self-recursions from the outside
+	if (oneMethod) {
+		if (icicle.freeze(target, oneFlag)){
+			//use target event system, if possible
+			oneMethod.call(target, evt, fn);
+			icicle.unfreeze(target, oneFlag);
+			return target;
+		}
+	}
+
+	//wrap callback to once-call
+	function cb() {
+		proto.off.call(target, evt, fn);
+		fn.apply(target, arguments);
+	}
+
+	cb.fn = fn;
+
+	proto.on.call(target, evt, cb);
+
+	return target;
+};
 
 
 /**
 * Bind fn to a target
 * @chainable
 */
-proto.off = function (evt, fn){
+proto.off =
+proto.removeListener =
+proto.removeAllListeners =
+proto.removeEventListener = function (evt, fn){
 	var target = this;
 
 	//unbind all listeners passed
@@ -90,14 +162,14 @@ proto.off = function (evt, fn){
 		for (var i = fn.length; i--;){
 			proto.off.call(target, evt, fn[i]);
 		}
-		return;
+		return target;
 	}
 
 
 	//unbind all listeners if no fn specified
 	if (fn === undefined) {
 		var callbacks = targetCbCache.get(target);
-		if (!callbacks) return;
+		if (!callbacks) return target;
 		//unbind all if no evtRef defined
 		if (evt === undefined) {
 			for (var evtName in callbacks) {
@@ -107,34 +179,21 @@ proto.off = function (evt, fn){
 		else if (callbacks[evt]) {
 			proto.off.call(target, evt, callbacks[evt]);
 		}
-		return;
+		return target;
 	}
 
-
-	//DOM events
-	if (isDOMEventTarget(target)) {
-		//delegate to jquery
-		if ($){
-			$(target).off(evt, fn);
-		}
-
-		//listen to element
-		else {
-			target.removeEventListener(evt, fn);
-		}
-	}
 
 	//target events
-	else {
-		var offMethod = getMethodOneOf(target, offNames);
+	var offMethod = getMethodOneOf(target, offNames);
 
-		//use target event system, if possible
-		//avoid self-recursion from the outside
-		if (offMethod) {
-			//if it’s frozen - ignore call
-			if (!icicle.freeze(target, offFlag)) return this;
+	//use target event system, if possible
+	//avoid self-recursion from the outside
+	if (offMethod) {
+		//if it’s frozen - ignore call
+		if (icicle.freeze(target, offFlag)){
 			offMethod.call(target, evt, fn);
 			icicle.unfreeze(target, offFlag);
+			return target;
 		}
 	}
 
@@ -149,13 +208,13 @@ proto.off = function (evt, fn){
 
 	//remove specific handler
 	for (var i = 0; i < evtCallbacks.length; i++) {
-		if (evtCallbacks[i] === fn) {
+		if (evtCallbacks[i] === fn || evtCallbacks[i].fn === fn) {
 			evtCallbacks.splice(i, 1);
 			break;
 		}
 	}
 
-	return this;
+	return target;
 };
 
 
@@ -165,109 +224,109 @@ proto.off = function (evt, fn){
 * @chainable
 */
 proto.emit = function(eventName, data, bubbles){
-	var target = this;
+	var target = this, emitMethod;
 
 	if (!target) return;
 
-	//DOM events
-	if (isDOMEventTarget(target)) {
-		if ($){
-			//TODO: decide how to pass data
-			var evt = $.Event( eventName, data );
-			evt.detail = data;
-			bubbles ? $(target).trigger(evt) : $(target).triggerHandler(evt);
+	//Create proper event for DOM objects
+	if (target.nodeType || target === doc || target === win) {
+		//NOTE: this doesnot bubble on disattached elements
+		var evt;
+
+		if (eventName instanceof Event) {
+			evt = eventName;
 		} else {
-			//NOTE: this doesnot bubble on disattached elements
-			var evt;
-
-			if (eventName instanceof Event) {
-				evt = eventName;
-			} else {
-				evt =  document.createEvent('CustomEvent');
-				evt.initCustomEvent(eventName, bubbles, true, data);
-			}
-
-			// var evt = new CustomEvent(eventName, { detail: data, bubbles: bubbles })
-
-			target.dispatchEvent(evt);
+			evt =  document.createEvent('CustomEvent');
+			evt.initCustomEvent(eventName, bubbles, true, data);
 		}
+
+		// var evt = new CustomEvent(eventName, { detail: data, bubbles: bubbles })
+
+		emitMethod = target.dispatchEvent;
 	}
 
-	//no-DOM events
+	//create event for jQuery object
+	else if ($ && target instanceof $) {
+		//TODO: decide how to pass data
+		var evt = $.Event( eventName, data );
+		evt.detail = data;
+		emitMethod = bubbles ? targte.trigger : target.triggerHandler;
+	}
+
+	//Target events
 	else {
-		//Target events
-		var emitMethod = getMethodOneOf(target, emitNames);
-
-		//use locks to avoid self-recursion on objects wrapping this method (e. g. mod instances)
-		if (emitMethod) {
-			if (icicle.freeze(target, emitFlag)) {
-				//use target event system, if possible
-				emitMethod.call(target, eventName, data);
-				icicle.unfreeze(target, emitFlag);
-				return this;
-			}
-			//if event was frozen - perform normal callback
-		}
-
-
-		//fall back to default event system
-		//ignore if no event specified
-		if (!targetCbCache.has(target)) return this;
-
-		var evtCallbacks = targetCbCache.get(target)[eventName];
-
-		if (!evtCallbacks) return this;
-
-		//copy callbacks to fire because list can change in some handler
-		var fireList = evtCallbacks.slice();
-		for (var i = 0; i < fireList.length; i++ ) {
-			fireList[i] && fireList[i].call(target, {
-				detail: data,
-				type: eventName
-			});
-		}
+		emitMethod = getMethodOneOf(target, emitNames);
 	}
 
-	return this;
+
+	//use locks to avoid self-recursion on objects wrapping this method (e. g. mod instances)
+	if (emitMethod) {
+		if (icicle.freeze(target, emitFlag)) {
+			//use target event system, if possible
+			emitMethod.call(target, eventName, data);
+			icicle.unfreeze(target, emitFlag);
+			return target;
+		}
+		//if event was frozen - perform normal callback
+	}
+
+
+	//fall back to default event system
+	//ignore if no event specified
+	if (!targetCbCache.has(target)) return target;
+
+	var evtCallbacks = targetCbCache.get(target)[eventName];
+
+	if (!evtCallbacks) return target;
+
+	//copy callbacks to fire because list can be changed in some handler
+	var fireList = evtCallbacks.slice();
+	for (var i = 0; i < fireList.length; i++ ) {
+		fireList[i] && fireList[i].call(target, {
+			detail: data,
+			type: eventName
+		});
+	}
+
+	return target;
 };
 
 
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+proto.listeners = function(evt){
+	var callbacks = targetCbCache.get(this);
+	return callbacks && callbacks[evt] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+proto.hasListeners = function(evt){
+	return !!proto.listeners.call(this, evt).length;
+};
+
+
+
 /** Static aliases for old API compliance */
-Emmy.on = function(a,b,c){proto.on.call(a,b,c)};
-Emmy.off = function(a,b,c){proto.off.call(a,b,c)};
-Emmy.emit = function(a,b,c){proto.emit.call(a,b,c)};
-
-
-/**
- * detect whether DOM element implements EventTarget interface
- * @todo detect eventful objects in a more wide way
- */
-function isDOMEventTarget (target){
-	return target && target.addEventListener;
-}
-
-
-/** List of methods */
-var onNames = ['on', 'bind', 'addEventListener', 'addListener'];
-var offNames = ['off', 'unbind', 'removeEventListener', 'removeListener'];
-var emitNames = ['emit', 'trigger', 'fire', 'dispatchEvent'];
-
-
-/** Locker flags */
-var emitFlag = emitNames[0], onFlag = onNames[0], offFlag = offNames[0];
-
-
-/**
- * Return target’s method one of passed list, if it is eventable
- */
-function getMethodOneOf(target, list){
-	var result;
-	for (var i = 0, l = list.length; i < l; i++) {
-		result = target[list[i]];
-		if (result) return result;
-	}
-}
-
+Emmy.on =
+Emmy.addEventListener =
+function(a,b,c){proto.on.call(a,b,c); return this;};
+Emmy.one =
+Emmy.once = function(a,b,c){proto.one.call(a,b,c); return this;};
+Emmy.off = function(a,b,c){proto.off.call(a,b,c); return this;};
+Emmy.emit = function(a,b,c){proto.emit.call(a,b,c); return this;};
 
 
 /** @module muevents */
