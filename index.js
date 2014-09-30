@@ -321,9 +321,7 @@ proto.hasListeners = function(evt){
 
 
 /** Static aliases for old API compliance */
-Emmy.on =
-Emmy.addEventListener =
-function(a,b,c){proto.on.call(a,b,c); return this;};
+Emmy.on = function(a,b,c){proto.on.call(a,b,c); return this;};
 Emmy.one =
 Emmy.once = function(a,b,c){proto.one.call(a,b,c); return this;};
 Emmy.off = function(a,b,c){proto.off.call(a,b,c); return this;};
