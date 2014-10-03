@@ -332,23 +332,14 @@ EmmyPrototype.hasListeners = function(evt){
 
 
 /** Static aliases for old API compliance */
-//TODO: alive this
-// for (var name in EmmyPrototype) {
-// 	if (EmmyPrototype[name]) Emmy[name] = createStaticBind(name);
-// }
-// function createStaticBind(methodName){
-// 	console.log(methodName)
-// 	return function(a, b, c){
-// 		EmmyPrototype[methodName].call(a,b,c);
-// 		return this;
-// 	};
-// }
-Emmy.on = function(a,b,c){EmmyPrototype.on.call(a,b,c); return this;};
-Emmy.one =
-Emmy.once = function(a,b,c){EmmyPrototype.one.call(a,b,c); return this;};
-Emmy.off = function(a,b,c){EmmyPrototype.off.call(a,b,c); return this;};
-Emmy.emit = function(a,b,c,d){EmmyPrototype.emit.call(a,b,c,d); return this;};
-Emmy.listeners = function(a,b,c,d){return EmmyPrototype.listeners.call(a,b,c,d);};
+for (var name in EmmyPrototype) {
+	if (EmmyPrototype[name]) Emmy[name] = createStaticBind(name);
+}
+function createStaticBind(methodName){
+	return function(a, b, c, d){
+		return EmmyPrototype[methodName].call(a,b,c,d);
+	};
+}
 
 /** @module muevents */
 module.exports = Emmy;
