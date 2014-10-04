@@ -130,6 +130,7 @@ describe('MicroEvents', function(){
 		function inc(){i++};
 
 		Emitter.on(a, 'x', inc).one(a, 'x', inc).emit(a, 'x').emit(a, 'x');
+
 		assert.equal(i, 3);
 	});
 
@@ -137,8 +138,11 @@ describe('MicroEvents', function(){
 		var a = new Emitter, i = 0;
 
 		function inc(){i++};
-
-		a.on('x', inc).one('x', inc).emit('x').emit('x');
+		a
+		.on('x', inc)
+		.one('x', inc)
+		.emit('x')
+		.emit('x');
 
 		assert.equal(i, 3);
 	});

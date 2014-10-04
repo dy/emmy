@@ -66,7 +66,6 @@ EmmyPrototype.on =
 EmmyPrototype.addEventListener = function(evt, fn){
 	var target = this;
 
-
 	//walk by list of instances
 	if (fn instanceof Array){
 		for (var i = fn.length; i--;){
@@ -80,7 +79,7 @@ EmmyPrototype.addEventListener = function(evt, fn){
 
 	//use target event system, if possible
 	//avoid self-recursions from the outside
-	if (onMethod) {
+	if (onMethod && onMethod !== EmmyPrototype.on) {
 		//if it’s frozen - ignore call
 		if (icicle.freeze(target, onFlag + evt)){
 			onMethod.call(target, evt, fn);
@@ -124,7 +123,7 @@ EmmyPrototype.one = function(evt, fn){
 		for (var i = fn.length; i--;){
 			EmmyPrototype.one.call(target, evt, fn[i]);
 		}
-		return;
+		return target;
 	}
 
 	//target events
@@ -132,12 +131,15 @@ EmmyPrototype.one = function(evt, fn){
 
 	//use target event system, if possible
 	//avoid self-recursions from the outside
-	if (oneMethod) {
-		if (icicle.freeze(target, oneFlag)){
+	if (oneMethod && oneMethod !== EmmyPrototype.one) {
+		if (icicle.freeze(target, oneFlag + evt)){
 			//use target event system, if possible
 			oneMethod.call(target, evt, fn);
 			saveCallback(target, evt, fn);
-			icicle.unfreeze(target, oneFlag);
+			icicle.unfreeze(target, oneFlag + evt);
+		}
+
+		else {
 			return target;
 		}
 	}
@@ -198,7 +200,7 @@ EmmyPrototype.removeEventListener = function (evt, fn){
 
 	//use target event system, if possible
 	//avoid self-recursion from the outside
-	if (offMethod) {
+	if (offMethod && offMethod !== EmmyPrototype.off) {
 		if (icicle.freeze(target, offFlag + evt)){
 			offMethod.call(target, evt, fn);
 			icicle.unfreeze(target, offFlag + evt);
@@ -271,7 +273,7 @@ EmmyPrototype.dispatchEvent = function(eventName, data, bubbles){
 
 
 	//use locks to avoid self-recursion on objects wrapping this method (e. g. mod instances)
-	if (emitMethod) {
+	if (emitMethod && emitMethod !== EmmyPrototype.emit) {
 		if (icicle.freeze(target, emitFlag + eventName)) {
 			//use target event system, if possible
 			emitMethod.call(target, evt, data, bubbles);
@@ -335,9 +337,11 @@ EmmyPrototype.hasListeners = function(evt){
 for (var name in EmmyPrototype) {
 	if (EmmyPrototype[name]) Emmy[name] = createStaticBind(name);
 }
+
 function createStaticBind(methodName){
 	return function(a, b, c, d){
-		return EmmyPrototype[methodName].call(a,b,c,d);
+		var res = EmmyPrototype[methodName].call(a,b,c,d);
+		return res === a ? Emmy : res;
 	};
 }
 
