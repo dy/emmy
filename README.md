@@ -6,7 +6,7 @@
 
 Emmy is an EventEmitter which first tries to use target event system - jQuery, DOM events, Backbone or other EventEmitter interface, if implemented, ond only then uses own events.
 
-Emmy fully implements [component-emitter](https://github.com/component/emitter) interface, as well as jQuery events and ony other emitter interface, so you can safely replace existing emitter with _Emmy_.
+Emmy fully implements [component-emitter](https://github.com/component/emitter) interface, as well as any other emitter interface, so you can safely replace existing emitter with _Emmy_ and vice-versa.
 
 
 ## Use
@@ -100,7 +100,7 @@ Method | Alias | Description |
 
 ---
 
-You also might be interesting in more comprehensive emitter - give a glance at [ENot — event notation system](https://github.com/dfcreative/enot).
+You also might be interested in more comprehensive emitter - give a glance at [ENot — event notation system](https://github.com/dfcreative/enot).
 
 
 ## License
