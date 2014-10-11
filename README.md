@@ -4,9 +4,12 @@
 ](https://ci.testling.com/dfcreative/emmy)
 
 
-Emmy is an EventEmitter which first tries to use target event system - jQuery, DOM events, Backbone or other EventEmitter interface, if implemented, ond only then uses own events.
+Emmy is an EventEmitter which first tries to use target event system - jQuery, DOM events, Backbone or other target EventEmitter interface, if implemented, ond only then uses own events.
 
-Emmy fully implements [component-emitter](https://github.com/component/emitter) interface, as well as any other emitter interface, so you can safely replace existing emitter with _Emmy_ and vice-versa.
+It is best if you want to add events to non-eventable objects, like array, [color](https://github.com/harthur/color), backbone-model or any other object.
+
+Emmy fully implements [component-emitter](https://github.com/component/emitter) interface, so you can safely replace existing emitter with _Emmy_ and vice-versa.
+
 
 
 ## Use
