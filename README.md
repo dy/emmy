@@ -10,6 +10,8 @@ It is best if you want to add events to non-eventable objects, like array, [colo
 
 Emmy fully implements [component-emitter](https://github.com/component/emitter) interface, so you can safely replace existing emitter with _Emmy_ and vice-versa.
 
+What emmy is better than component-emitter? It may emit bubbling DOM events, as well as pass data to emitter. Besides, it uses safe WeakMaps instead of intrusive `_callbacks` property.
+
 
 
 ## Use
