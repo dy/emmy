@@ -118,9 +118,24 @@ describe('MicroEvents', function(){
 	it('Once method', function(){
 		var a = {}, i = 0, inc = function(){i++};
 
-		Emitter.once(a, 'x', inc);
+		Emitter.one(a, 'x', inc);
 		Emitter.emit(a, 'x');
 		Emitter.emit(a, 'x');
+		Emitter.emit(a, 'x');
+
+		assert.equal(i, 1);
+	});
+
+	it('Once on object having self events', function(){
+		var d = document.createElement('div');
+		var i = 0;
+		var inc = function(){i++};
+
+		Emitter.one(d, 'x', inc);
+		Emitter.emit(d, 'x');
+		Emitter.emit(d, 'x');
+		Emitter.emit(d, 'x');
+
 		assert.equal(i, 1);
 	});
 

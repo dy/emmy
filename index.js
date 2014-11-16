@@ -146,7 +146,7 @@ EmmyPrototype.one = function(evt, fn){
 
 	//wrap callback to once-call
 	function cb() {
-		EmmyPrototype.off.call(target, evt, fn);
+		EmmyPrototype.off.call(target, evt, cb);
 		fn.apply(target, arguments);
 	}
 
