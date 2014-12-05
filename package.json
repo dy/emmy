@@ -1,10 +1,10 @@
 {
   "name": "emmy",
   "version": "1.2.1",
-  "description": "A prominent event emitter",
+  "description": "Event emitter for lightweight components/jquery-plugins.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha-phantomjs test/index.html"
+    "test": "mocha --harmony"
   },
   "repository": {
     "type": "git",
@@ -16,32 +16,32 @@
     "jquery",
     "browser",
     "on",
+    "one",
+    "once",
     "off",
     "emit",
-    "fire",
-    "bind",
-    "unbind",
     "emmitt"
   ],
   "author": "dfcreative",
-  "license": "MIT",
+  "license": "unlicensed",
   "bugs": {
     "url": "https://github.com/dfcreative/emmy/issues"
   },
   "homepage": "https://github.com/dfcreative/emmy",
   "dependencies": {
-    "icicle": "~0.1.1"
+    "icicle": ">=0.1.1",
+    "mutype": ">=0.3.3"
   },
   "devDependencies": {
     "mocha": "*",
-    "chai": "~1.9.1",
-    "phantomjs": "~1.9.7-15",
+    "chai": ">=1.9.1",
+    "phantomjs": ">=1.9.7",
     "mocha-phantomjs": "*",
-    "require-stub": "0.0.14",
+    "require-stub": "*",
     "jquery": "~2.1.1",
-    "polymer-weakmap": "~1.0.0",
-    "testling": "~1.7.1",
-    "browserify": "~5.12.0"
+    "polymer-weakmap": ">=1.0.0",
+    "testling": ">=1.7.1",
+    "browserify": ">=5.12.0"
   },
   "testling": {
     "files": "test/index.js",

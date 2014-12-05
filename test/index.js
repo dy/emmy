@@ -2,7 +2,7 @@ var Emitter = require('../index');
 var assert = require('chai').assert;
 
 
-describe('MicroEvents', function(){
+describe('Emmy cases', function(){
 	it('fire plain objects', function(){
 		var a = {};
 		var i = 0;
@@ -118,7 +118,7 @@ describe('MicroEvents', function(){
 	it('Once method', function(){
 		var a = {}, i = 0, inc = function(){i++};
 
-		Emitter.one(a, 'x', inc);
+		Emitter.once(a, 'x', inc);
 		Emitter.emit(a, 'x');
 		Emitter.emit(a, 'x');
 		Emitter.emit(a, 'x');
@@ -127,11 +127,16 @@ describe('MicroEvents', function(){
 	});
 
 	it('Once on object having self events', function(){
-		var d = document.createElement('div');
+		if (typeof document !== 'undefined') {
+			var d =  document.createElement('div');
+		} else {
+			var EventEmitter = require('events').EventEmitter;
+			var d = new EventEmitter;
+		}
 		var i = 0;
 		var inc = function(){i++};
 
-		Emitter.one(d, 'x', inc);
+		Emitter.once(d, 'x', inc);
 		Emitter.emit(d, 'x');
 		Emitter.emit(d, 'x');
 		Emitter.emit(d, 'x');
@@ -144,7 +149,7 @@ describe('MicroEvents', function(){
 
 		function inc(){i++};
 
-		Emitter.on(a, 'x', inc).one(a, 'x', inc).emit(a, 'x').emit(a, 'x');
+		Emitter.on(a, 'x', inc).once(a, 'x', inc).emit(a, 'x').emit(a, 'x');
 
 		assert.equal(i, 3);
 	});
@@ -153,9 +158,10 @@ describe('MicroEvents', function(){
 		var a = new Emitter, i = 0;
 
 		function inc(){i++};
+
 		a
 		.on('x', inc)
-		.one('x', inc)
+		.once('x', inc)
 		.emit('x')
 		.emit('x');
 
@@ -165,14 +171,14 @@ describe('MicroEvents', function(){
 	it('listeners && hasListeners', function(){
 		var a = new Emitter;
 
-		function fn(){};
-		function fn2(){};
+		function fn(){}
+		function fn2(){}
 
 		a.on('x', fn).on('y', fn).on('x', fn2);
 
 		assert.sameMembers(a.listeners('x'), [fn, fn2]);
-		assert.ok(a.hasListeners('x'));
-		assert.notOk(a.hasListeners('z'));
+		assert.ok(a.listeners('x').length);
+		assert.notOk(a.listeners('z').length);
 	});
 
 	it.skip('pass data & bubbles to emit', function(){
