@@ -4,7 +4,7 @@
 var icicle = require('icicle');
 var listeners = require('./listeners');
 var isArray = require('mutype/is-array');
-
+var slice = require('sliced');
 
 module.exports = emit;
 
@@ -89,8 +89,8 @@ function emit(target, eventName, data, bubbles){
 	var evtCallbacks = listeners(target, evt);
 
 	//copy callbacks to fire because list can be changed by some callback (like `off`)
-	var fireList = evtCallbacks.slice();
-	var args = [].slice.call(arguments, 2);
+	var fireList = slice(evtCallbacks);
+	var args = slice(arguments, 2);
 	for (var i = 0; i < fireList.length; i++ ) {
 		fireList[i] && fireList[i].apply(target, args);
 	}
