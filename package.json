@@ -1,6 +1,6 @@
 {
   "name": "emmy",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Event emitter for lightweight components/jquery-plugins.",
   "main": "index.js",
   "scripts": {
