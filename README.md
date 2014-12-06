@@ -7,7 +7,7 @@
 
 Emmy is an event emitter for lightweight components and jquery plugins. It emits events on any target: plain object, html element, jQuery set, Backbone model, [color](https://github.com/dfcreative/color) etc.
 
-Emmy is [fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) with component-emitter, so you can safely replace component-emitter dep with emmy, and vice-versa.
+Emmy is [fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) with [component-emitter](https://github.com/component/emitter), so you can safely replace it with emmy and vice-versa.
 
 It works both in browser and _io_. [Browserified emmy](emmy.js) is only _1.07kb_ gzipped. Also any method can be required selectively as `require('emmy/<method>');`, in that you can reduce build size even more.
 
@@ -122,6 +122,6 @@ Method | Description |
 
 A somewhat more comprehensive emitter based on emmy - have a look at [ENot — event notation system](https://github.com/dfcreative/enot).
 
-There’s also a similar project - [emmitt](https://github.com/airportyh/emmitt), but it can’t emit bubbling events nor DOM-events at all. It does not provide an Emitter class, and it has a bit too many letters in title ). No, seriously, `emmy` is only 4 letters length, in that if you have indentation size === 4, your chain calls will look beautiful.
+There’s also a similar project - [emmitt](https://github.com/airportyh/emmitt), but it can’t emit bubbling events nor DOM-events at all. It does not provide an Emitter class, listeners methods, and it has a bit too many letters in title :). No, seriously, `emmy` is only 4 letters length, in that if you have indentation size == 4, your chain calls will look beautiful.
 
 [![NPM](https://nodei.co/npm/emmy.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/emmy/)
