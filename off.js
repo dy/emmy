@@ -41,16 +41,9 @@ function off(target, evt, fn){
 		//try to use target removeAll method, if any
 		var allOff = target['removeAll'] || target['removeAllListeners'];
 
-		//if target allOff exists - use it
+		//call target removeAll
 		if (allOff) {
-			//avoid self-recursion from the outside
-			if (icicle.freeze(target, 'allOff' + evt)){
-				allOff.call(target, evt, fn);
-				icicle.unfreeze(target, 'allOff' + evt);
-			}
-			else {
-				return target;
-			}
+			allOff.call(target, evt, fn);
 		}
 
 		//then forget own callbacks, if any
@@ -81,6 +74,7 @@ function off(target, evt, fn){
 			offMethod.call(target, evt, fn);
 			icicle.unfreeze(target, 'off' + evt);
 		}
+
 		//if it’s frozen - ignore call
 		else {
 			return target;
