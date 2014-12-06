@@ -7,13 +7,13 @@
 
 Emmy is **asbestos-free** event emitter for green components and jquery plugins.
 
-* It emits events on any target: plain object, html element, jQuery set, Backbone model, [color](https://github.com/dfcreative/color) etc.
+1. It emits events on any target: plain object, html element, jQuery set, Backbone model, [color](https://github.com/dfcreative/color) etc.
 
-* It is [fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) with [component-emitter](https://github.com/component/emitter), so you can safely replace it with emmy and vice-versa.
+2. It is [fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) with [component-emitter](https://github.com/component/emitter), so you can safely replace it with emmy and vice-versa.
 
-* It works both in browser and _io_.
+3. It works both in browser and _io_.
 
-* It is only _1.07kb_ gzipped. Besides, any method can be required selectively as `require('emmy/<method>');`, in that build size can be reduced even more.
+4. It is only _1.07kb_ gzipped. Besides, any method can be required selectively as `require('emmy/<method>');`, in that build size can be reduced even more.
 
 
 ##### [Test it](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html), [feel it](http://jsfiddle.net/dfcreative/j2tquytv/).
