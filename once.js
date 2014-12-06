@@ -4,7 +4,7 @@
 module.exports = once;
 
 var icicle = require('icicle');
-var isArray = require('mutype/is-array');
+var isArrayLike = require('mutype/is-array-like');
 var listeners = require('./listeners');
 var off = require('./off');
 var on = require('./on');
@@ -18,7 +18,7 @@ var on = require('./on');
  */
 function once(target, evt, fn){
 	//bind all callbacks, if passed a list
-	if (isArray(fn)){
+	if (isArrayLike(fn)){
 		for (var i = fn.length; i--;){
 			once(target, evt, fn[i]);
 		}
@@ -26,9 +26,17 @@ function once(target, evt, fn){
 	}
 
 	//bind all events, if passed a list
-	if (isArray(evt)) {
+	if (isArrayLike(evt)) {
 		for (var i = evt.length; i--;){
 			once(target, evt[i], fn);
+		}
+		return target;
+	}
+
+	//bind all targets, if passed a list
+	if (isArrayLike(target)) {
+		for (var i = target.length; i--;){
+			once(target[i], evt, fn);
 		}
 		return target;
 	}

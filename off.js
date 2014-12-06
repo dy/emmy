@@ -4,7 +4,7 @@
 module.exports = off;
 
 var icicle = require('icicle');
-var isArray = require('mutype/is-array');
+var isArrayLike = require('mutype/is-array-like');
 var listeners = require('./listeners');
 
 
@@ -20,7 +20,7 @@ function off(target, evt, fn){
 	var callbacks, i;
 
 	//bind all callbacks, if passed a list
-	if (isArray(fn)){
+	if (isArrayLike(fn)){
 		for (i = fn.length; i--;){
 			off(target, evt, fn[i]);
 		}
@@ -28,9 +28,17 @@ function off(target, evt, fn){
 	}
 
 	//bind all events, if passed a list
-	if (isArray(evt)) {
+	if (isArrayLike(evt)) {
 		for (i = evt.length; i--;){
 			off(target, evt[i], fn);
+		}
+		return target;
+	}
+
+	//bind all targets, if passed a list
+	if (isArrayLike(target)) {
+		for (var i = target.length; i--;){
+			off(target[i], evt, fn);
 		}
 		return target;
 	}

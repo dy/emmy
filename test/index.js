@@ -188,4 +188,8 @@ describe('Emmy cases', function(){
 		var a = new Emitter;
 		//TODO
 	});
+
+	it.skip('Bind for multiple targets', function(){
+
+	});
 });

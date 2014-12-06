@@ -112,12 +112,14 @@ once(worker, 'message', function(){});
 
 Method | Description |
 --- | --- | --- |
-`on(event, handler)` | Register a `handler` or a list of handlers for an `event`.
-`one(event, handler)` | Register a single-shot `event` `handler` or `handlers`.
-`off(event?, handler?)` | Remove an `event` `handler`. If no `handler` passed - remove all registered handlers. In no `event` passed - remove all registered listeners for all events.
-`emit(event, data?, bubbles?)` | Emit an `event` with params passed. `data` will be available in `event.details`, if fired on DOM element.
+`on(target, event, handler)` | Register _handler(s)_ for _event(s)_ on _target(s)_.
+`once(target, event, handler)` | Register single-shot _event(s)_ _handler(s)_ on _target(s)_.
+`off(target, event?, handler?)` | Remove an _event(s)_ _handler(s)_ for target(s). If no _handler(s)_ passed - remove all registered handlers. In no _event_ passed - remove all registered listeners for all events on target(s).
+`emit(target, event, data?, bubbles?)` | Emit an _event(s)_ with params passed on target(s). _data_ will be available in _event.details_, if fired on DOM element, else each argument after event will be passed as data, just like usual emitter does.
 `listeners(event)`| Get list of listeners for an `event`
 `hasListeners(event)`| Check if emitter has `event` handlers
+
+If a param has (s) sufix - that means a list can be passed.
 
 
 # Afterword
