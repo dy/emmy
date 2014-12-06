@@ -5,11 +5,11 @@
 ](https://ci.testling.com/dfcreative/emmy)
 -->
 
-Emmy is an event emitter for lightweight components and jquery plugins. It emits events for any object: plain object, html element, jQuery set, Backbone model, [color](https://github.com/dfcreative/color) etc. Emmy first tries to use target event system, and only then own events.
+Emmy is an event emitter for lightweight components and jquery plugins. It emits events on any object: plain object, html element, jQuery set, Backbone model, [color](https://github.com/dfcreative/color) etc. It first tries to use target event system, and only then own events.
 
-Emmy is [fully compliant](test/compliance.js) with component-emitter, so take your time and replace your deps with _Emmy_. On the other hand, you can replace emmy with component-emitter, which is unfortunate.
+Emmy is [fully compliant](test/compliance.js) with component-emitter, so you can safely replace component-emitter deps with emmy, and vice-versa.
 
-It works both in browser and _io_, former _node_. [Browser-version of emmy](emmy.js) is only __1.07kb__ minified & gzipped (just imagine: closure compiler with _advanded optimizations_). Besides, any method can be required selectively as `require('emmy/<method>');`, so you can reduce build size even more.
+It works both in browser and _io_, former _node_. [Browserified emmy](emmy.js) is only _1.07kb_ gzipped. Besides, any method can be required selectively as `require('emmy/<method>');`, so you can reduce build size even more.
 
 Last but not least, it is **asbestos-free**.
 
