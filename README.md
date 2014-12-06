@@ -5,13 +5,15 @@
 ](https://ci.testling.com/dfcreative/emmy)
 -->
 
-Emmy is an event emitter for lightweight components and jquery plugins. It emits events on any target: plain object, html element, jQuery set, Backbone model, [color](https://github.com/dfcreative/color) etc.
+Emmy is **asbestos-free** event emitter for green components and jquery plugins.
 
-Emmy is [fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) with [component-emitter](https://github.com/component/emitter), so you can safely replace it with emmy and vice-versa.
+* It emits events on any target: plain object, html element, jQuery set, Backbone model, [color](https://github.com/dfcreative/color) etc.
 
-It works both in browser and _io_. [Browserified emmy](emmy.js) is only _1.07kb_ gzipped. Also any method can be required selectively as `require('emmy/<method>');`, in that you can reduce build size even more.
+* It is [fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) with [component-emitter](https://github.com/component/emitter), so you can safely replace it with emmy and vice-versa.
 
-Last but not least, it is **asbestos-free**.
+* It works both in browser and _io_.
+
+* It is only _1.07kb_ gzipped. Besides, any method can be required selectively as `require('emmy/<method>');`, in that build size can be reduced even more.
 
 
 ##### [Test it](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html), [feel it](http://jsfiddle.net/dfcreative/j2tquytv/).
@@ -19,7 +21,7 @@ Last but not least, it is **asbestos-free**.
 
 # Use
 
-For browser use browserify or [emmy.js](/emmy.js).
+For browser use browserify or standalone [emmy.js](/emmy.js).
 
 Install:
 
