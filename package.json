@@ -4,7 +4,12 @@
   "description": "Event emitter for lightweight components/jquery-plugins.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --harmony"
+    "test": "mocha --harmony",
+    "build-test": "browserify -r mutype/is-array -x  > test/bundle.js",
+    "build-min": "npm run build && npm run min && npm run clean && cat emmy.js | gzip-size | pretty-bytes ",
+    "build": "uncommon ./index -w \";(function(){window['Emitter']=Emitter;%output%;})()\" > emmy.dev.js",
+    "min": "ccjs emmy.dev.js --language_in=ECMASCRIPT5 --compilation_level=ADVANCED > emmy.js",
+    "clean": "rm emmy.dev.js"
   },
   "repository": {
     "type": "git",

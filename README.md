@@ -5,19 +5,24 @@
 ](https://ci.testling.com/dfcreative/emmy)
 -->
 
-Emmy is an event emitter for lightweight components/jquery-plugins.
+Emmy is an event emitter for lightweight components and jquery plugins.
 
 1. It emits events for any object: plain object, html element, jQuery set, Backbone model, [color](https://github.com/dfcreative/color) etc.
 
-2. Emmy first tries to use target event system, if any, and only then uses own "wrapper" events.
+2. Emmy first tries to use target event system, and only then own events.
 
-3. Emmy is fully compliant with [component-emitter](https://github.com/component/emitter) , so you can safely replace it with _Emmy_ and vice-versa ([compliance test](test/compliance.js)).
+3. Emmy is [fully compliant](test/compliance.js) with component-emitter, so take your time and replace your deps with _Emmy_. On the other hand, you can replace emmy with component-emitter, which is unfortunate.
 
-5. It works both in browser and _io_ (or _node_).
+4. It works both in browser and _io_, former _node_.
 
-6. ((emmy.min.js)[emmy.min.js]) only Nkb minified & gzipped (via closure compiler advanded optimizations).
+5. [Browser-version of emmy](emmy.js) is only __1.07kb__ minified & gzipped (just imagine: closure compiler with _advanded optimizations_).
 
-7. Any method can be required selectively as `require('emmy/<method>');`, so you can reduce final build size even better.
+6. Any method can be required selectively as `require('emmy/<method>');`, so you can reduce build size even more.
+
+7. Last but not least, it is **asbestos-free**.
+
+
+###### [Test it](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html), [feel it](jsfiddle).
 
 
 # Use
@@ -29,14 +34,17 @@ Install:
 `$ npm install emmy`
 
 
-### Wrapper methods:
+### Static methods:
 
 ```js
 	var Emitter = require('emmy');
 
 	Emitter.on(target, 'evt', function(){});
-	Emitter.emit(target, 'evt');
+	Emitter.emit(target, 'evt', data1, data2);
 	Emitter.off(target, 'evt');
+
+	//typical use-case
+	Emitter.once(webWorker, 'message', function(){...});
 ```
 
 ### Create `Emitter` instance:
@@ -49,23 +57,24 @@ Install:
 ```
 
 ### Mixin object:
+
 ```js
 	var Emitter = requre('emmy');
 
-	user = {name: 'John'};
-
-	Emitter(user);
+	user = Emitter({name: 'John'});
 
 	user.emit('hello');
 ```
 
 ### Mixin prototype:
+
 ```js
 	var Emitter = require('emmy');
 	Emitter(User.prototype);
 ```
 
-### Or inherit Emitter:
+### Inherit Emitter:
+
 ```js
 	var Emitter = require('emmy');
 
@@ -95,9 +104,17 @@ Install:
 	.emit('b', data, bubbles);
 ```
 
-# API
 
-Each method can be required selectively as `require('emmy/<method>')`.
+### Selective methods:
+
+```js
+var once = require('emmy/once');
+
+once(worker, 'message', function(){});
+```
+
+
+# API
 
 Method | Description |
 --- | --- | --- |
@@ -111,9 +128,8 @@ Method | Description |
 
 # Afterword
 
-You also might be interested in more comprehensive emitter - have a look at [ENot — event notation system](https://github.com/dfcreative/enot).
+A somewhat more comprehensive emitter based on emmy - have a look at [ENot — event notation system](https://github.com/dfcreative/enot).
 
-There’s also a similar project - [emmitt](https://github.com/airportyh/emmitt), but it can’t emit bubbling events, as well as emit natural target events, like DOM-events. Besides, it does not provide an Emitter class.
-
+There’s also a similar project - [emmitt](https://github.com/airportyh/emmitt), but it can’t emit bubbling events nor DOM-events at all. It does not provide an Emitter class, and it has a bit too many letters in title ). No, seriously, `emmy` is only 4 letters length, in that if you have indentation size === 4, your chain calls will look beautiful.
 
 [![NPM](https://nodei.co/npm/emmy.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/emmy/)

@@ -3,9 +3,12 @@
  *
  * https://github.com/component/emitter/blob/master/test/emitter.js
  */
-var should = require('chai').should();
 
-var Emitter = require('..');
+var doc = typeof document === 'undefined' ? undefined : document;
+var win = typeof window === 'undefined' ? undefined : window;
+
+var Emitter = doc && typeof Emitter !== 'undefined' ? Emitter : require('..');
+var should = typeof chai !== 'undefined' ? chai.should() : require('chai').should();
 
 
 function Custom() {

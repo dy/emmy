@@ -1,5 +1,8 @@
-var Emitter = require('../index');
-var assert = require('chai').assert;
+var doc = typeof document === 'undefined' ? undefined : document;
+var win = typeof window === 'undefined' ? undefined : window;
+
+var Emitter = doc && typeof Emitter !== 'undefined' ? Emitter : require('..');
+var assert = typeof chai !== 'undefined' ? chai.assert : require('chai').assert;
 
 
 describe('Emmy cases', function(){

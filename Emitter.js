@@ -14,7 +14,6 @@ var emit = require('./emit');
 var once = require('./once');
 var listeners = require('./listeners');
 
-
 /**
  * @constructor
  *
@@ -24,39 +23,36 @@ function Emitter(target){
 	if (!target) return;
 
 	//create emitter methods on target
-	target.on = proto.on.bind(target);
-	target.off = proto.off.bind(target);
-	target.once = proto.once.bind(target);
-	target.emit = proto.emit.bind(target);
+	for (var meth in proto){
+		target[meth] = proto[meth];
+	}
 
 	return target;
 }
 
-
-/** Make DOM objects be wrapped as jQuery objects, if jQuery is enabled */
 var proto = Emitter.prototype;
 
 
-proto.on = function(a,b){
+proto['on'] = function(a,b){
 	return on(this, a,b);
 };
 
-proto.once = function(a,b){
+proto['once'] = function(a,b){
 	return once(this, a,b);
 };
 
-proto.off = function(a,b){
+proto['off'] = function(a,b){
 	return off(this, a,b);
 };
 
-proto.emit = function(a,b,c){
+proto['emit'] = function(a,b,c){
 	return emit(this, a,b,c);
 };
 
-proto.listeners = function(a){
+proto['listeners'] = function(a){
 	return listeners(this, a);
 };
 
-proto.hasListeners = function(a){
+proto['hasListeners'] = function(a){
 	return !!listeners(this, a).length;
 };
