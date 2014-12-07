@@ -4,9 +4,8 @@
 module.exports = off;
 
 var icicle = require('icicle');
-var isArrayLike = require('mutype/is-array-like');
 var listeners = require('./listeners');
-var isObject = require('mutype/is-object');
+var redirect = require('./src/redirect');
 
 
 /**
@@ -18,39 +17,10 @@ var isObject = require('mutype/is-object');
  * @return {[type]} [description]
  */
 function off(target, evt, fn){
+	//parse args
+	if (redirect(off, arguments)) return target;
+
 	var callbacks, i;
-	//batch events
-	if (isObject(evt)){
-		for (var evtName in evt){
-			off(target, evtName, evt[evtName]);
-		}
-		return target;
-	}
-
-	//bind all callbacks, if passed a list
-	if (isArrayLike(fn)){
-		for (i = fn.length; i--;){
-			off(target, evt, fn[i]);
-		}
-		return target;
-	}
-
-	//bind all events, if passed a list
-	if (isArrayLike(evt)) {
-		for (i = evt.length; i--;){
-			off(target, evt[i], fn);
-		}
-		return target;
-	}
-
-	//bind all targets, if passed a list
-	if (isArrayLike(target)) {
-		for (var i = target.length; i--;){
-			off(target[i], evt, fn);
-		}
-		return target;
-	}
-
 
 	//unbind all listeners if no fn specified
 	if (fn === undefined) {

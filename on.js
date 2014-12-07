@@ -5,8 +5,7 @@ module.exports = on;
 
 var icicle = require('icicle');
 var listeners = require('./listeners');
-var isArrayLike = require('mutype/is-array-like');
-var isObject = require('mutype/is-object');
+var redirect = require('./src/redirect');
 
 /**
  * Bind fn to the target
@@ -18,37 +17,8 @@ var isObject = require('mutype/is-object');
  * @return {object} A target
  */
 function on(target, evt, fn){
-	//batch events
-	if (isObject(evt)){
-		for (var evtName in evt){
-			on(target, evtName, evt[evtName]);
-		}
-		return target;
-	}
-
-	//bind all callbacks, if passed a list
-	if (isArrayLike(fn)){
-		for (var i = fn.length; i--;){
-			on(target, evt, fn[i]);
-		}
-		return target;
-	}
-
-	//bind all events, if passed a list
-	if (isArrayLike(evt)) {
-		for (var i = evt.length; i--;){
-			on(target, evt[i], fn);
-		}
-		return target;
-	}
-
-	//bind all targets, if passed a list
-	if (isArrayLike(target)) {
-		for (var i = target.length; i--;){
-			on(target[i], evt, fn);
-		}
-		return target;
-	}
+	//parse args
+	if (redirect(on, arguments)) return target;
 
 	//get target on method, if any
 	var onMethod = target['on'] || target['addEventListener'] || target['addListener'];

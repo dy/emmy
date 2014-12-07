@@ -4,10 +4,10 @@
 module.exports = once;
 
 var icicle = require('icicle');
-var isArrayLike = require('mutype/is-array-like');
 var listeners = require('./listeners');
 var off = require('./off');
 var on = require('./on');
+var redirect = require('./src/redirect');
 
 
 /**
@@ -17,37 +17,8 @@ var on = require('./on');
  * @chainable
  */
 function once(target, evt, fn){
-	//batch events
-	if (isObject(evt)){
-		for (var evtName in evt){
-			once(target, evtName, evt[evtName]);
-		}
-		return target;
-	}
-
-	//bind all callbacks, if passed a list
-	if (isArrayLike(fn)){
-		for (var i = fn.length; i--;){
-			once(target, evt, fn[i]);
-		}
-		return target;
-	}
-
-	//bind all events, if passed a list
-	if (isArrayLike(evt)) {
-		for (var i = evt.length; i--;){
-			once(target, evt[i], fn);
-		}
-		return target;
-	}
-
-	//bind all targets, if passed a list
-	if (isArrayLike(target)) {
-		for (var i = target.length; i--;){
-			once(target[i], evt, fn);
-		}
-		return target;
-	}
+	//parse args
+	if (redirect(once, arguments)) return target;
 
 	//get target once method, if any
 	var onceMethod = target['once'] || target['one'] || target['addOnceEventListener'] || target['addOnceListener'];

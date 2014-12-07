@@ -3,9 +3,8 @@
  */
 var icicle = require('icicle');
 var listeners = require('./listeners');
-var isArrayLike = require('mutype/is-array');
 var slice = require('sliced');
-var isObject = require('mutype/is-object');
+var redirect = require('./src/redirect');
 
 
 module.exports = emit;
@@ -31,37 +30,10 @@ var win = typeof window === 'undefined' ? undefined : window;
  * @return {target} a target
  */
 function emit(target, eventName, data, bubbles){
-	//ignore empty arg (falsy global case etc)
-	//honestly IDK where is this issue from
-	// if (!target) return;
+	//parse args
+	if (redirect(emit, arguments)) return target;
 
 	var emitMethod, evt = eventName;
-
-	//batch events
-	if (isObject(evt)){
-		for (var evtName in evt){
-			emit.apply(target, evtName, evt[evtName]);
-		}
-		return target;
-	}
-
-	var args = slice(arguments, 1), dataArgs = args.slice(1);
-
-	//emit each event, if passed a list
-	if (isArrayLike(eventName)) {
-		for (var i = eventName.length; i--;){
-			emit.apply(this, target, eventName[i], dataArgs);
-		}
-		return target;
-	}
-
-	//emit on all targets, if passed a list
-	if (isArrayLike(target)) {
-		for (var i = target.length; i--;){
-			emit.apply(this, target[i], args);
-		}
-		return target;
-	}
 
 
 	//Create proper event for DOM objects
@@ -72,7 +44,7 @@ function emit(target, eventName, data, bubbles){
 			evt = eventName;
 		} else {
 			//IE9-compliant constructor
-			evt =  document.createEvent('CustomEvent');
+			evt = document.createEvent('CustomEvent');
 			evt.initCustomEvent(eventName, bubbles, true, data);
 
 			//a modern constructor would be:
@@ -119,8 +91,9 @@ function emit(target, eventName, data, bubbles){
 
 	//copy callbacks to fire because list can be changed by some callback (like `off`)
 	var fireList = slice(evtCallbacks);
+	var args = slice(arguments, 2);
 	for (var i = 0; i < fireList.length; i++ ) {
-		fireList[i] && fireList[i].apply(target, dataArgs);
+		fireList[i] && fireList[i].apply(target, args);
 	}
 
 	return target;

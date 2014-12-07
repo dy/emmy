@@ -3,6 +3,15 @@
   "version": "2.2.0",
   "description": "Event emitter for lightweight components/jquery-plugins.",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "Emitter.js",
+    "emit.js",
+    "on.js",
+    "off.js",
+    "once.js",
+    "listeners.js"
+  ],
   "scripts": {
     "test": "mocha --harmony",
     "build-test": "browserify -r mutype/is-array -x  > test/bundle.js",
