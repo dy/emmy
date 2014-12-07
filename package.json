@@ -10,7 +10,8 @@
     "on.js",
     "off.js",
     "once.js",
-    "listeners.js"
+    "listeners.js",
+    "src"
   ],
   "scripts": {
     "test": "mocha --harmony",
