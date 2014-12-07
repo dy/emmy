@@ -189,7 +189,11 @@ describe('Emmy cases', function(){
 		//TODO
 	});
 
-	it.skip('Bind for multiple targets', function(){
+	it.skip('List of targets', function(){
+
+	});
+
+	it.skip('Batch events', function(){
 
 	});
 });

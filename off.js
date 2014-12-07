@@ -6,6 +6,7 @@ module.exports = off;
 var icicle = require('icicle');
 var isArrayLike = require('mutype/is-array-like');
 var listeners = require('./listeners');
+var isObject = require('mutype/is-object');
 
 
 /**
@@ -18,6 +19,13 @@ var listeners = require('./listeners');
  */
 function off(target, evt, fn){
 	var callbacks, i;
+	//batch events
+	if (isObject(evt)){
+		for (var evtName in evt){
+			off(target, evtName, evt[evtName]);
+		}
+		return target;
+	}
 
 	//bind all callbacks, if passed a list
 	if (isArrayLike(fn)){

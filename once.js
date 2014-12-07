@@ -17,6 +17,14 @@ var on = require('./on');
  * @chainable
  */
 function once(target, evt, fn){
+	//batch events
+	if (isObject(evt)){
+		for (var evtName in evt){
+			once(target, evtName, evt[evtName]);
+		}
+		return target;
+	}
+
 	//bind all callbacks, if passed a list
 	if (isArrayLike(fn)){
 		for (var i = fn.length; i--;){

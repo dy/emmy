@@ -5,6 +5,8 @@ var icicle = require('icicle');
 var listeners = require('./listeners');
 var isArrayLike = require('mutype/is-array');
 var slice = require('sliced');
+var isObject = require('mutype/is-object');
+
 
 module.exports = emit;
 
@@ -34,8 +36,16 @@ function emit(target, eventName, data, bubbles){
 	// if (!target) return;
 
 	var emitMethod, evt = eventName;
-	var args = slice(arguments, 1), dataArgs = args.slice(1);
 
+	//batch events
+	if (isObject(evt)){
+		for (var evtName in evt){
+			emit.apply(target, evtName, evt[evtName]);
+		}
+		return target;
+	}
+
+	var args = slice(arguments, 1), dataArgs = args.slice(1);
 
 	//emit each event, if passed a list
 	if (isArrayLike(eventName)) {
