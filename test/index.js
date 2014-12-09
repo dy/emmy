@@ -27,17 +27,17 @@ describe('Regression', function(){
 		assert.equal(i, 1);
 	});
 
-	it ("removeAll", function(){
+	it ('removeAll', function(){
 		var a = {};
 		Emitter.on(a, 'y', function(){});
 		Emitter.off(a, 'x');
 	});
 
-	it.skip("IE8, IE9", function(){
+	it.skip('IE8, IE9', function(){
 
 	});
 
-	it("Call list changed during `emit`", function(){
+	it('Call list changed during `emit`', function(){
 		var a = {}, log = [];
 
 		Emitter.on(a, 'x', function(){
@@ -58,7 +58,7 @@ describe('Regression', function(){
 		assert.deepEqual(log, [1,2,3]);
 	});
 
-	it("Objects artifically implementing Emitter interface", function(){
+	it('Objects artifically implementing Emitter interface', function(){
 		var i = 0;
 		var a = {
 			emit: function(a){
@@ -209,14 +209,14 @@ describe('Regression', function(){
 		var a = {};
 
 		//should be called 10 times less often than dispatched event
-		throttle(a, "x", function(){
+		throttle(a, 'x', function(){
 			i++;
 			// console.log(new Date - initT);
 			assert.equal(this, a);
 		}, 50);
 
 		var interval = setInterval(function(){
-			emit(a, "x");
+			emit(a, 'x');
 		}, 5);
 
 		//should be called instantly
@@ -233,9 +233,48 @@ describe('Regression', function(){
 		}, 240);
 	});
 
-	it.skip('Delegate', function(){
 
+	it('Delegate', function(){
+		var i = 0, j = 0;
+		var el = document.createElement('div');
+		document.body.appendChild(el);
+
+		var inc = function(){
+			i++;
+		};
+
+		delegate(document, 'hello', inc, 'p, div, .some');
+
+		var sideLink = document.createElement('span');
+		document.body.appendChild(sideLink);
+
+		on(sideLink, 'hello', function(){
+			j++;
+		});
+
+		//emit not bubbling evt
+		emit(document.body, 'hello');
+		assert.equal(i, 0);
+
+		//emit bubbling evt on passing element
+		emit(el, 'hello', null, true);
+		assert.equal(i, 1);
+
+		//emit not passing element bubbling evt (should be ignored)
+		emit(sideLink, 'hello', null, true);
+		assert.equal(i, 1);
+		assert.equal(j, 1);
+
+
+		//unbind delegate
+		off(document, 'hello');
+
+		//emit bubbling evt on passing element (should be ignored)
+		emit(el, 'hello', null, true);
+		assert.equal(i, 1);
+		assert.equal(j, 1);
 	});
+
 
 	it.skip('Keypass', function(){
 
@@ -273,7 +312,7 @@ function dispatchEvt(el, eventName, data, bubbles){
 	var event;
 	if (el instanceof HTMLElement || el === window || el === document) {
 		if (!(eventName instanceof Event)) {
-			event =  document.createEvent("CustomEvent");
+			event =  document.createEvent('CustomEvent');
 			event.initCustomEvent(eventName, bubbles, null, data)
 		} else {
 			event = eventName;
@@ -288,7 +327,7 @@ function dispatchEvt(el, eventName, data, bubbles){
 }
 
 function createKeyEvt(name, code){
-	var evt = document.createEvent("KeyboardEvent");
+	var evt = document.createEvent('KeyboardEvent');
 	try{
 		Object.defineProperty(evt, 'keyCode', {
 			get : function() {
@@ -307,9 +346,9 @@ function createKeyEvt(name, code){
 	evt.which = this.keyCodeVal;
 
 	if (evt.initKeyboardEvent) {
-		evt.initKeyboardEvent("keydown", true, true, document.defaultView, false, false, false, false, code, code);
+		evt.initKeyboardEvent('keydown', true, true, document.defaultView, false, false, false, false, code, code);
 	} else {
-		evt.initKeyEvent("keydown", true, true, document.defaultView, false, false, false, false, code, code);
+		evt.initKeyEvent('keydown', true, true, document.defaultView, false, false, false, false, code, code);
 	}
 
 	evt.keyCodeVal = code;
@@ -318,7 +357,7 @@ function createKeyEvt(name, code){
 }
 
 function createMouseEvt(name, btn){
-	var evt = document.createEvent("MouseEvent")
+	var evt = document.createEvent('MouseEvent')
 	evt.initMouseEvent(
 		name, true,true,window,
 		1, 0,0,0,0,

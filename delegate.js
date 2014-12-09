@@ -44,5 +44,7 @@ function delegate(target, evt, fn, selector){
 
 	cb.fn = fn;
 
+	on(target, evt, cb);
+
 	return cb;
 }
