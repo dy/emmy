@@ -241,8 +241,25 @@ describe('Regression', function(){
 
 	});
 
-	it.skip('Later', function(){
+	it('Later', function(done){
+		var a = document.createElement('div');
+		var i = 0;
 
+		later(a, 'x', function(){
+			i++;
+		}, 100);
+
+		emit(a, 'x');
+		assert.equal(i, 0);
+
+		setTimeout(function(){
+			assert.equal(i, 0);
+		}, 50);
+
+		setTimeout(function(){
+			assert.equal(i, 1);
+			done();
+		}, 110);
 	});
 });
 
