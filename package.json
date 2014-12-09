@@ -4,16 +4,7 @@
   "description": "Event emitter for lightweight components/jquery-plugins and set of event utils.",
   "main": "index.js",
   "files": [
-    "index.js",
-    "Emitter.js",
-    "emit.js",
-    "on.js",
-    "off.js",
-    "once.js",
-    "listeners.js",
-    "src",
-    "delegate.js",
-    "throttle.js"
+    "*.js"
   ],
   "scripts": {
     "test": "mocha --harmony",
