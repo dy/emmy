@@ -25,13 +25,13 @@ function once(target, evt, fn){
 	if (onceMethod) {
 		//avoid self-recursions
 		if (icicle.freeze(target, 'one' + evt)){
-			onceMethod.call(target, evt, fn);
+			var res = onceMethod.call(target, evt, fn);
 
 			//FIXME: save callback, just in case of removeListener
 			// listeners.add(target, evt, fn);
 			icicle.unfreeze(target, 'one' + evt);
 
-			return;
+			return res;
 		}
 
 		//if still called itself second time - do default routine
@@ -49,5 +49,5 @@ function once(target, evt, fn){
 	//bind wrapper default way - in case of own emit method
 	on(target, evt, cb);
 
-	return;
+	return cb;
 }

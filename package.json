@@ -48,7 +48,9 @@
   "dependencies": {
     "icicle": ">=0.1.1",
     "mutype": ">=0.3.3",
-    "sliced": "^0.0.5"
+    "sliced": "^0.0.5",
+    "key-name": "~1.1.1",
+    "query-relative": "~1.5.2"
   },
   "devDependencies": {
     "mocha": "*",

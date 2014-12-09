@@ -4,9 +4,18 @@ var win = typeof window === 'undefined' ? undefined : window;
 var Emitter = doc && typeof Emitter !== 'undefined' ? Emitter : require('..');
 var assert = typeof chai !== 'undefined' ? chai.assert : require('chai').assert;
 
+var on = require('../on');
+var off = require('../off');
+var emit = require('../emit');
+var throttle = require('../throttle');
+var later = require('../later');
+var keypass = require('../keypass');
+var delegate = require('../delegate');
+var not = require('../not');
 
-describe('Emmy cases', function(){
-	it('fire plain objects', function(){
+
+describe('Regression', function(){
+	it('on/emit/off', function(){
 		var a = {};
 		var i = 0;
 		Emitter.on(a, 'click', function(){i++});
@@ -18,17 +27,17 @@ describe('Emmy cases', function(){
 		assert.equal(i, 1);
 	});
 
-	it ("recursion in unbind all", function(){
+	it ("removeAll", function(){
 		var a = {};
 		Emitter.on(a, 'y', function(){});
 		Emitter.off(a, 'x');
 	});
 
-	it.skip("emit click in IE8, IE9", function(){
+	it.skip("IE8, IE9", function(){
 
 	});
 
-	it("changed call list", function(){
+	it("Call list changed during `emit`", function(){
 		var a = {}, log = [];
 
 		Emitter.on(a, 'x', function(){
@@ -79,8 +88,6 @@ describe('Emmy cases', function(){
 		assert.equal(i, 1);
 	});
 
-	it('EventEmitter compliance', function(){
-	});
 
 	it('Mixin prototype', function(){
 		function User(name){
@@ -118,7 +125,7 @@ describe('Emmy cases', function(){
 		assert.equal(i, 1);
 	});
 
-	it('Once method', function(){
+	it('Once', function(){
 		var a = {}, i = 0, inc = function(){i++};
 
 		Emitter.once(a, 'x', inc);
@@ -196,4 +203,111 @@ describe('Emmy cases', function(){
 	it.skip('Batch events', function(){
 
 	});
+
+	it('Throttle', function(done){
+		var i = 0;
+		var a = {};
+
+		//should be called 10 times less often than dispatched event
+		throttle(a, "x", function(){
+			i++;
+			// console.log(new Date - initT);
+			assert.equal(this, a);
+		}, 50);
+
+		var interval = setInterval(function(){
+			emit(a, "x");
+		}, 5);
+
+		//should be called instantly
+		setTimeout(function(){
+			assert.equal(i, 1);
+		}, 10);
+
+		//should get close number of calls
+		setTimeout(function(){
+			clearInterval(interval);
+
+			assert.closeTo(i, 5, 1);
+			done();
+		}, 240);
+	});
+
+	it.skip('Delegate', function(){
+
+	});
+
+	it.skip('Keypass', function(){
+
+	});
+
+	it.skip('Later', function(){
+
+	});
 });
+
+
+
+
+
+
+//helpers
+function dispatchEvt(el, eventName, data, bubbles){
+	var event;
+	if (el instanceof HTMLElement || el === window || el === document) {
+		if (!(eventName instanceof Event)) {
+			event =  document.createEvent("CustomEvent");
+			event.initCustomEvent(eventName, bubbles, null, data)
+		} else {
+			event = eventName;
+		}
+		// var event = new CustomEvent(eventName, { detail: data, bubbles: bubbles })
+		el.dispatchEvent(event);
+	} else {
+		if (el.fire) el.fire(eventName);
+		else if (el.trigger) el.trigger(eventName);
+		else if (el.emit) el.emit(eventName);
+	}
+}
+
+function createKeyEvt(name, code){
+	var evt = document.createEvent("KeyboardEvent");
+	try{
+		Object.defineProperty(evt, 'keyCode', {
+			get : function() {
+				return this.keyCodeVal;
+			}
+		});
+		Object.defineProperty(evt, 'which', {
+			get : function() {
+				return this.keyCodeVal;
+			}
+		});
+	} catch (e) {
+	}
+
+	evt.keyCode = this.keyCodeVal;
+	evt.which = this.keyCodeVal;
+
+	if (evt.initKeyboardEvent) {
+		evt.initKeyboardEvent("keydown", true, true, document.defaultView, false, false, false, false, code, code);
+	} else {
+		evt.initKeyEvent("keydown", true, true, document.defaultView, false, false, false, false, code, code);
+	}
+
+	evt.keyCodeVal = code;
+
+	return evt;
+}
+
+function createMouseEvt(name, btn){
+	var evt = document.createEvent("MouseEvent")
+	evt.initMouseEvent(
+		name, true,true,window,
+		1, 0,0,0,0,
+		false,false,false,false,
+		btn, null
+	)
+	evt.which = btn;
+	return evt
+}

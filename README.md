@@ -15,7 +15,9 @@ Emmy is **asbestos-free** event emitter and event utils for green components dev
 
 4. It is only _1.07kb_ gzipped.
 
-5. It includes event utils which can be used standalone as `require('emmy/<method>');`, in that final build size can be reduced even more.
+5. Each method can be used standalone as `require('emmy/<method>');`. That way final build size can be reduced even more.
+
+6. It provides additional event methods: _delegate_, _throttle_, _later_ and _keypass_. They can be required selectively.
 
 
 #### [Test it](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html), [feel it](http://jsfiddle.net/dfcreative/j2tquytv/).
@@ -30,78 +32,92 @@ Install:
 `$ npm install emmy`
 
 
-### Static methods:
+### Wrapping methods:
 
 ```js
-	var Emitter = require('emmy');
+var Emitter = require('emmy');
 
-	Emitter.on(target, 'evt', function(){});
-	Emitter.emit(target, 'evt', data1, data2);
-	Emitter.off(target, 'evt');
+Emitter.on(target, 'evt', function(){});
+Emitter.emit(target, 'evt', data1, data2);
+Emitter.off(target, 'evt');
 
-	//typical use-case
-	Emitter.once(webWorker, 'message', function(){...});
+//typical use-case
+Emitter.once(webWorker, 'message', function(){...});
 ```
 
-### Create `Emitter` instance:
+Bind events to any object in an unobtrusive way.
+
+
+### Create `Emitter` instance
 
 ```js
-	var Emitter = require('emmy');
+var Emitter = require('emmy');
 
-	var emitter = new Emitter;
-	emitter.emit('something');
+var emitter = new Emitter;
+emitter.emit('something');
 ```
 
-### Mixin object:
+Create a new object with event methods.
+
+
+### Mixin object
 
 ```js
-	var Emitter = requre('emmy');
+var Emitter = require('emmy');
 
-	user = Emitter({name: 'John'});
+user = Emitter({name: 'John'});
 
-	user.emit('hello');
+user.emit('hello');
 ```
 
-### Mixin prototype:
+Extend existing object with event methods.
+
+
+### Mixin prototype
 
 ```js
-	var Emitter = require('emmy');
-	Emitter(User.prototype);
+var Emitter = require('emmy');
+Emitter(User.prototype);
 ```
 
-### Inherit Emitter:
+Extend existing class prototype with event methods.
+
+
+### Inherit Emitter
 
 ```js
-	var Emitter = require('emmy');
+var Emitter = require('emmy');
 
-	function Actor(){};
+function Actor(){};
 
-	//Give out emmy to an actor :)
-	Actor.prototype = Object.create(Emitter);
+//Give out emmy to an actor :)
+Actor.prototype = Object.create(Emitter);
 
-	var actor = new Actor();
+var actor = new Actor();
 
-	actor
-	//Bind events
-	.on('event', handler)
-	.on('otherEvent', handler)
-	.on('event2', [handler1, handler2]) //bind list of handlers
-
-
-	//Unbind events
-	.off('event', handler)
-	.off('otherEvent') //unbind all 'otherEvent' callbacks
-	.off('event2', [handler1, handler2]); //unbind list of handlers
-	.off(target) //unbind all events
+actor
+//Bind events
+.on('event', handler)
+.on('otherEvent', handler)
+.on('event2', [handler1, handler2]) //bind list of handlers
 
 
-	//Emit events
-	.emit('a')
-	.emit('b', data, bubbles);
+//Unbind events
+.off('event', handler)
+.off('otherEvent') //unbind all 'otherEvent' callbacks
+.off('event2', [handler1, handler2]); //unbind list of handlers
+.off(target) //unbind all events
+
+
+//Emit events
+.emit('a')
+.emit('b', data, bubbles);
 ```
 
+Make instances of class `instanceof Emitter`.
 
-### Standalone methods:
+
+### Standalone methods
 
 ```js
 var once = require('emmy/once');
@@ -109,15 +125,18 @@ var once = require('emmy/once');
 once(worker, 'message', function(){});
 ```
 
+Use if only one specific event method is required or to reduce size of build.
+
+
 
 # API
 
 Method | Description |
 --- | --- | --- |
-`.on(target, event, handler)` | Register _handler(s)_ for _event(s)_ on _target(s)_.
-`.once(target, event, handler)` | Register single-shot _event(s)_ _handler(s)_ on _target(s)_.
-`.off(target, event?, handler?)` | Remove an _event(s)_ _handler(s)_ for target(s). If no _handler(s)_ passed - remove all registered handlers. In no _event_ passed - remove all registered listeners for all events on target(s).
-`.emit(target, event, data?, bubbles?)` | Emit an _event(s)_ with params passed on target(s). _data_ will be available in _event.details_, if fired on DOM element, else each argument after event will be passed as data, just like usual emitter does.
+`.on(target[s], event[s], handler[s])` | Register _handler_ for _event_ on _target_.
+`.once(target[s], event[s], handler[s])` | Register single-shot _event_ _handler_ on _target_.
+`.off(target[s] [, event[s]] [, handler[s]] )` | Remove an _event_ _handler_ for target. If no _handler_ passed - remove all registered handlers. In no _event_ passed - remove all registered listeners for all events on target.
+`.emit(target[s], event[s] [, data] [, bubbles])` | Emit an _event_ with params passed on target. _data_ will be available in _event.details_, if fired on DOM element, else each argument after event will be passed as data, just like usual emitter does.
 `.listeners(event)`| Get list of listeners for an `event`
 `.hasListeners(event)`| Check if emitter has `event` handlers
 
