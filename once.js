@@ -4,7 +4,6 @@
 module.exports = once;
 
 var icicle = require('icicle');
-var listeners = require('./listeners');
 var off = require('./off');
 var on = require('./on');
 var redirect = require('./src/redirect');
@@ -14,11 +13,10 @@ var redirect = require('./src/redirect');
  * Add an event listener that will be invoked once and then removed.
  *
  * @return {target}
- * @chainable
  */
 function once(target, evt, fn){
 	//parse args
-	if (redirect(once, arguments)) return target;
+	if (redirect(once, arguments)) return;
 
 	//get target once method, if any
 	var onceMethod = target['once'] || target['one'] || target['addOnceEventListener'] || target['addOnceListener'];
@@ -33,7 +31,7 @@ function once(target, evt, fn){
 			// listeners.add(target, evt, fn);
 			icicle.unfreeze(target, 'one' + evt);
 
-			return target;
+			return;
 		}
 
 		//if still called itself second time - do default routine
@@ -51,5 +49,5 @@ function once(target, evt, fn){
 	//bind wrapper default way - in case of own emit method
 	on(target, evt, cb);
 
-	return target;
-};
+	return;
+}

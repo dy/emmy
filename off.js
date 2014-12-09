@@ -18,7 +18,7 @@ var redirect = require('./src/redirect');
  */
 function off(target, evt, fn){
 	//parse args
-	if (redirect(off, arguments)) return target;
+	if (redirect(off, arguments)) return;
 
 	var callbacks, i;
 
@@ -45,7 +45,7 @@ function off(target, evt, fn){
 			off(target, evt, callbacks[evt]);
 		}
 
-		return target;
+		return;
 	}
 
 
@@ -63,7 +63,7 @@ function off(target, evt, fn){
 
 		//if it’s frozen - ignore call
 		else {
-			return target;
+			return;
 		}
 	}
 
@@ -80,7 +80,7 @@ function off(target, evt, fn){
 		}
 	}
 
-	return target;
+	return;
 }
 
 

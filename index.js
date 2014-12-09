@@ -12,6 +12,7 @@ var	on = require('./on'),
 	emit = require('./emit'),
 	listeners = require('./listeners');
 
+//add static wrapper API
 Emmy['on'] = function(a,b,c){
 	on(a,b,c);
 	return Emmy;

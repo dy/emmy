@@ -5,15 +5,17 @@
 ](https://ci.testling.com/dfcreative/emmy)
 -->
 
-Emmy is **asbestos-free** event emitter for green components and jquery plugins.
+Emmy is **asbestos-free** event emitter and event utils for green components development.
 
 1. It emits events on any target: plain object, html element, jQuery set, Backbone model, [color](https://github.com/dfcreative/color) etc.
 
-2. It is [fully compliant](https://rawgit.com/dfcreative/emmy/master/test/index.html) with [component-emitter](https://github.com/component/emitter), so you can safely replace it with emmy and vice-versa.
+2. It is [fully compliant](https://rawgit.com/dfcreative/emmy/master/test/index.html) with [component-emitter](https://github.com/component/emitter).
 
 3. It works both in browser and _io_.
 
-4. It is only _1.07kb_ gzipped. Besides, any method can be required selectively as `require('emmy/<method>');`, in that build size can be reduced even more.
+4. It is only _1.07kb_ gzipped.
+
+5. It includes event utils which can be used standalone as `require('emmy/<method>');`, in that final build size can be reduced even more.
 
 
 #### [Test it](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html), [feel it](http://jsfiddle.net/dfcreative/j2tquytv/).
@@ -99,7 +101,7 @@ Install:
 ```
 
 
-### Selective methods:
+### Standalone methods:
 
 ```js
 var once = require('emmy/once');
@@ -112,14 +114,29 @@ once(worker, 'message', function(){});
 
 Method | Description |
 --- | --- | --- |
-`on(target, event, handler)` | Register _handler(s)_ for _event(s)_ on _target(s)_.
-`once(target, event, handler)` | Register single-shot _event(s)_ _handler(s)_ on _target(s)_.
-`off(target, event?, handler?)` | Remove an _event(s)_ _handler(s)_ for target(s). If no _handler(s)_ passed - remove all registered handlers. In no _event_ passed - remove all registered listeners for all events on target(s).
-`emit(target, event, data?, bubbles?)` | Emit an _event(s)_ with params passed on target(s). _data_ will be available in _event.details_, if fired on DOM element, else each argument after event will be passed as data, just like usual emitter does.
-`listeners(event)`| Get list of listeners for an `event`
-`hasListeners(event)`| Check if emitter has `event` handlers
+`.on(target, event, handler)` | Register _handler(s)_ for _event(s)_ on _target(s)_.
+`.once(target, event, handler)` | Register single-shot _event(s)_ _handler(s)_ on _target(s)_.
+`.off(target, event?, handler?)` | Remove an _event(s)_ _handler(s)_ for target(s). If no _handler(s)_ passed - remove all registered handlers. In no _event_ passed - remove all registered listeners for all events on target(s).
+`.emit(target, event, data?, bubbles?)` | Emit an _event(s)_ with params passed on target(s). _data_ will be available in _event.details_, if fired on DOM element, else each argument after event will be passed as data, just like usual emitter does.
+`.listeners(event)`| Get list of listeners for an `event`
+`.hasListeners(event)`| Check if emitter has `event` handlers
 
 If a param has (s) sufix - that means a list can be passed.
+
+
+Standalone functions:
+
+Method | Description
+---|---
+`on` |
+`off` |
+`emit` |
+`once` |
+`later` |
+`throttle` |
+`delegate` |
+
+
 
 
 # Afterword

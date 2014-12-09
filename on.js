@@ -3,22 +3,23 @@
  */
 module.exports = on;
 
+
 var icicle = require('icicle');
 var listeners = require('./listeners');
 var redirect = require('./src/redirect');
+
 
 /**
  * Bind fn to the target
  *
  * @param {string} evt An event name
  * @param {Function} fn A callback
- * @chainable
  *
  * @return {object} A target
  */
 function on(target, evt, fn){
 	//parse args
-	if (redirect(on, arguments)) return target;
+	if (redirect(on, arguments)) return;
 
 	//get target on method, if any
 	var onMethod = target['on'] || target['addEventListener'] || target['addListener'];
@@ -32,7 +33,7 @@ function on(target, evt, fn){
 			icicle.unfreeze(target, 'on' + evt);
 		}
 		else {
-			return target;
+			return;
 		}
 	}
 
@@ -40,5 +41,5 @@ function on(target, evt, fn){
 	listeners.add(target, evt, fn);
 
 
-	return target;
+	return;
 }

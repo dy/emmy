@@ -33,20 +33,25 @@ function Emitter(target){
 var proto = Emitter.prototype;
 
 
+/** Prototype methods are whapper so to return target for chaining calls */
 proto['on'] = function(a,b){
-	return on(this, a,b);
+	on(this, a,b);
+	return this;
 };
 
 proto['once'] = function(a,b){
-	return once(this, a,b);
+	once(this, a,b);
+	return this;
 };
 
 proto['off'] = function(a,b){
-	return off(this, a,b);
+	off(this, a,b);
+	return this;
 };
 
 proto['emit'] = function(a,b,c){
-	return emit(this, a,b,c);
+	emit(this, a,b,c);
+	return this;
 };
 
 proto['listeners'] = function(a){

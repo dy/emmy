@@ -25,13 +25,12 @@ var win = typeof window === 'undefined' ? undefined : window;
  * @param {*} data Any data to pass to event.details (DOM) or event.data (elsewhere)
  * @param {bool} bubbles Whether to trigger bubbling event (DOM)
  *
- * @chainable
  *
  * @return {target} a target
  */
 function emit(target, eventName, data, bubbles){
 	//parse args
-	if (redirect(emit, arguments)) return target;
+	if (redirect(emit, arguments)) return;
 
 	var emitMethod, evt = eventName;
 
@@ -77,7 +76,7 @@ function emit(target, eventName, data, bubbles){
 			emitMethod.call(target, evt, data, bubbles);
 			icicle.unfreeze(target, 'emit' + eventName);
 
-			return target;
+			return;
 		}
 
 		//if event was frozen - probably it is Emitter instance
@@ -96,5 +95,5 @@ function emit(target, eventName, data, bubbles){
 		fireList[i] && fireList[i].apply(target, args);
 	}
 
-	return target;
+	return;
 }
