@@ -1,7 +1,7 @@
 {
   "name": "emmy",
   "version": "3.0.1",
-  "description": "Absentos-free event emitter for everything.",
+  "description": "Tiny event emitter for everything. Absentos-free.",
   "main": "index.js",
   "files": [
     "*.js"

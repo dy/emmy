@@ -5,7 +5,7 @@
 ](https://ci.testling.com/dfcreative/emmy)
 -->
 
-Emmy is **asbestos-free** event emitter and event utils for green components development.
+Emmy is **asbestos-free** event emitter and utils for green components development.
 
 1. It emits events on any target: plain object, html element, jQuery set, Backbone model, [color](https://github.com/dfcreative/color) etc.
 
@@ -13,11 +13,12 @@ Emmy is **asbestos-free** event emitter and event utils for green components dev
 
 3. It works both in browsers and _io_.
 
-4. It is only _1.3kb gzipped_ ([uncommon](http://github.com/dfcreative/uncommon) compresses 30% better than browserify).
+4. It is tiny — _1.3kb gzipped_.
 
 5. Each method can be used standalone as `require('emmy/<method>');`. That way final build size can be reduced even more.
 
 6. It provides additional event methods: _delegate_, _throttle_, _later_ and _keypass_. They can be required selectively.
+
 
 
 #### [Test it](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html), [feel it](http://jsfiddle.net/dfcreative/j2tquytv/).
