@@ -11,7 +11,6 @@ var throttle = require('../throttle');
 var later = require('../later');
 var keypass = require('../keypass');
 var delegate = require('../delegate');
-var not = require('../not');
 
 
 describe('Regression', function(){
@@ -200,8 +199,21 @@ describe('Regression', function(){
 
 	});
 
-	it.skip('Batch events', function(){
+	it('Batch events', function(){
+		var x = {}, i = 0, j = 0;
 
+		on(x, {
+			'x': function(e){i+=e},
+			y: function(e){j+=e}
+		});
+
+		emit(x, {
+			'x': 2,
+			'y': 3
+		});
+
+		assert.equal(i, 2);
+		assert.equal(j, 3);
 	});
 
 	it('Throttle', function(done){
