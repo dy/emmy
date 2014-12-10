@@ -9,6 +9,7 @@ var keyDict = require('key-name');
 var lower = require('mustring/lower');
 var isArray = require('mutype/is-array');
 var isString = require('mutype/is-string');
+var redirect = require('./src/redirect');
 
 
 /**
@@ -19,8 +20,11 @@ var isString = require('mutype/is-string');
  * @return {Function} Wrapped handler
  */
 function keypass(target, evt, fn, keys){
+	if (redirect(keypass, arguments)) return;
+
 	//ignore empty keys
 	if (!keys) return;
+
 	//prepare keys list to match against
 	keys = isArray(keys) ? keys : isString(keys) ? keys.split(/\s*,\s*/) : [keys];
 	keys = keys.map(lower);

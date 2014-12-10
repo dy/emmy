@@ -7,7 +7,17 @@
  * @module  emmy/pass
  */
 
-module.exports = function(target, evt, fn, condition){
+
+module.exports = pass;
+
+
+var redirect = require('./src/redirect');
+var on = require('./on');
+
+
+function pass(target, evt, fn, condition){
+	if (redirect(pass, arguments)) return;
+
 	var cb = function(e){
 		if (condition.apply(this, arguments)) {
 			return fn.apply(this, arguments);

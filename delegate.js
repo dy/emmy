@@ -4,8 +4,7 @@
 
 module.exports = delegate;
 
-var on = require('./on');
-var off = require('./off');
+var pass = require('./pass');
 var redirect = require('./src/redirect');
 var closest = require('query-relative/closest');
 
@@ -19,9 +18,9 @@ var closest = require('query-relative/closest');
  * @return {function} A callback
  */
 function delegate(target, evt, fn, selector){
-	if (redirect(throttle, arguments)) return;
+	if (redirect(delegate, arguments)) return;
 
-	var cb = function(e){
+	return pass(target, evt, fn, function(e){
 		var el = e.target;
 
 		var holderEl = closest(el, selector);
@@ -38,13 +37,7 @@ function delegate(target, evt, fn, selector){
 			// 	}
 			// });
 
-			return fn.apply(this, arguments);
+			return true;
 		}
-	};
-
-	cb.fn = fn;
-
-	on(target, evt, cb);
-
-	return cb;
+	});
 }
