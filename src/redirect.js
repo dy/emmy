@@ -12,10 +12,8 @@
 var isArrayLike = require('mutype/is-array-like');
 var isObject = require('mutype/is-object');
 var slice = require('sliced');
-var emit = require('../emit');
 
-
-module.exports = function(method, args){
+module.exports = function(method, args, ignoreFn){
 	var target = args[0], evt = args[1], fn = args[2];
 
 	//batch events
@@ -26,8 +24,8 @@ module.exports = function(method, args){
 		return true;
 	}
 
-	//bind all callbacks, if passed a list
-	if (isArrayLike(fn)){
+	//bind all callbacks, if passed a list (and no ignoreFn flag)
+	if (isArrayLike(fn) && !ignoreFn){
 		args = slice(args, 3);
 		for (var i = fn.length; i--;){
 			// method(target, evt, fn[i]);

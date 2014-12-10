@@ -195,11 +195,18 @@ describe('Regression', function(){
 		//TODO
 	});
 
-	it.skip('Multiple data args', function(){
+	it('List arg in emit', function(){
+		var x = {}, i = 0, a = [1,2], b;
 
+		on(x, 'y', function(e){i++; b = e})
+
+		emit(x, 'y', a);
+
+		assert.equal(i, 1);
+		assert.equal(b, a);
 	});
 
-	it.skip('List of targets', function(){
+	it('List of targets', function(){
 		var x = {}, y = {}, i = 0, j = 0;
 
 		on([x, y], ['x', 'y'], [
@@ -211,6 +218,12 @@ describe('Regression', function(){
 
 		assert.equal(i, 12);
 		assert.equal(j, 12);
+
+
+		off([x, y], ['x', 'y']);
+		emit([x,y], ['x', 'y'], 1, 2);
+		assert.equal(i, 12);
+		assert.equal(j, 12);
 	});
 
 	it('Batch events', function(){
@@ -219,6 +232,20 @@ describe('Regression', function(){
 		on(x, {
 			'x': function(e){i+=e},
 			y: function(e){j+=e}
+		});
+
+		emit(x, {
+			'x': 2,
+			'y': 3
+		});
+
+		assert.equal(i, 2);
+		assert.equal(j, 3);
+
+
+		off(x, {
+			'x': undefined,
+			y: undefined
 		});
 
 		emit(x, {
@@ -261,6 +288,8 @@ describe('Regression', function(){
 
 
 	it('Delegate', function(){
+		if (!doc) return;
+
 		var i = 0, j = 0;
 		var el = document.createElement('div');
 		document.body.appendChild(el);
@@ -303,6 +332,8 @@ describe('Regression', function(){
 
 
 	it('Keypass', function(){
+		if (!doc) return;
+
 		var k = 0, a = 0, ka=0, z = 0;
 		var el = document.createElement("div");
 
@@ -353,7 +384,7 @@ describe('Regression', function(){
 	});
 
 	it('Later', function(done){
-		var a = document.createElement('div');
+		var a = {};
 		var i = 0;
 
 		later(a, 'x', function(){

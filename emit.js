@@ -30,7 +30,7 @@ var win = typeof window === 'undefined' ? undefined : window;
  */
 function emit(target, eventName, data, bubbles){
 	//parse args
-	if (redirect(emit, arguments)) return;
+	if (redirect(emit, arguments, true)) return;
 
 	var emitMethod, evt = eventName;
 

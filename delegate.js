@@ -6,7 +6,7 @@ module.exports = delegate;
 
 var pass = require('./pass');
 var redirect = require('./src/redirect');
-var closest = require('query-relative/closest');
+var closest = typeof document !== 'undefined' ? require('query-relative/closest') : null;
 
 
 /**
@@ -19,6 +19,7 @@ var closest = require('query-relative/closest');
  */
 function delegate(target, evt, fn, selector){
 	if (redirect(delegate, arguments)) return;
+	if (!closest) return;
 
 	return pass(target, evt, fn, function(e){
 		var el = e.target;
