@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "test": "mocha --harmony",
-    "build-test": "browserify -r mutype/is-array -x  > test/bundle.js",
+    "build-test": "browserify -r mutype/is-array-like -r ./on -r ./once -r ./off -r ./emit -r ./throttle -r ./later -r ./keypass -r ./delegate > test/bundle.js",
     "build-min": "npm run build && npm run min && npm run clean && cat emmy.js | gzip-size | pretty-bytes ",
     "build": "uncommon ./index -w \";(function(){window['Emitter']=Emitter;%output%;})()\" > emmy.dev.js",
     "min": "ccjs emmy.dev.js --language_in=ECMASCRIPT5 --compilation_level=ADVANCED --process_jquery_primitives --externs=build/jquery-externs.js > emmy.js",

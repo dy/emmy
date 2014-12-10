@@ -13,7 +13,7 @@ Emmy is **asbestos-free** event emitter and event utils for green components dev
 
 3. It works both in browser and _io_.
 
-4. It is only _1.07kb_ gzipped.
+4. It is only _1.3kb_ gzipped.
 
 5. Each method can be used standalone as `require('emmy/<method>');`. That way final build size can be reduced even more.
 
@@ -131,30 +131,33 @@ Use if only one specific event method is required or to reduce size of build.
 
 # API
 
-Method | Description |
---- | --- | --- |
-`.on(target[s], event[s], handler[s])` | Register _handler_ for _event_ on _target_.
-`.once(target[s], event[s], handler[s])` | Register single-shot _event_ _handler_ on _target_.
-`.off(target[s] [, event[s]] [, handler[s]] )` | Remove an _event_ _handler_ for target. If no _handler_ passed - remove all registered handlers. In no _event_ passed - remove all registered listeners for all events on target.
-`.emit(target[s], event[s] [, data] [, bubbles])` | Emit an _event_ with params passed on target. _data_ will be available in _event.details_, if fired on DOM element, else each argument after event will be passed as data, just like usual emitter does.
-`.listeners(event)`| Get list of listeners for an `event`
-`.hasListeners(event)`| Check if emitter has `event` handlers
-
-If a param has (s) sufix - that means a list can be passed.
-
-
 Standalone functions:
 
 Method | Description
 ---|---
-`on` |
-`off` |
-`emit` |
-`once` |
-`later` |
-`throttle` |
-`delegate` |
+`on(target, event, callback)` | Bind event handler to a target.
+`once(target, event, callback)` | Bind single-shot event handler to a target.
+`off(target, event?, callback?)` | Unbind event handler from a target. If calback isn’t passed - unbind all callbacks for an event. If no event passed - unbind all.
+`emit(target, event, callback, data1, data2, ...)` | Emit an event on a target, passing _dataN_. If target is an element then _data1_ is _e.details_, _data2_ is _bubbles_. So to fire bubbling event, call `emit(element, 'click', null, true)`.
+`later(target, event, callback, delay)` | Bind an event handler which triggers a _delay_ later than actual event occures.
+`throttle(target, event, callback, interval)` | Bind an event handler which won’t be called more often than an _interval_.
+`delegate(target, event, callback, selector)` | Bind an event handler catching bubbling events from target’s descendants.
+`pass(target, event, callback, condition)` | Bind an event handler which triggers only if _condition_ passes. Condition can be any function, where the first argument is the event.
+`keypass(target, event, callback, keylist)` | Bind an event handler which triggers only if `e.which` or `e.keyCode` is one from the defined _keylist_. Any [keyname](http://github.com/dfcreative/keyname) can be declared instead of a code.
+`listeners(target [, event])` | Get list of listeners registered for an event.
 
+
+
+Emitter prototype methods:
+
+Method | Description |
+--- | --- | --- |
+`.on(event, handler)` | Register _handler_ for _event_.
+`.once(event, handler)` | Register single-shot _event_ _handler_.
+`.off([event] [, handler] )` | Remove an _event_ _handler_. If no _handler_ passed - remove all registered handlers. In no _event_ passed - remove all registered listeners for all events.
+`.emit(event [, data1] [, data2] ...)` | Emit an _event_ with params passed. Each argument after _event_ will be passed to the callback.
+`.listeners(event)`| Get list of listeners for an `event`.
+`.hasListeners(event)`| Check if emitter has `event` handlers.
 
 
 

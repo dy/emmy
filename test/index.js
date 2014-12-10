@@ -4,13 +4,26 @@ var win = typeof window === 'undefined' ? undefined : window;
 var Emitter = doc && typeof Emitter !== 'undefined' ? Emitter : require('..');
 var assert = typeof chai !== 'undefined' ? chai.assert : require('chai').assert;
 
-var on = require('../on');
-var off = require('../off');
-var emit = require('../emit');
-var throttle = require('../throttle');
-var later = require('../later');
-var keypass = require('../keypass');
-var delegate = require('../delegate');
+//fix these requirements to ./ for bundle.js
+try {
+	var on = require('../on');
+	var off = require('../off');
+	var emit = require('../emit');
+	var throttle = require('../throttle');
+	var once = require('../once');
+	var later = require('../later');
+	var keypass = require('../keypass');
+	var delegate = require('../delegate');
+} catch (e) {
+	var on = require('./on');
+	var off = require('./off');
+	var emit = require('./emit');
+	var throttle = require('./throttle');
+	var once = require('./once');
+	var later = require('./later');
+	var keypass = require('./keypass');
+	var delegate = require('./delegate');
+}
 
 
 describe('Regression', function(){
@@ -190,11 +203,6 @@ describe('Regression', function(){
 		assert.notOk(a.listeners('z').length);
 	});
 
-	it.skip('pass data & bubbles to emit', function(){
-		var a = new Emitter;
-		//TODO
-	});
-
 	it('List arg in emit', function(){
 		var x = {}, i = 0, a = [1,2], b;
 
@@ -229,12 +237,12 @@ describe('Regression', function(){
 	it('Batch events', function(){
 		var x = {}, i = 0, j = 0;
 
-		on(x, {
+		Emitter.on(x, {
 			'x': function(e){i+=e},
 			y: function(e){j+=e}
 		});
 
-		emit(x, {
+		Emitter.emit(x, {
 			'x': 2,
 			'y': 3
 		});
@@ -243,12 +251,12 @@ describe('Regression', function(){
 		assert.equal(j, 3);
 
 
-		off(x, {
+		Emitter.off(x, {
 			'x': undefined,
 			y: undefined
 		});
 
-		emit(x, {
+		Emitter.emit(x, {
 			'x': 2,
 			'y': 3
 		});
