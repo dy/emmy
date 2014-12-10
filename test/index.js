@@ -276,8 +276,54 @@ describe('Regression', function(){
 	});
 
 
-	it.skip('Keypass', function(){
+	it('Keypass', function(){
+		var k = 0, a = 0, ka=0, z = 0;
+		var el = document.createElement("div");
 
+		keypass(el, "keydown", function(e){
+			z++;
+		});
+		keypass(el, "keydown", function(e){
+			a++;
+		}, 83);
+		keypass(el, "keydown", function(e){
+			k++;
+		}, 'enter');
+		keypass(el, "keydown", function(e){
+			ka++;
+		}, [65, 'enter', '68']);
+
+
+		var evt = createKeyEvt("keydown", 65);
+		emit(el, evt);
+		assert.equal(z, 0);
+		assert.equal(a, 0);
+		assert.equal(k, 0);
+		assert.equal(ka, 1);
+
+		// s
+		evt = createKeyEvt("keydown", 83);
+		emit(el, evt);
+		assert.equal(z, 0);
+		assert.equal(a, 1);
+		assert.equal(k, 0);
+		assert.equal(ka, 1);
+
+		// s2
+		evt = createKeyEvt("keydown", 83);
+		emit(el, evt);
+		assert.equal(z, 0);
+		assert.equal(a, 2);
+		assert.equal(k, 0);
+		assert.equal(ka, 1);
+
+		//enter
+		evt = createKeyEvt("keydown", 13);
+		emit(el, evt);
+		assert.equal(z, 0);
+		assert.equal(a, 2);
+		assert.equal(k, 1);
+		assert.equal(ka, 2);
 	});
 
 	it('Later', function(done){

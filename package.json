@@ -27,6 +27,14 @@
     "one",
     "once",
     "off",
+    "listeners",
+    "throttle",
+    "later",
+    "delay",
+    "delegate",
+    "defer",
+    "async",
+    "after",
     "emit",
     "emmitt"
   ],
@@ -38,10 +46,11 @@
   "homepage": "https://github.com/dfcreative/emmy",
   "dependencies": {
     "icicle": ">=0.1.1",
-    "mutype": ">=0.3.3",
+    "mutype": ">=0.3.5",
     "sliced": "^0.0.5",
-    "key-name": "~1.1.1",
-    "query-relative": "~1.5.2"
+    "key-name": ">=1.1.1",
+    "query-relative": ">=1.5.2",
+    "mustring": ">=0.0.4"
   },
   "devDependencies": {
     "mocha": "*",
