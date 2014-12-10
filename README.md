@@ -32,9 +32,7 @@ Install:
 `$ npm install emmy`
 
 
-### Wrapping methods
-
-Bind events to any object in an unobtrusive way.
+### Wrapping methods:
 
 ```js
 var Emitter = require('emmy');
@@ -47,10 +45,10 @@ Emitter.off(target, 'evt');
 Emitter.once(webWorker, 'message', function(){...});
 ```
 
+**Use:** bind events to any object in an unobtrusive way.
+
 
 ### Create `Emitter` instance
-
-Create a new object with event methods.
 
 ```js
 var Emitter = require('emmy');
@@ -59,10 +57,10 @@ var emitter = new Emitter;
 emitter.emit('something');
 ```
 
+**Use:** сreate a new object with event methods.
+
 
 ### Mixin object
-
-Extend existing object with event methods.
 
 ```js
 var Emitter = require('emmy');
@@ -72,20 +70,20 @@ user = Emitter({name: 'John'});
 user.emit('hello');
 ```
 
+**Use:** extend existing object with event methods.
+
 
 ### Mixin prototype
-
-Extend existing class prototype with event methods.
 
 ```js
 var Emitter = require('emmy');
 Emitter(User.prototype);
 ```
 
+**Use:** extend existing class prototype with event methods.
+
 
 ### Inherit Emitter
-
-Make instances of class `instanceof Emitter`.
 
 ```js
 var Emitter = require('emmy');
@@ -116,16 +114,18 @@ actor
 .emit('b', data, bubbles);
 ```
 
+**Use:** make instances of class `instanceof Emitter`.
+
 
 ### Standalone methods
-
-Use if only one specific event method is required or to reduce size of build.
 
 ```js
 var once = require('emmy/once');
 
 once(worker, 'message', function(){});
 ```
+
+**Use:** if only one specific event method is required or to reduce size of build.
 
 
 
