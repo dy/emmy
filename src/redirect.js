@@ -12,6 +12,7 @@
 var isArrayLike = require('mutype/is-array-like');
 var isObject = require('mutype/is-object');
 var slice = require('sliced');
+var emit = require('../emit');
 
 
 module.exports = function(method, args){

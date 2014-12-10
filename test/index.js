@@ -195,8 +195,22 @@ describe('Regression', function(){
 		//TODO
 	});
 
-	it.skip('List of targets', function(){
+	it.skip('Multiple data args', function(){
 
+	});
+
+	it.skip('List of targets', function(){
+		var x = {}, y = {}, i = 0, j = 0;
+
+		on([x, y], ['x', 'y'], [
+			function(e,f){i+=e+f},
+			function(e, f){j+=e+f}
+		]);
+
+		emit([x,y], ['x', 'y'], 1, 2);
+
+		assert.equal(i, 12);
+		assert.equal(j, 12);
 	});
 
 	it('Batch events', function(){
