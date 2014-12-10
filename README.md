@@ -117,7 +117,7 @@ actor
 _Use:_ make instances of class `instanceof Emitter`.
 
 
-### Standalone methods
+### Standalone
 
 ```js
 var once = require('emmy/once');
@@ -131,7 +131,7 @@ _Use:_ if only one specific event method is required or to reduce size of build.
 
 # API
 
-Standalone functions:
+### Standalone functions
 
 Method | Description
 ---|---
@@ -148,7 +148,7 @@ Method | Description
 
 
 
-Emitter prototype methods:
+### Emitter prototype methods
 
 Method | Description |
 --- | --- | --- |
