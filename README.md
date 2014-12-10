@@ -45,7 +45,7 @@ Emitter.off(target, 'evt');
 Emitter.once(webWorker, 'message', function(){...});
 ```
 
-**Use:** bind events to any object in an unobtrusive way.
+_Use:_ bind events to any object in an unobtrusive way.
 
 
 ### Create `Emitter` instance
@@ -57,7 +57,7 @@ var emitter = new Emitter;
 emitter.emit('something');
 ```
 
-**Use:** сreate a new object with event methods.
+_Use:_ сreate a new object with event methods.
 
 
 ### Mixin object
@@ -70,7 +70,7 @@ user = Emitter({name: 'John'});
 user.emit('hello');
 ```
 
-**Use:** extend existing object with event methods.
+_Use:_ extend existing object with event methods.
 
 
 ### Mixin prototype
@@ -80,7 +80,7 @@ var Emitter = require('emmy');
 Emitter(User.prototype);
 ```
 
-**Use:** extend existing class prototype with event methods.
+_Use:_ extend existing class prototype with event methods.
 
 
 ### Inherit Emitter
@@ -114,7 +114,7 @@ actor
 .emit('b', data, bubbles);
 ```
 
-**Use:** make instances of class `instanceof Emitter`.
+_Use:_ make instances of class `instanceof Emitter`.
 
 
 ### Standalone methods
@@ -125,7 +125,7 @@ var once = require('emmy/once');
 once(worker, 'message', function(){});
 ```
 
-**Use:** if only one specific event method is required or to reduce size of build.
+_Use:_ if only one specific event method is required or to reduce size of build.
 
 
 
