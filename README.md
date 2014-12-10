@@ -11,9 +11,9 @@ Emmy is **asbestos-free** event emitter and event utils for green components dev
 
 2. It is [fully compliant](https://rawgit.com/dfcreative/emmy/master/test/index.html) with [component-emitter](https://github.com/component/emitter).
 
-3. It works both in browser and _io_.
+3. It works both in browsers and _io_.
 
-4. It is only _1.3kb_ gzipped.
+4. It is only _1.3kb gzipped_ ([uncommon](http://github.com/dfcreative/uncommon) compresses 30% better than browserify).
 
 5. Each method can be used standalone as `require('emmy/<method>');`. That way final build size can be reduced even more.
 
