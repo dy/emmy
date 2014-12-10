@@ -133,7 +133,7 @@ _Use:_ if only one specific event method is required or to reduce size of build.
 
 ### Standalone functions
 
-Method | Description
+Function | Description
 ---|---
 `on(target, event, callback)` | Bind event handler to a target.
 `once(target, event, callback)` | Bind single-shot event handler to a target.
@@ -163,9 +163,10 @@ Method | Description |
 
 # Afterword
 
-A somewhat more comprehensive emitter based on emmy - have a look at [ENot — event notation system](https://github.com/dfcreative/enot).
+A comprehensive emitter notation reader - have a look at [ENot — event notation system](https://github.com/dfcreative/enot).
 
 
-There’s also a similar project - [emmitt](https://github.com/airportyh/emmitt), but it can’t emit bubbling events nor DOM-events at all. It does not provide an Emitter class, listeners methods, and it has a bit too many letters in title :). No, seriously, `emmy` is only 4 letters length, in that if you have indentation size == 4, your chain calls will look beautiful.
+There’s also a similar project - [emmitt](https://github.com/airportyh/emmitt), but it can’t emit bubbling events nor DOM-events, it does not provide an Emitter class, and a bunch of useful methods.
+
 
 [![NPM](https://nodei.co/npm/emmy.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/emmy/)
