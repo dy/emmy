@@ -13,7 +13,7 @@ Emmy is **asbestos-free** event emitter and utils for green components developme
 
 3. It works both in browsers and _io_.
 
-4. It is tiny — _1.3kb gzipped_.
+4. It is tiny — _1.4kb gzipped_.
 
 5. Each method can be used standalone as `require('emmy/<method>');`. That way final build size can be reduced even more.
 
