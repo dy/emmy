@@ -5,7 +5,6 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
 module.exports = delegate;
 
-var pass = require('./pass');
 var redirect = require('./src/redirect');
 var closest = typeof document !== 'undefined' ? require('query-relative/closest') : null;
 
@@ -20,9 +19,10 @@ var closest = typeof document !== 'undefined' ? require('query-relative/closest'
  */
 function delegate(target, evt, fn, selector){
 	if (redirect(delegate, arguments)) return;
+
 	if (!closest) return;
 
-	return pass(target, evt, fn, function(e){
+	return on(target, evt, fn, function(e){
 		var el = e.target;
 
 		var holderEl = closest(el, selector);
@@ -43,7 +43,7 @@ function delegate(target, evt, fn, selector){
 		}
 	});
 }
-},{"./pass":13,"./src/redirect":14,"query-relative/closest":9}],"./emit":[function(require,module,exports){
+},{"./src/redirect":13,"query-relative/closest":9}],"./emit":[function(require,module,exports){
 /**
  * @module emmy/emit
  */
@@ -143,14 +143,13 @@ function emit(target, eventName, data, bubbles){
 
 	return;
 }
-},{"./listeners":1,"./src/redirect":14,"icicle":2,"sliced":11}],"./keypass":[function(require,module,exports){
+},{"./listeners":1,"./src/redirect":13,"icicle":2,"sliced":11}],"./keypass":[function(require,module,exports){
 /**
  * @module  emmy/keypass
  */
 
 module.exports = keypass;
 
-var pass = require('./pass');
 var keyDict = require('key-name');
 var lower = require('mustring/lower');
 var isArray = require('mutype/is-array');
@@ -175,7 +174,7 @@ function keypass(target, evt, fn, keys){
 	keys = isArray(keys) ? keys : isString(keys) ? keys.split(/\s*,\s*/) : [keys];
 	keys = keys.map(lower);
 
-	return pass(target, evt, fn, function(e){
+	return on(target, evt, fn, function(e){
 		var key, which = e.which !== undefined ? e.which : e.keyCode;
 		for (var i = keys.length; i--;){
 			key = keys[i];
@@ -183,7 +182,7 @@ function keypass(target, evt, fn, keys){
 		}
 	});
 }
-},{"./pass":13,"./src/redirect":14,"key-name":3,"mustring/lower":4,"mutype/is-array":5,"mutype/is-string":8}],"./later":[function(require,module,exports){
+},{"./src/redirect":13,"key-name":3,"mustring/lower":4,"mutype/is-array":5,"mutype/is-string":8}],"./later":[function(require,module,exports){
 /**
  * @module  emmy/delay
  */
@@ -218,7 +217,7 @@ function delay(target, evt, fn, interval) {
 
 	return cb;
 }
-},{"./on":undefined,"./src/redirect":14}],"./off":[function(require,module,exports){
+},{"./on":undefined,"./src/redirect":13}],"./off":[function(require,module,exports){
 /**
  * @module emmy/off
  */
@@ -306,7 +305,7 @@ function off(target, evt, fn){
 
 
 
-},{"./listeners":1,"./src/redirect":14,"icicle":2}],"./once":[function(require,module,exports){
+},{"./listeners":1,"./src/redirect":13,"icicle":2}],"./once":[function(require,module,exports){
 /**
  * @module emmy/once
  */
@@ -360,7 +359,7 @@ function once(target, evt, fn){
 
 	return cb;
 }
-},{"./off":undefined,"./on":undefined,"./src/redirect":14,"icicle":2}],"./on":[function(require,module,exports){
+},{"./off":undefined,"./on":undefined,"./src/redirect":13,"icicle":2}],"./on":[function(require,module,exports){
 /**
  * @module emmy/on
  */
@@ -377,22 +376,38 @@ var redirect = require('./src/redirect');
  *
  * @param {string} evt An event name
  * @param {Function} fn A callback
+ * @param {Function}? condition An optional filtering fn for a callback
+ *                              which accepts an event and returns callback
  *
  * @return {object} A target
  */
-function on(target, evt, fn){
+function on(target, evt, fn, condition){
 	//parse args
 	if (redirect(on, arguments)) return;
 
 	//get target on method, if any
 	var onMethod = target['on'] || target['addEventListener'] || target['addListener'];
 
+	var cb;
+
+	//apply condition wrapper
+	if (condition) {
+		cb = function(){
+			if (condition.apply(this, arguments)) {
+				return fn.apply(this, arguments);
+			}
+		};
+		cb.fn = fn;
+	} else {
+		cb = fn;
+	}
+
 	//use target event system, if possible
 	if (onMethod) {
 		//avoid self-recursions
 		//if it’s frozen - ignore call
 		if (icicle.freeze(target, 'on' + evt)){
-			onMethod.call(target, evt, fn);
+			onMethod.call(target, evt, cb);
 			icicle.unfreeze(target, 'on' + evt);
 		}
 		else {
@@ -401,12 +416,12 @@ function on(target, evt, fn){
 	}
 
 	//save the callback anyway
-	listeners.add(target, evt, fn);
+	listeners.add(target, evt, cb);
 
 
 	return;
 }
-},{"./listeners":1,"./src/redirect":14,"icicle":2}],"./throttle":[function(require,module,exports){
+},{"./listeners":1,"./src/redirect":13,"icicle":2}],"./throttle":[function(require,module,exports){
 /**
  * Throttle function call.
  *
@@ -457,7 +472,7 @@ function throttle(target, evt, fn, interval){
 
 	return cb;
 }
-},{"./off":undefined,"./on":undefined,"./src/redirect":14}],1:[function(require,module,exports){
+},{"./off":undefined,"./on":undefined,"./src/redirect":13}],1:[function(require,module,exports){
 /**
  * A storage of per-target callbacks.
  * For now weakmap is used as the most safe solution.
@@ -743,39 +758,6 @@ module.exports = function (args, slice, sliceEnd) {
 
 },{}],13:[function(require,module,exports){
 /**
- * Invoke callback if condition passes.
- *
- * @param {Function} condition A condition checker
- * @alias filter
- *
- * @module  emmy/pass
- */
-
-
-module.exports = pass;
-
-
-var redirect = require('./src/redirect');
-var on = require('./on');
-
-
-function pass(target, evt, fn, condition){
-	if (redirect(pass, arguments)) return;
-
-	var cb = function(e){
-		if (condition.apply(this, arguments)) {
-			return fn.apply(this, arguments);
-		}
-	};
-
-	cb.fn = fn;
-
-	on(target, evt, cb);
-
-	return cb;
-};
-},{"./on":undefined,"./src/redirect":14}],14:[function(require,module,exports){
-/**
  * Iterate method for args.
  * Ensure that final method is called with single arguments,
  * so that any list/object argument is iterated.
@@ -788,16 +770,23 @@ function pass(target, evt, fn, condition){
 
 var isArrayLike = require('mutype/is-array-like');
 var isObject = require('mutype/is-object');
+var isFn = require('mutype/is-fn');
 var slice = require('sliced');
 
 module.exports = function(method, args, ignoreFn){
-	var target = args[0], evt = args[1], fn = args[2];
+	var target = args[0], evt = args[1], fn = args[2], param = args[3];
 
 	//batch events
 	if (isObject(evt)){
 		for (var evtName in evt){
 			method(target, evtName, evt[evtName]);
 		}
+		return true;
+	}
+
+	//Swap params, if callback & param are changed places
+	if (isFn(param) && !isFn(fn)) {
+		method.apply(this, [target, evt, param, fn].concat(slice(args, 4)));
 		return true;
 	}
 
@@ -831,7 +820,7 @@ module.exports = function(method, args, ignoreFn){
 		return true;
 	}
 };
-},{"mutype/is-array-like":undefined,"mutype/is-object":7,"sliced":11}],"mutype/is-array-like":[function(require,module,exports){
+},{"mutype/is-array-like":undefined,"mutype/is-fn":6,"mutype/is-object":7,"sliced":11}],"mutype/is-array-like":[function(require,module,exports){
 var isString = require('./is-string');
 var isArray = require('./is-array');
 var isFn = require('./is-fn');

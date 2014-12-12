@@ -18,6 +18,7 @@ var closest = typeof document !== 'undefined' ? require('query-relative/closest'
  */
 function delegate(target, evt, fn, selector){
 	if (redirect(delegate, arguments)) return;
+
 	if (!closest) return;
 
 	return on(target, evt, fn, function(e){
