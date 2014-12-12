@@ -18,7 +18,7 @@ var on = require('./on');
 function pass(target, evt, fn, condition){
 	if (redirect(pass, arguments)) return;
 
-	var cb = function(e){
+	var cb = function(){
 		if (condition.apply(this, arguments)) {
 			return fn.apply(this, arguments);
 		}

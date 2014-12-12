@@ -339,6 +339,50 @@ describe('Regression', function(){
 	});
 
 
+	it('Delegate with swapped order of params', function(){
+			if (!doc) return;
+
+		var i = 0, j = 0;
+		var el = document.createElement('div');
+		document.body.appendChild(el);
+
+		var inc = function(){
+			i++;
+		};
+
+		delegate(document, 'hello', 'p, div, .some', inc);
+
+		var sideLink = document.createElement('span');
+		document.body.appendChild(sideLink);
+
+		on(sideLink, 'hello', function(){
+			j++;
+		});
+
+		//emit not bubbling evt
+		emit(document.body, 'hello');
+		assert.equal(i, 0);
+
+		//emit bubbling evt on passing element
+		emit(el, 'hello', null, true);
+		assert.equal(i, 1);
+
+		//emit not passing element bubbling evt (should be ignored)
+		emit(sideLink, 'hello', null, true);
+		assert.equal(i, 1);
+		assert.equal(j, 1);
+
+
+		//unbind delegate
+		off(document, 'hello');
+
+		//emit bubbling evt on passing element (should be ignored)
+		emit(el, 'hello', null, true);
+		assert.equal(i, 1);
+		assert.equal(j, 1);
+	});
+
+
 	it('Keypass', function(){
 		if (!doc) return;
 

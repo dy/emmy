@@ -11,16 +11,23 @@
 
 var isArrayLike = require('mutype/is-array-like');
 var isObject = require('mutype/is-object');
+var isFn = require('mutype/is-fn');
 var slice = require('sliced');
 
 module.exports = function(method, args, ignoreFn){
-	var target = args[0], evt = args[1], fn = args[2];
+	var target = args[0], evt = args[1], fn = args[2], param = args[3];
 
 	//batch events
 	if (isObject(evt)){
 		for (var evtName in evt){
 			method(target, evtName, evt[evtName]);
 		}
+		return true;
+	}
+
+	//Swap params, if callback & param are changed places
+	if (isFn(param) && !isFn(fn)) {
+		method.apply(this, [target, evt, param, fn].concat(slice(args, 4)));
 		return true;
 	}
 
