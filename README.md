@@ -143,7 +143,6 @@ Function | Description
 `later(target, event, callback, delay)` | Bind an event handler which triggers a _delay_ later than actual event occures.
 `throttle(target, event, callback, interval)` | Bind an event handler which won’t be called more often than an _interval_.
 `delegate(target, event, callback, selector)` | Bind an event handler catching bubbling events from target’s descendants.
-`pass(target, event, callback, condition)` | Bind an event handler which triggers only if _condition_ passes. Condition can be any function, where the first argument is the event.
 `keypass(target, event, callback, keylist)` | Bind an event handler which triggers only if `e.which` or `e.keyCode` is one from the defined _keylist_. Any [keyname](http://github.com/dfcreative/keyname) can be declared instead of a code.
 `listeners(target [, event])` | Get list of listeners registered for an event.
 

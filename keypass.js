@@ -4,7 +4,6 @@
 
 module.exports = keypass;
 
-var pass = require('./pass');
 var keyDict = require('key-name');
 var lower = require('mustring/lower');
 var isArray = require('mutype/is-array');
@@ -29,7 +28,7 @@ function keypass(target, evt, fn, keys){
 	keys = isArray(keys) ? keys : isString(keys) ? keys.split(/\s*,\s*/) : [keys];
 	keys = keys.map(lower);
 
-	return pass(target, evt, fn, function(e){
+	return on(target, evt, fn, function(e){
 		var key, which = e.which !== undefined ? e.which : e.keyCode;
 		for (var i = keys.length; i--;){
 			key = keys[i];
