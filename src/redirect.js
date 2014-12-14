@@ -14,13 +14,19 @@ var isObject = require('mutype/is-object');
 var isFn = require('mutype/is-fn');
 var slice = require('sliced');
 
-module.exports = function(method, args, ignoreFn){
+
+module.exports = redirect;
+
+
+function redirect(method, args, ignoreFn){
 	var target = args[0], evt = args[1], fn = args[2], param = args[3];
 
 	//batch events
 	if (isObject(evt)){
 		for (var evtName in evt){
-			method(target, evtName, evt[evtName]);
+			if (!redirect(method, [target, evtName, evt[evtName]])) {
+				method.apply(this, [target, evtName, evt[evtName]]);
+			}
 		}
 		return true;
 	}

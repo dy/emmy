@@ -17,9 +17,6 @@ var redirect = require('./src/redirect');
  * @return {[type]} [description]
  */
 function off(target, evt, fn){
-	//parse args
-	if (redirect(off, arguments)) return;
-
 	var callbacks, i;
 
 	//unbind all listeners if no fn specified
@@ -37,12 +34,10 @@ function off(target, evt, fn){
 
 		//unbind all if no evtRef defined
 		if (evt === undefined) {
-			for (var evtName in callbacks) {
-				off(target, evtName, callbacks[evtName]);
-			}
+			return redirect(off, [target, callbacks]);
 		}
 		else if (callbacks[evt]) {
-			off(target, evt, callbacks[evt]);
+			return redirect(off, [target, evt, callbacks[evt]]);
 		}
 
 		return;

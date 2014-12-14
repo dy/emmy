@@ -1,3 +1,7 @@
+/**
+ * Main tests file
+ */
+
 var doc = typeof document === 'undefined' ? undefined : document;
 var win = typeof window === 'undefined' ? undefined : window;
 
@@ -33,16 +37,23 @@ describe('Regression', function(){
 		Emitter.on(a, 'click', function(){i++});
 		Emitter.emit(a, 'click');
 		assert.equal(i, 1);
-
 		Emitter.off(a, 'click');
 		Emitter.emit(a, 'click');
 		assert.equal(i, 1);
 	});
 
 	it ('removeAll', function(){
-		var a = {};
-		Emitter.on(a, 'y', function(){});
-		Emitter.off(a, 'x');
+		var a = {}, i = 0;
+
+		Emitter.on(a, 'y', function(){i++});
+		Emitter.on(a, 'y', function(){i++});
+		Emitter.emit(a, 'y');
+
+		assert.equal(i, 2);
+		Emitter.off(a);
+
+		Emitter.emit(a, 'y');
+		assert.equal(i, 2);
 	});
 
 	it.skip('IE8, IE9', function(){
@@ -217,12 +228,12 @@ describe('Regression', function(){
 	it('List of targets', function(){
 		var x = {}, y = {}, i = 0, j = 0;
 
-		on([x, y], ['x', 'y'], [
+		Emitter.on([x, y], ['x', 'y'], [
 			function(e,f){i+=e+f},
 			function(e, f){j+=e+f}
 		]);
 
-		emit([x,y], ['x', 'y'], 1, 2);
+		Emitter.emit([x,y], ['x', 'y'], 1, 2);
 
 		assert.equal(i, 12);
 		assert.equal(j, 12);
@@ -238,13 +249,13 @@ describe('Regression', function(){
 		var x = {}, i = 0, j = 0;
 
 		Emitter.on(x, {
-			'x': function(e){i+=e},
+			x: function(e){i+=e},
 			y: function(e){j+=e}
 		});
 
 		Emitter.emit(x, {
-			'x': 2,
-			'y': 3
+			x: 2,
+			y: 3
 		});
 
 		assert.equal(i, 2);
@@ -252,7 +263,7 @@ describe('Regression', function(){
 
 
 		Emitter.off(x, {
-			'x': undefined,
+			x: undefined,
 			y: undefined
 		});
 

@@ -6,29 +6,35 @@
 
 var Emmy = require('./Emitter');
 
-var	on = require('./on'),
-	off = require('./off'),
-	once = require('./once'),
-	emit = require('./emit'),
-	listeners = require('./listeners');
+var	_on = require('./on'),
+	_off = require('./off'),
+	_once = require('./once'),
+	_emit = require('./emit'),
+	listeners = require('./listeners'),
+	redirect = require('./src/redirect');
 
 //add static wrapper API
-Emmy['on'] = function(a,b,c){
-	on(a,b,c);
+var on = Emmy['on'] = function(a,b,c){
+	if (redirect(on, arguments)) return Emmy;
+	_on.apply(this, arguments);
 	return Emmy;
 };
-Emmy['once'] = function(a,b,c){
-	once(a,b,c);
+var once = Emmy['once'] = function(a,b,c){
+	if (redirect(once, arguments)) return Emmy;
+	_once(a,b,c);
 	return Emmy;
 };
-Emmy['off'] = function(a,b,c){
-	off(a,b,c);
+var off = Emmy['off'] = function(a,b,c){
+	if (redirect(off, arguments)) return Emmy;
+	_off(a,b,c);
 	return Emmy;
 };
-Emmy['emit'] = function(a,b,c,d){
-	emit(a,b,c,d);
+var emit = Emmy['emit'] = function(a,b,c,d){
+	if (redirect(emit, arguments, true)) return Emmy;
+	_emit.apply(this, arguments);
 	return Emmy;
 };
+
 Emmy['listeners'] = listeners;
 Emmy['hasListeners'] = function(a,b,c){
 	return !!listeners(a,b,c).length;

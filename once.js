@@ -4,9 +4,8 @@
 module.exports = once;
 
 var icicle = require('icicle');
-var off = require('./off');
 var on = require('./on');
-var redirect = require('./src/redirect');
+var off = require('./off');
 
 
 /**
@@ -15,9 +14,6 @@ var redirect = require('./src/redirect');
  * @return {target}
  */
 function once(target, evt, fn){
-	//parse args
-	if (redirect(once, arguments)) return;
-
 	//get target once method, if any
 	var onceMethod = target['once'] || target['one'] || target['addOnceEventListener'] || target['addOnceListener'];
 

@@ -6,7 +6,6 @@ module.exports = on;
 
 var icicle = require('icicle');
 var listeners = require('./listeners');
-var redirect = require('./src/redirect');
 
 
 /**
@@ -20,8 +19,6 @@ var redirect = require('./src/redirect');
  * @return {object} A target
  */
 function on(target, evt, fn, condition){
-	//parse args
-	if (redirect(on, arguments)) return;
 
 	//get target on method, if any
 	var onMethod = target['on'] || target['addEventListener'] || target['addListener'];

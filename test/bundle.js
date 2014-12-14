@@ -50,12 +50,9 @@ function delegate(target, evt, fn, selector){
 var icicle = require('icicle');
 var listeners = require('./listeners');
 var slice = require('sliced');
-var redirect = require('./src/redirect');
 
 
 module.exports = emit;
-
-//TODO: think to pass list of args to `emit`
 
 
 /** detect env */
@@ -66,6 +63,7 @@ var win = typeof window === 'undefined' ? undefined : window;
 
 /**
  * Emit an event, optionally with data or bubbling
+ * Accept only single elements/events
  *
  * @param {string} eventName An event name, e. g. 'click'
  * @param {*} data Any data to pass to event.details (DOM) or event.data (elsewhere)
@@ -75,11 +73,7 @@ var win = typeof window === 'undefined' ? undefined : window;
  * @return {target} a target
  */
 function emit(target, eventName, data, bubbles){
-	//parse args
-	if (redirect(emit, arguments, true)) return;
-
 	var emitMethod, evt = eventName;
-
 
 	//Create proper event for DOM objects
 	if (target.nodeType || target === doc || target === win) {
@@ -143,7 +137,7 @@ function emit(target, eventName, data, bubbles){
 
 	return;
 }
-},{"./listeners":1,"./src/redirect":13,"icicle":2,"sliced":11}],"./keypass":[function(require,module,exports){
+},{"./listeners":1,"icicle":2,"sliced":11}],"./keypass":[function(require,module,exports){
 /**
  * @module  emmy/keypass
  */
@@ -237,9 +231,6 @@ var redirect = require('./src/redirect');
  * @return {[type]} [description]
  */
 function off(target, evt, fn){
-	//parse args
-	if (redirect(off, arguments)) return;
-
 	var callbacks, i;
 
 	//unbind all listeners if no fn specified
@@ -257,12 +248,10 @@ function off(target, evt, fn){
 
 		//unbind all if no evtRef defined
 		if (evt === undefined) {
-			for (var evtName in callbacks) {
-				off(target, evtName, callbacks[evtName]);
-			}
+			return redirect(off, [target, callbacks]);
 		}
 		else if (callbacks[evt]) {
-			off(target, evt, callbacks[evt]);
+			return redirect(off, [target, evt, callbacks[evt]]);
 		}
 
 		return;
@@ -314,7 +303,6 @@ module.exports = once;
 var icicle = require('icicle');
 var off = require('./off');
 var on = require('./on');
-var redirect = require('./src/redirect');
 
 
 /**
@@ -323,8 +311,6 @@ var redirect = require('./src/redirect');
  * @return {target}
  */
 function once(target, evt, fn){
-	//parse args
-	if (redirect(once, arguments)) return;
 
 	//get target once method, if any
 	var onceMethod = target['once'] || target['one'] || target['addOnceEventListener'] || target['addOnceListener'];
@@ -359,7 +345,7 @@ function once(target, evt, fn){
 
 	return cb;
 }
-},{"./off":undefined,"./on":undefined,"./src/redirect":13,"icicle":2}],"./on":[function(require,module,exports){
+},{"./off":undefined,"./on":undefined,"icicle":2}],"./on":[function(require,module,exports){
 /**
  * @module emmy/on
  */
@@ -368,7 +354,6 @@ module.exports = on;
 
 var icicle = require('icicle');
 var listeners = require('./listeners');
-var redirect = require('./src/redirect');
 
 
 /**
@@ -382,8 +367,6 @@ var redirect = require('./src/redirect');
  * @return {object} A target
  */
 function on(target, evt, fn, condition){
-	//parse args
-	if (redirect(on, arguments)) return;
 
 	//get target on method, if any
 	var onMethod = target['on'] || target['addEventListener'] || target['addListener'];
@@ -421,7 +404,7 @@ function on(target, evt, fn, condition){
 
 	return;
 }
-},{"./listeners":1,"./src/redirect":13,"icicle":2}],"./throttle":[function(require,module,exports){
+},{"./listeners":1,"icicle":2}],"./throttle":[function(require,module,exports){
 /**
  * Throttle function call.
  *
@@ -773,13 +756,19 @@ var isObject = require('mutype/is-object');
 var isFn = require('mutype/is-fn');
 var slice = require('sliced');
 
-module.exports = function(method, args, ignoreFn){
+
+module.exports = redirect;
+
+
+function redirect(method, args, ignoreFn){
 	var target = args[0], evt = args[1], fn = args[2], param = args[3];
 
 	//batch events
 	if (isObject(evt)){
 		for (var evtName in evt){
-			method(target, evtName, evt[evtName]);
+			if (!redirect(method, [target, evtName, evt[evtName]])) {
+				method.apply(this, [target, evtName, evt[evtName]]);
+			}
 		}
 		return true;
 	}

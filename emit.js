@@ -4,12 +4,9 @@
 var icicle = require('icicle');
 var listeners = require('./listeners');
 var slice = require('sliced');
-var redirect = require('./src/redirect');
 
 
 module.exports = emit;
-
-//TODO: think to pass list of args to `emit`
 
 
 /** detect env */
@@ -20,6 +17,7 @@ var win = typeof window === 'undefined' ? undefined : window;
 
 /**
  * Emit an event, optionally with data or bubbling
+ * Accept only single elements/events
  *
  * @param {string} eventName An event name, e. g. 'click'
  * @param {*} data Any data to pass to event.details (DOM) or event.data (elsewhere)
@@ -29,11 +27,7 @@ var win = typeof window === 'undefined' ? undefined : window;
  * @return {target} a target
  */
 function emit(target, eventName, data, bubbles){
-	//parse args
-	if (redirect(emit, arguments, true)) return;
-
 	var emitMethod, evt = eventName;
-
 
 	//Create proper event for DOM objects
 	if (target.nodeType || target === doc || target === win) {
