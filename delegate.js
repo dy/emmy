@@ -17,9 +17,15 @@ var closest = typeof document !== 'undefined' ? require('query-relative/closest'
  * @return {function} A callback
  */
 function delegate(target, evt, fn, selector){
+	return on(target, evt, delegate.wrap(target, evt, fn, selector));
+}
+
+
+delegate.wrap = function(target, evt, fn, selector){
+	//ignore non-DOM
 	if (!closest) return;
 
-	return on(target, evt, fn, function(e){
+	return on.wrap(target, evt, fn, function(e){
 		var el = e.target;
 
 		var holderEl = closest(el, selector);
@@ -39,4 +45,4 @@ function delegate(target, evt, fn, selector){
 			return true;
 		}
 	});
-}
+};

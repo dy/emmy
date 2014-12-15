@@ -1,8 +1,8 @@
 /**
- * @module  emmy/delay
+ * @module  emmy/later
  */
 
-module.exports = delay;
+module.exports = later;
 
 
 var on = require('./on');
@@ -13,7 +13,13 @@ var on = require('./on');
  *
  * @return {Function} Wrapped handler
  */
-function delay(target, evt, fn, interval) {
+function later(target, evt, fn, interval) {
+	return on(target, evt, later.wrap(target, evt, fn, interval));
+}
+
+
+/** Return wrapped callback */
+later.wrap = function(target, evt, fn, interval){
 	var cb = function(){
 		var args = arguments;
 		var self = this;
@@ -25,7 +31,5 @@ function delay(target, evt, fn, interval) {
 
 	cb.fn = fn;
 
-	on(target, evt, cb);
-
 	return cb;
-}
+};

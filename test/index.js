@@ -463,7 +463,7 @@ describe('Regression', function(){
 		setTimeout(function(){
 			assert.equal(i, 1);
 			done();
-		}, 110);
+		}, 120);
 	});
 });
 

@@ -18,9 +18,15 @@ var closest = typeof document !== 'undefined' ? require('query-relative/closest'
  * @return {function} A callback
  */
 function delegate(target, evt, fn, selector){
+	return on(target, evt, delegate.wrap(target, evt, fn, selector));
+}
+
+
+delegate.wrap = function(target, evt, fn, selector){
+	//ignore non-DOM
 	if (!closest) return;
 
-	return on(target, evt, fn, function(e){
+	return on.wrap(target, evt, fn, function(e){
 		var el = e.target;
 
 		var holderEl = closest(el, selector);
@@ -40,7 +46,7 @@ function delegate(target, evt, fn, selector){
 			return true;
 		}
 	});
-}
+};
 },{"./on":undefined,"query-relative/closest":10}],"./emit":[function(require,module,exports){
 /**
  * @module emmy/emit
@@ -157,6 +163,11 @@ var isString = require('mutype/is-string');
  * @return {Function} Wrapped handler
  */
 function keypass(target, evt, fn, keys){
+	return on(target, evt,  keypass.wrap(target, evt, fn, keys));
+}
+
+/** Return wrapped callback filtering keys */
+keypass.wrap = function(target, evt, fn, keys){
 	//ignore empty keys
 	if (!keys) return;
 
@@ -164,20 +175,20 @@ function keypass(target, evt, fn, keys){
 	keys = isArray(keys) ? keys : isString(keys) ? keys.split(/\s*,\s*/) : [keys];
 	keys = keys.map(lower);
 
-	return on(target, evt, fn, function(e){
+	return on.wrap(target, evt, fn, function(e){
 		var key, which = e.which !== undefined ? e.which : e.keyCode;
 		for (var i = keys.length; i--;){
 			key = keys[i];
 			if (which == key || keyDict[key] == which) return true;
 		}
 	});
-}
+};
 },{"./on":undefined,"key-name":3,"mustring/lower":4,"mutype/is-array":5,"mutype/is-string":9}],"./later":[function(require,module,exports){
 /**
- * @module  emmy/delay
+ * @module  emmy/later
  */
 
-module.exports = delay;
+module.exports = later;
 
 
 var on = require('./on');
@@ -188,7 +199,13 @@ var on = require('./on');
  *
  * @return {Function} Wrapped handler
  */
-function delay(target, evt, fn, interval) {
+function later(target, evt, fn, interval) {
+	return on(target, evt, later.wrap(target, evt, fn, interval));
+}
+
+
+/** Return wrapped callback */
+later.wrap = function(target, evt, fn, interval){
 	var cb = function(){
 		var args = arguments;
 		var self = this;
@@ -200,10 +217,8 @@ function delay(target, evt, fn, interval) {
 
 	cb.fn = fn;
 
-	on(target, evt, cb);
-
 	return cb;
-}
+};
 },{"./on":undefined}],"./off":[function(require,module,exports){
 /**
  * @module emmy/off
@@ -284,9 +299,6 @@ function off(target, evt, fn){
 
 	return;
 }
-
-
-
 },{"./listeners":1,"./src/invoke":14,"icicle":2}],"./once":[function(require,module,exports){
 /**
  * @module emmy/once
@@ -325,6 +337,17 @@ function once(target, evt, fn){
 
 	//use own events
 	//wrap callback to once-call
+	var cb = once.wrap(target, evt, fn);
+
+	//bind wrapper default way - in case of own emit method
+	on(target, evt, cb);
+
+	return cb;
+}
+
+
+/** Return once wrapper */
+once.wrap = function (target, evt, fn) {
 	var cb = function() {
 		off(target, evt, cb);
 		fn.apply(target, arguments);
@@ -332,11 +355,8 @@ function once(target, evt, fn){
 
 	cb.fn = fn;
 
-	//bind wrapper default way - in case of own emit method
-	on(target, evt, cb);
-
 	return cb;
-}
+};
 },{"./off":undefined,"./on":undefined,"icicle":2}],"./on":[function(require,module,exports){
 /**
  * @module emmy/on
@@ -369,12 +389,7 @@ function on(target, evt, fn, condition){
 
 	//apply condition wrapper
 	if (condition) {
-		cb = function(){
-			if (condition.apply(this, arguments)) {
-				return fn.apply(this, arguments);
-			}
-		};
-		cb.fn = fn;
+		cb = on.wrap(fn, condition);
 	} else {
 		cb = fn;
 	}
@@ -393,8 +408,24 @@ function on(target, evt, fn, condition){
 	}
 
 	//save the callback anyway
-	listeners.add(target, evt, cb);
+	listeners.add(target, evt, cb, condition);
 
+
+	return cb;
+}
+
+
+/**
+ * Wrap an fn with condition passing
+ */
+on.wrap = function(target, evt, fn, condition){
+	var cb = function() {
+		if (condition.apply(target, arguments)) {
+			return fn.apply(target, arguments);
+		}
+	};
+
+	cb.fn = fn;
 
 	return cb;
 }
@@ -404,6 +435,7 @@ function on(target, evt, fn, condition){
  *
  * @module emmy/throttle
  */
+
 
 module.exports = throttle;
 
@@ -425,6 +457,13 @@ var off = require('./off');
 function throttle(target, evt, fn, interval){
 	//FIXME: find cases where objects has own throttle method, then use target’s throttle
 
+	//bind wrapper
+	return on(target, evt, throttle.wrap(target, evt, fn, interval));
+}
+
+
+/** Return wrapped with interval fn */
+throttle.wrap = function(target, evt, fn, interval){
 	//wrap callback
 	var cb = function() {
 		//do call
@@ -441,11 +480,8 @@ function throttle(target, evt, fn, interval){
 
 	cb.fn = fn;
 
-	//bind wrapper
-	on(target, evt, cb);
-
 	return cb;
-}
+};
 },{"./off":undefined,"./on":undefined}],1:[function(require,module,exports){
 /**
  * A storage of per-target callbacks.

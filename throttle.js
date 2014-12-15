@@ -4,6 +4,7 @@
  * @module emmy/throttle
  */
 
+
 module.exports = throttle;
 
 var on = require('./on');
@@ -24,6 +25,13 @@ var off = require('./off');
 function throttle(target, evt, fn, interval){
 	//FIXME: find cases where objects has own throttle method, then use target’s throttle
 
+	//bind wrapper
+	return on(target, evt, throttle.wrap(target, evt, fn, interval));
+}
+
+
+/** Return wrapped with interval fn */
+throttle.wrap = function(target, evt, fn, interval){
 	//wrap callback
 	var cb = function() {
 		//do call
@@ -40,8 +48,5 @@ function throttle(target, evt, fn, interval){
 
 	cb.fn = fn;
 
-	//bind wrapper
-	on(target, evt, cb);
-
 	return cb;
-}
+};

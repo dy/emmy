@@ -29,12 +29,7 @@ function on(target, evt, fn, condition){
 
 	//apply condition wrapper
 	if (condition) {
-		cb = function(){
-			if (condition.apply(this, arguments)) {
-				return fn.apply(this, arguments);
-			}
-		};
-		cb.fn = fn;
+		cb = on.wrap(fn, condition);
 	} else {
 		cb = fn;
 	}
@@ -53,8 +48,24 @@ function on(target, evt, fn, condition){
 	}
 
 	//save the callback anyway
-	listeners.add(target, evt, cb);
+	listeners.add(target, evt, cb, condition);
 
+
+	return cb;
+}
+
+
+/**
+ * Wrap an fn with condition passing
+ */
+on.wrap = function(target, evt, fn, condition){
+	var cb = function() {
+		if (condition.apply(target, arguments)) {
+			return fn.apply(target, arguments);
+		}
+	};
+
+	cb.fn = fn;
 
 	return cb;
 }

@@ -19,6 +19,11 @@ var isString = require('mutype/is-string');
  * @return {Function} Wrapped handler
  */
 function keypass(target, evt, fn, keys){
+	return on(target, evt,  keypass.wrap(target, evt, fn, keys));
+}
+
+/** Return wrapped callback filtering keys */
+keypass.wrap = function(target, evt, fn, keys){
 	//ignore empty keys
 	if (!keys) return;
 
@@ -26,11 +31,11 @@ function keypass(target, evt, fn, keys){
 	keys = isArray(keys) ? keys : isString(keys) ? keys.split(/\s*,\s*/) : [keys];
 	keys = keys.map(lower);
 
-	return on(target, evt, fn, function(e){
+	return on.wrap(target, evt, fn, function(e){
 		var key, which = e.which !== undefined ? e.which : e.keyCode;
 		for (var i = keys.length; i--;){
 			key = keys[i];
 			if (which == key || keyDict[key] == which) return true;
 		}
 	});
-}
+};

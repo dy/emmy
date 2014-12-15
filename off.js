@@ -77,5 +77,3 @@ function off(target, evt, fn){
 
 	return;
 }
-
-

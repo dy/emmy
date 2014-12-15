@@ -5,7 +5,6 @@
  */
 
 
-//TODO: add space-separated list of events
 //TODO: normalize cross-browser events like animationend
 
 
