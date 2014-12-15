@@ -4,7 +4,6 @@
 
 module.exports = delegate;
 
-var redirect = require('./src/redirect');
 var on = require('./on');
 var closest = typeof document !== 'undefined' ? require('query-relative/closest') : null;
 
@@ -18,8 +17,6 @@ var closest = typeof document !== 'undefined' ? require('query-relative/closest'
  * @return {function} A callback
  */
 function delegate(target, evt, fn, selector){
-	if (redirect(delegate, arguments)) return;
-
 	if (!closest) return;
 
 	return on(target, evt, fn, function(e){

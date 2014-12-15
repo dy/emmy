@@ -7,8 +7,8 @@ module.exports = keypass;
 var keyDict = require('key-name');
 var lower = require('mustring/lower');
 var isArray = require('mutype/is-array');
+var on = require('./on');
 var isString = require('mutype/is-string');
-var redirect = require('./src/redirect');
 
 
 /**
@@ -19,8 +19,6 @@ var redirect = require('./src/redirect');
  * @return {Function} Wrapped handler
  */
 function keypass(target, evt, fn, keys){
-	if (redirect(keypass, arguments)) return;
-
 	//ignore empty keys
 	if (!keys) return;
 

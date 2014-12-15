@@ -1,16 +1,19 @@
 /**
  * @module emmy/on
  */
-module.exports = on;
 
 
 var icicle = require('icicle');
 var listeners = require('./listeners');
 
 
+module.exports = on;
+
+
 /**
- * Bind fn to the target
+ * Bind fn to a target.
  *
+ * @param {*} targte A single target to bind evt
  * @param {string} evt An event name
  * @param {Function} fn A callback
  * @param {Function}? condition An optional filtering fn for a callback
@@ -19,7 +22,6 @@ var listeners = require('./listeners');
  * @return {object} A target
  */
 function on(target, evt, fn, condition){
-
 	//get target on method, if any
 	var onMethod = target['on'] || target['addEventListener'] || target['addListener'];
 

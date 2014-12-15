@@ -8,7 +8,6 @@ module.exports = throttle;
 
 var on = require('./on');
 var off = require('./off');
-var redirect = require('./src/redirect');
 
 
 
@@ -23,8 +22,6 @@ var redirect = require('./src/redirect');
  * @return {Function} A wrapped callback
  */
 function throttle(target, evt, fn, interval){
-	if (redirect(throttle, arguments)) return;
-
 	//FIXME: find cases where objects has own throttle method, then use target’s throttle
 
 	//wrap callback

@@ -5,7 +5,7 @@ module.exports = off;
 
 var icicle = require('icicle');
 var listeners = require('./listeners');
-var redirect = require('./src/redirect');
+var invoke = require('./src/invoke');
 
 
 /**
@@ -34,10 +34,10 @@ function off(target, evt, fn){
 
 		//unbind all if no evtRef defined
 		if (evt === undefined) {
-			return redirect(off, [target, callbacks]);
+			return invoke(off, [target, callbacks]);
 		}
 		else if (callbacks[evt]) {
-			return redirect(off, [target, evt, callbacks[evt]]);
+			return invoke(off, [target, evt, callbacks[evt]]);
 		}
 
 		return;

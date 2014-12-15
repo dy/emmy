@@ -5,46 +5,47 @@
  *
  * Supposed to be used internally by emmy.
  *
- * @module emmy/redirect
+ * @module emmy/invoke
  */
 
 
+module.exports = invoke;
+
+
 var isArrayLike = require('mutype/is-array-like');
+var isArray = require('mutype/is-array');
 var isObject = require('mutype/is-object');
+var isString = require('mutype/is-string');
+var isNodeList = require('mutype/is-node-list');
 var isFn = require('mutype/is-fn');
 var slice = require('sliced');
 
 
-module.exports = redirect;
-
-
-function redirect(method, args, ignoreFn){
+function invoke(method, args, ignoreFn) {
 	var target = args[0], evt = args[1], fn = args[2], param = args[3];
 
 	//batch events
-	if (isObject(evt)){
+	if (isObject(evt)) {
 		for (var evtName in evt){
-			if (!redirect(method, [target, evtName, evt[evtName]])) {
-				method.apply(this, [target, evtName, evt[evtName]]);
-			}
+			invoke(method, [target, evtName, evt[evtName]]);
 		}
-		return true;
+		return;
 	}
 
 	//Swap params, if callback & param are changed places
 	if (isFn(param) && !isFn(fn)) {
-		method.apply(this, [target, evt, param, fn].concat(slice(args, 4)));
-		return true;
+		invoke(method, [target, evt, param, fn].concat(slice(args, 4)));
+		return;
 	}
 
 	//bind all callbacks, if passed a list (and no ignoreFn flag)
-	if (isArrayLike(fn) && !ignoreFn){
+	if (isArrayLike(fn) && !ignoreFn) {
 		args = slice(args, 3);
 		for (var i = fn.length; i--;){
 			// method(target, evt, fn[i]);
-			method.apply(this, [target, evt, fn[i]].concat(args));
+			invoke(method, [target, evt, fn[i]].concat(args));
 		}
-		return true;
+		return;
 	}
 
 	//bind all events, if passed a list
@@ -52,18 +53,27 @@ function redirect(method, args, ignoreFn){
 		args = slice(args, 2);
 		for (var i = evt.length; i--;){
 			// method(target, evt[i], fn);
-			method.apply(this, [target, evt[i]].concat(args));
+			invoke(method, [target, evt[i]].concat(args));
 		}
-		return true;
+		return;
 	}
 
 	//bind all targets, if passed a list
-	if (isArrayLike(target)) {
+	if (isArray(target) || isNodeList(target)) {
 		args = slice(args, 1);
 		for (var i = target.length; i--;){
-			// method(target[i], evt, fn);
-			method.apply(this, [target[i]].concat(args));
+			invoke(method, [target[i]].concat(args));
 		}
-		return true;
+		return;
 	}
-};
+
+
+	//invoke method for each space-separated event from a list
+	if (isString(evt)) {
+		evt.split(/\s+/).forEach(function(evt){
+			method.apply(this, [target, evt].concat(slice(args, 2)));
+		});
+	} else {
+		method.apply(this, args);
+	}
+}
