@@ -35,7 +35,7 @@ function once(target, evt, fn){
 
 	//use own events
 	//wrap callback to once-call
-	var cb = once.wrap(target, evt, fn);
+	var cb = once.wrap(target, evt, fn, off);
 
 	//bind wrapper default way - in case of own emit method
 	on(target, evt, cb);
@@ -44,8 +44,8 @@ function once(target, evt, fn){
 }
 
 
-/** Return once wrapper */
-once.wrap = function (target, evt, fn) {
+/** Return once wrapper, with optional special off passed */
+once.wrap = function (target, evt, fn, off) {
 	var cb = function() {
 		off(target, evt, cb);
 		fn.apply(target, arguments);
