@@ -5,6 +5,7 @@
 module.exports = delegate;
 
 var redirect = require('./src/redirect');
+var on = require('./on');
 var closest = typeof document !== 'undefined' ? require('query-relative/closest') : null;
 
 

@@ -46,7 +46,7 @@ function on(target, evt, fn, condition){
 			icicle.unfreeze(target, 'on' + evt);
 		}
 		else {
-			return;
+			return cb;
 		}
 	}
 
@@ -54,5 +54,5 @@ function on(target, evt, fn, condition){
 	listeners.add(target, evt, cb);
 
 
-	return;
+	return cb;
 }
