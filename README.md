@@ -7,26 +7,23 @@
 
 Emmy is **asbestos-free** event emitter and event utils for green components development.
 
-1. It emits events on any target: plain object, html element, jQuery set, Backbone model, [color](https://github.com/dfcreative/color) etc.
+1. Emits events on any target: plain object, element, jQuery, Backbone model, [color](https://github.com/dfcreative/color) etc.
 
-2. It is [fully compliant](https://rawgit.com/dfcreative/emmy/master/test/index.html) with [component-emitter](https://github.com/component/emitter).
+2. [Fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) with [component-emitter](https://github.com/component/emitter).
 
-3. It works both in browsers and _io_.
+3. Works both in browsers and _io_.
 
-4. It is tiny — full set of utils is only _2.3kb gzipped_.
+4. If methods or _Emitter class_ are used selectively as `require('emmy/<method>');`, then final build size is reduced even more.
 
-5. Each method or _Emitter_ can be used standalone as `require('emmy/<method>');`. That way final build size can be reduced even more.
-
-6. It provides additional event methods: _delegate_, _throttle_, _later_ and _keypass_. They can be required selectively.
+5. Provides additional event methods: _delegate_, _throttle_, _later_ and _keypass_.
 
 
-
-#### [Test it](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html), [feel it](http://jsfiddle.net/dfcreative/j2tquytv/).
+#### [Test it](https://rawgit.com/dfcreative/emmy/master/test/index.html), [feel it](http://jsfiddle.net/dfcreative/j2tquytv/).
 
 
 # Use
 
-For browser use browserify or standalone [emmy.js](/emmy.js).
+For browser use browserify or standalone [emmy.js](/emmy.js) (_2.3kb gzipped_).
 
 Install:
 
