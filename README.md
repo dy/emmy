@@ -13,7 +13,7 @@ Emmy is **asbestos-free** event emitter and event utils for green components dev
 
 3. Works both in browsers and _io_.
 
-4. If methods or _Emitter class_ are used selectively as `require('emmy/<method>');`, then final build size is reduced even more.
+4. Select methods as `require('emmy/<method>');` to reduce build size.
 
 5. Provides additional event methods: _delegate_, _throttle_, _later_ and _keypass_.
 
