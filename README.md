@@ -13,9 +13,12 @@ Emmy is **asbestos-free** event emitter and event utils for green components dev
 
 3. Works both in browsers and _io_.
 
-4. Select methods as `require('emmy/<method>');` to reduce build size.
+4. Provides _delegate_, _throttle_, _later_ and _keypass_ methods.
 
-5. Provides additional event methods: _delegate_, _throttle_, _later_ and _keypass_.
+5. _2.3 kb gzipped_.
+
+6. Select methods as `require('emmy/<method>');` to reduce build size.
+
 
 
 #### [Test it](https://rawgit.com/dfcreative/emmy/master/test/index.html), [feel it](http://jsfiddle.net/dfcreative/j2tquytv/).
@@ -23,7 +26,7 @@ Emmy is **asbestos-free** event emitter and event utils for green components dev
 
 # Use
 
-For browser use browserify or standalone [emmy.js](/emmy.js) (_2.3kb gzipped_).
+For browser use browserify or standalone [emmy.js](/emmy.js).
 
 Install:
 
