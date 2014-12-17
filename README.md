@@ -17,7 +17,7 @@ Emmy is **asbestos-free** event emitter and event utils for green components dev
 
 5. _2.3 kb gzipped_.
 
-6. Select methods as `require('emmy/<method>');` to reduce build size.
+6. Select methods as `require('emmy/<method>');` to reduce build size more.
 
 
 
@@ -163,10 +163,10 @@ Method | Description |
 
 # Afterword
 
-A comprehensive emitter notation reader - have a look at [ENot — event notation system](https://github.com/dfcreative/enot).
+Advanced components use [ENot (event notation system)](https://github.com/dfcreative/enot) — an easy wrapper for emmy with humanized event notation.
 
 
-There’s also a similar project - [emmitt](https://github.com/airportyh/emmitt), but it can’t emit bubbling events nor DOM-events, it does not provide an Emitter class, and a bunch of useful methods.
+There’s also a similar project - [emmitt](https://github.com/airportyh/emmitt), but it can’t emit bubbling events nor DOM-events, it does not provide an Emitter class and a bunch of useful methods.
 
 
 [![NPM](https://nodei.co/npm/emmy.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/emmy/)
