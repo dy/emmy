@@ -134,36 +134,41 @@ _Use:_ if only one specific event method is required or to reduce size of build.
 
 ### Standalone functions
 
-Function | Description
----|---
-`on(target, event, callback)` | Bind event handler to a target.
-`once(target, event, callback)` | Bind single-shot event handler to a target.
-`off(target, event?, callback?)` | Unbind event handler from a target. If calback isn’t passed - unbind all callbacks for an event. If no event passed - unbind all.
-`emit(target, event, callback, data1, data2, ...)` | Emit an event on a target, passing _dataN_. If target is an element then _data1_ is _e.details_, _data2_ is _bubbles_. So to fire bubbling event, call `emit(element, 'click', null, true)`.
-`later(target, event, callback, delay)` | Bind an event handler which triggers a _delay_ later than actual event occures.
-`throttle(target, event, callback, interval)` | Bind an event handler which won’t be called more often than an _interval_.
-`delegate(target, event, callback, selector)` | Bind an event handler catching bubbling events from target’s descendants.
-`keypass(target, event, callback, keylist)` | Bind an event handler which triggers only if `e.which` or `e.keyCode` is one from the defined _keylist_. Any [keyname](http://github.com/dfcreative/keyname) can be declared instead of a code.
-`listeners(target [, event])` | Get list of listeners registered for an event.
+Process single target/event/callback.
+
+Function | Params | Description
+---|---|---
+`on` | target, event, callback | Bind event handler to a target.
+`once` | target, event, callback | Bind single-shot event handler to a target.
+`off` | target, event?, callback? | Unbind event handler from a target. If calback isn’t passed - unbind all callbacks for an event. If no event passed - unbind all.
+`emit` | target, event, callback, data1, data2, ... | Emit an event on a target, passing _dataN_. If target is an element then _data1_ is _e.details_, _data2_ is _bubbles_. So to fire bubbling event, call `emit` | element, 'click', null, true.
+`later` | target, event, callback, delay | Bind an event handler which triggers a _delay_ later than actual event occures.
+`throttle` | target, event, callback, interval | Bind an event handler which won’t be called more often than an _interval_.
+`delegate` | target, event, callback, selector | Bind an event handler catching bubbling events from target’s descendants.
+`not` | target, event, callback, selector | Bind an event handler catching events from target’s descendants ignoring ones that match selector.
+`keypass` | target, event, callback, keylist | Bind an event handler which triggers only if `e.which` or `e.keyCode` is one from the defined _keylist_. Any [keyname](http://github.com/dfcreative/keyname) can be declared instead of a code.
+`listeners` | target [, event] | Get list of listeners registered for an event.
 
 
 
-### Emitter prototype methods
+### Emmy methods
+
+Can be used both as static and prototype methods: `Emmy.on(<target>, <event>, <method>, ...<data>)` and `emitter.on(<event>, <handler>, ...<data>)`.
 
 Method | Description |
 --- | --- | --- |
-`.on(event, handler)` | Register _handler_ for _event_.
-`.once(event, handler)` | Register single-shot _event_ _handler_.
-`.off([event] [, handler] )` | Remove an _event_ _handler_. If no _handler_ passed - remove all registered handlers. In no _event_ passed - remove all registered listeners for all events.
-`.emit(event [, data1] [, data2] ...)` | Emit an _event_ with params passed. Each argument after _event_ will be passed to the callback.
-`.listeners(event)`| Get list of listeners for an `event`.
-`.hasListeners(event)`| Check if emitter has `event` handlers.
+`.on` | event, handler | Register _handler_ for _event_.
+`.once` | event, handler | Register single-shot _event_ _handler_.
+`.off` | event, handler  | Remove an _event_ _handler_. If no _handler_ passed - remove all registered handlers. In no _event_ passed - remove all registered listeners for all events.
+`.emit` | event, data1, data2, ... | Emit an _event_ with params passed. Each argument after _event_ will be passed to the callback.
+`.listeners` | event | Get list of listeners for an `event`.
+`.hasListeners` | event | Check if emitter has `event` handlers.
 
 
 
 # Afterword
 
-Advanced components use [ENot (event notation system)](https://github.com/dfcreative/enot) — an easy wrapper for emmy with humanized event notation.
+[ENot (event notation system)](https://github.com/dfcreative/enot) — an easy wrapper for emmy with humanized event notation.
 
 
 There’s also a similar project - [emmitt](https://github.com/airportyh/emmitt), but it can’t emit bubbling events nor DOM-events, it does not provide an Emitter class and a bunch of useful methods.

@@ -22,7 +22,7 @@ describe('Regression', function(){
 		assert.equal(i, 1);
 	});
 
-	it ('removeAll', function(){
+	it('removeAll', function(){
 		var a = {}, i = 0;
 
 		Emitter.on(a, 'y', function(){i++});
@@ -37,7 +37,6 @@ describe('Regression', function(){
 	});
 
 	it.skip('IE8, IE9', function(){
-
 	});
 
 	it('Call list changed during `emit`', function(){
@@ -90,7 +89,6 @@ describe('Regression', function(){
 		a.emit('fn');
 		assert.equal(i, 1);
 	});
-
 
 	it('Mixin prototype', function(){
 		function User(name){
@@ -304,7 +302,6 @@ describe('Regression', function(){
 		}, 240);
 	});
 
-
 	it('Delegate', function(){
 		if (!doc) return;
 
@@ -348,6 +345,45 @@ describe('Regression', function(){
 		assert.equal(j, 1);
 	});
 
+	it('Not', function(){
+		if (!doc) return;
+
+		var j = 0;
+		var el = document.createElement('div');
+		document.body.appendChild(el);
+
+		var inc = function(){
+			j++;
+		};
+
+		Emitter.not(document, 'hello', 'p, div, .some', inc);
+
+		var sideLink = document.createElement('span');
+		document.body.appendChild(sideLink);
+
+		//emit not bubbling evt - ignored
+		// console.log("emit body")
+		Emitter.emit(document.body, 'hello');
+		assert.equal(j, 0);
+
+		//emit bubbling evt on ignoring element - ignored
+		// console.log("emit el")
+		Emitter.emit(el, 'hello', null, true);
+		assert.equal(j, 0);
+
+		//emit bubbling evt on some other element - passed
+		// console.log("emit sideLink")
+		Emitter.emit(sideLink, 'hello', null, true);
+		assert.equal(j, 1);
+
+
+		//unbind not
+		Emitter.off(document, 'hello');
+
+		//emit bubbling evt on passing element (should be ignored)
+		Emitter.emit(sideLink, 'hello', null, true);
+		assert.equal(j, 1);
+	});
 
 	it('Delegate with swapped order of params', function(){
 			if (!doc) return;
@@ -391,7 +427,6 @@ describe('Regression', function(){
 		assert.equal(i, 1);
 		assert.equal(j, 1);
 	});
-
 
 	it('Keypass', function(){
 		if (!doc) return;

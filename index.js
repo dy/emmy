@@ -6,6 +6,7 @@
 
 
 //TODO: normalize cross-browser events like animationend
+//TODO: handle redirects in emitter
 
 
 var Emmy = require('./Emitter');
@@ -19,6 +20,7 @@ var	_on = require('./on'),
 	_throttle = require('./throttle'),
 	_later = require('./later'),
 	_delegate = require('./delegate'),
+	_not = require('./not'),
 	listeners = require('./listeners'),
 	invoke = require('./src/invoke');
 
@@ -54,6 +56,10 @@ var keypass = Emmy['keypass'] = function(){
 };
 var throttle = Emmy['throttle'] = function(){
 	invoke(_throttle, arguments);
+	return Emmy;
+};
+var not = Emmy['not'] = function(){
+	invoke(_not, arguments);
 	return Emmy;
 };
 
