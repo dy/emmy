@@ -156,7 +156,7 @@ Function | Params | Description
 Can be used both as static and prototype methods: `Emmy.on(<target>, <event>, <method>, ...<data>)` and `emitter.on(<event>, <handler>, ...<data>)`.
 
 Method | Description |
---- | --- | --- |
+---|---|---
 `.on` | event, handler | Register _handler_ for _event_.
 `.once` | event, handler | Register single-shot _event_ _handler_.
 `.off` | event, handler  | Remove an _event_ _handler_. If no _handler_ passed - remove all registered handlers. In no _event_ passed - remove all registered listeners for all events.
