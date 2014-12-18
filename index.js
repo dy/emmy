@@ -27,39 +27,39 @@ var	_on = require('./on'),
 //add static wrapper API
 var on = Emmy['on'] = function(a,b,c,d){
 	_on(a,b,c,d);
-	return Emmy;
+	return this;
 };
 var once = Emmy['once'] = function(a,b,c,d){
 	_once(a,b,c,d);
-	return Emmy;
+	return this;
 };
 var off = Emmy['off'] = function(a,b,c){
 	_off(a,b,c);
-	return Emmy;
+	return this;
 };
 var emit = Emmy['emit'] = function(){
 	_emit.apply(this, arguments);
-	return Emmy;
+	return this;
 };
 var delegate = Emmy['delegate'] = function(a,b,c,d){
 	_delegate(a,b,c,d);
-	return Emmy;
+	return this;
 };
 var later = Emmy['later'] = function(a,b,c,d){
 	_later(a,b,c,d);
-	return Emmy;
+	return this;
 };
 var keypass = Emmy['keypass'] = function(a,b,c,d){
 	_keypass(a,b,c,d);
-	return Emmy;
+	return this;
 };
 var throttle = Emmy['throttle'] = function(a,b,c,d){
 	_throttle(a,b,c,d);
-	return Emmy;
+	return this;
 };
 var not = Emmy['not'] = function(a,b,c,d){
 	_not(a,b,c,d);
-	return Emmy;
+	return this;
 };
 
 Emmy['listeners'] = listeners;
