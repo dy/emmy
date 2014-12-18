@@ -1,6 +1,6 @@
 {
   "name": "emmy",
-  "version": "3.3.0",
+  "version": "4.0.0",
   "description": "Tiny event emitter for everything. Asbestos-free.",
   "main": "index.js",
   "files": [
