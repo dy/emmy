@@ -136,7 +136,7 @@ _Use:_ if only one specific event method is required or to reduce size of build.
 
 Process single target/event/callback.
 
-Function | Params | Description
+Function | Arguments | Description
 ---|---|---
 `on` | target, event, callback | Bind event handler to a target.
 `once` | target, event, callback | Bind single-shot event handler to a target.
@@ -155,7 +155,7 @@ Function | Params | Description
 
 Can be used both as static and prototype methods: `Emmy.on(<target>, <event>, <method>, ...<data>)` and `emitter.on(<event>, <handler>, ...<data>)`.
 
-Method | Description |
+Method | Arguments | Description |
 ---|---|---
 `.on` | event, handler | Register _handler_ for _event_.
 `.once` | event, handler | Register single-shot _event_ _handler_.
