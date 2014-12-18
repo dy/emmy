@@ -13,6 +13,7 @@ var off = require('./off');
 var emit = require('./emit');
 var once = require('./once');
 var listeners = require('./listeners');
+var slice = require('sliced');
 
 
 /**
@@ -35,8 +36,8 @@ var proto = Emitter.prototype;
 
 
 /** Prototype methods are whapper so to return target for chaining calls */
-proto['on'] = function(a,b){
-	on(this, a,b);
+proto['on'] = function(a,b,c){
+	on(this, a,b,c);
 	return this;
 };
 
@@ -50,8 +51,8 @@ proto['off'] = function(a,b){
 	return this;
 };
 
-proto['emit'] = function(a,b,c){
-	emit(this, a,b,c);
+proto['emit'] = function(){
+	emit.apply(this, [this].concat(slice(arguments)));
 	return this;
 };
 

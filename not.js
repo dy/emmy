@@ -6,6 +6,7 @@ module.exports = not;
 
 var on = require('./on');
 var closest = typeof document !== 'undefined' ? require('query-relative/closest') : null;
+var isFn = require('mutype/is-fn');
 
 
 /**
@@ -26,8 +27,16 @@ not.wrap = function(target, evt, fn, selector){
 	//ignore non-DOM
 	if (!closest) return;
 
+	//swap params, if needed
+	if (isFn(selector)) {
+		var tmp = selector;
+		selector = fn;
+		fn = tmp;
+	}
+
 	return on.wrap(target, evt, fn, function(e){
 		var el = e.target;
+
 
 		//If source element or anything in-between it and delegate element matches passed selector - ignore that event
 

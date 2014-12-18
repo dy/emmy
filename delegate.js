@@ -8,7 +8,7 @@ module.exports = delegate;
 
 var on = require('./on');
 var closest = typeof document !== 'undefined' ? require('query-relative/closest') : null;
-
+var isFn = require('mutype/is-fn');
 
 /**
  * Bind listener to a target
@@ -27,6 +27,13 @@ function delegate(target, evt, fn, selector){
 delegate.wrap = function(target, evt, fn, selector){
 	//ignore non-DOM
 	if (!closest) return;
+
+	//swap params, if needed
+	if (isFn(selector)) {
+		var tmp = selector;
+		selector = fn;
+		fn = tmp;
+	}
 
 	return on.wrap(target, evt, fn, function(e){
 		var el = e.target;

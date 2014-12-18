@@ -168,8 +168,7 @@ Method | Description |
 
 # Afterword
 
-[ENot (event notation system)](https://github.com/dfcreative/enot) — an easy wrapper for emmy with humanized event notation.
-
+Emmy implements maximally minimal coverage for main use-cases. It’s not supposed to recognize broad range of input values. For that take a look at [ENot (event notation system)](https://github.com/dfcreative/enot) — an easy wrapper for emmy with humanized event notation.
 
 There’s also a similar project - [emmitt](https://github.com/airportyh/emmitt), but it can’t emit bubbling events nor DOM-events, it does not provide an Emitter class and a bunch of useful methods.
 

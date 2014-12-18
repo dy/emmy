@@ -21,45 +21,44 @@ var	_on = require('./on'),
 	_later = require('./later'),
 	_delegate = require('./delegate'),
 	_not = require('./not'),
-	listeners = require('./listeners'),
-	invoke = require('./src/invoke');
+	listeners = require('./listeners');
 
 
 //add static wrapper API
-var on = Emmy['on'] = function(){
-	invoke(_on, arguments);
+var on = Emmy['on'] = function(a,b,c,d){
+	_on(a,b,c,d);
 	return Emmy;
 };
-var once = Emmy['once'] = function(){
-	invoke(_once, arguments);
+var once = Emmy['once'] = function(a,b,c,d){
+	_once(a,b,c,d);
 	return Emmy;
 };
-var off = Emmy['off'] = function(){
-	invoke(_off, arguments);
+var off = Emmy['off'] = function(a,b,c){
+	_off(a,b,c);
 	return Emmy;
 };
 var emit = Emmy['emit'] = function(){
-	invoke(_emit, arguments, true);
+	_emit.apply(this, arguments);
 	return Emmy;
 };
-var delegate = Emmy['delegate'] = function(){
-	invoke(_delegate, arguments);
+var delegate = Emmy['delegate'] = function(a,b,c,d){
+	_delegate(a,b,c,d);
 	return Emmy;
 };
-var later = Emmy['later'] = function(){
-	invoke(_later, arguments);
+var later = Emmy['later'] = function(a,b,c,d){
+	_later(a,b,c,d);
 	return Emmy;
 };
-var keypass = Emmy['keypass'] = function(){
-	invoke(_keypass, arguments);
+var keypass = Emmy['keypass'] = function(a,b,c,d){
+	_keypass(a,b,c,d);
 	return Emmy;
 };
-var throttle = Emmy['throttle'] = function(){
-	invoke(_throttle, arguments);
+var throttle = Emmy['throttle'] = function(a,b,c,d){
+	_throttle(a,b,c,d);
 	return Emmy;
 };
-var not = Emmy['not'] = function(){
-	invoke(_not, arguments);
+var not = Emmy['not'] = function(a,b,c,d){
+	_not(a,b,c,d);
 	return Emmy;
 };
 

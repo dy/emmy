@@ -5,7 +5,6 @@ module.exports = off;
 
 var icicle = require('icicle');
 var listeners = require('./listeners');
-var invoke = require('./src/invoke');
 
 
 /**
@@ -32,12 +31,22 @@ function off(target, evt, fn){
 		//then forget own callbacks, if any
 		callbacks = listeners(target);
 
-		//unbind all if no evtRef defined
+		//unbind all evts
 		if (evt === undefined) {
-			return invoke(off, [target, callbacks]);
+			for (evt in callbacks) {
+				off(target, evt);
+			}
 		}
-		else if (callbacks[evt]) {
-			return invoke(off, [target, evt, callbacks[evt]]);
+		//unbind all callbacks for an evt
+		else {
+			//invoke method for each space-separated event from a list
+			evt.split(/\s+/).forEach(function(evt){
+				if (callbacks[evt]) {
+					for (var i = callbacks[evt].length; i--;){
+						off(target, evt, callbacks[evt][i]);
+					}
+				}
+			});
 		}
 
 		return;
@@ -48,32 +57,36 @@ function off(target, evt, fn){
 	var offMethod = target['off'] || target['removeEventListener'] || target['removeListener'];
 
 
-	//use target `off`, if possible
-	if (offMethod) {
-		//avoid self-recursion from the outside
-		if (icicle.freeze(target, 'off' + evt)){
-			offMethod.call(target, evt, fn);
-			icicle.unfreeze(target, 'off' + evt);
+	//invoke method for each space-separated event from a list
+	evt.split(/\s+/).forEach(function(evt){
+
+		//use target `off`, if possible
+		if (offMethod) {
+			//avoid self-recursion from the outside
+			if (icicle.freeze(target, 'off' + evt)){
+				offMethod.call(target, evt, fn);
+				icicle.unfreeze(target, 'off' + evt);
+			}
+
+			//if it’s frozen - ignore call
+			else {
+				return;
+			}
 		}
 
-		//if it’s frozen - ignore call
-		else {
-			return;
+		//forget callback
+		var evtCallbacks = listeners(target, evt);
+
+		//remove specific handler
+		for (i = 0; i < evtCallbacks.length; i++) {
+			//once method has original callback in .fn
+			if (evtCallbacks[i] === fn || evtCallbacks[i].fn === fn) {
+				evtCallbacks.splice(i, 1);
+				break;
+			}
 		}
-	}
+	});
 
-
-	//forget callback
-	var evtCallbacks = listeners(target, evt);
-
-	//remove specific handler
-	for (i = 0; i < evtCallbacks.length; i++) {
-		//once method has original callback in .fn
-		if (evtCallbacks[i] === fn || evtCallbacks[i].fn === fn) {
-			evtCallbacks.splice(i, 1);
-			break;
-		}
-	}
 
 	return;
 }

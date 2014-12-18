@@ -4,8 +4,7 @@
   "description": "Tiny event emitter for everything. Asbestos-free.",
   "main": "index.js",
   "files": [
-    "*.js",
-    "src"
+    "*.js"
   ],
   "scripts": {
     "test": "mocha --harmony",
@@ -48,7 +47,7 @@
   "dependencies": {
     "icicle": ">=0.1.1",
     "mutype": ">=0.3.5",
-    "sliced": "^0.0.5",
+    "sliced": ">=0.0.5",
     "key-name": ">=1.1.1",
     "query-relative": ">=1.5.2",
     "mustring": ">=0.0.3"

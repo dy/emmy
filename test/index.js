@@ -116,7 +116,7 @@ describe('Regression', function(){
 		user.on('hello dude', function(){i++});
 		user.emit('hello dude');
 
-		assert.equal(i, 1);
+		assert.equal(i, 2);
 	});
 
 	it('Emitter instance', function(){
@@ -202,7 +202,8 @@ describe('Regression', function(){
 		assert.equal(b, a);
 	});
 
-	it('List of targets', function(){
+	//@deprecated - user can do it himself
+	it.skip('List of targets', function(){
 		var x = {}, y = {}, i = 0, j = 0;
 
 		Emitter.on([x, y], ['x', 'y'], [
@@ -225,16 +226,13 @@ describe('Regression', function(){
 	it('Space-separated events', function(){
 		var x = {}, i = 0, j = 0;
 
-		Emitter.on(x, 'x y', [
-			function(e, f){i+=e+f},
-			function(e, f){j+=e+f}
-		]);
+		Emitter.on(x, 'x y', function(e, f){i+=e+f});
+		Emitter.on(x, 'x y', function(e, f){j+=e+f});
 
 		Emitter.emit(x, 'x y', 1, 2);
 
 		assert.equal(i, 6);
 		assert.equal(j, 6);
-
 
 		Emitter.off(x, 'x y');
 		Emitter.emit(x, 'x y', 1, 2);
@@ -242,7 +240,8 @@ describe('Regression', function(){
 		assert.equal(j, 6);
 	});
 
-	it('Batch events', function(){
+	//@deprecated
+	it.skip('Batch events', function(){
 		var x = {}, i = 0, j = 0;
 
 		Emitter.on(x, {

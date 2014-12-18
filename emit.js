@@ -4,9 +4,22 @@
 var icicle = require('icicle');
 var listeners = require('./listeners');
 var slice = require('sliced');
+var isString = require('mutype/is-string');
 
 
-module.exports = emit;
+/**
+ * A simple wrapper to handle stringy/plain events
+ */
+module.exports = function(target, evt){
+	var args = arguments;
+	if (isString(evt)) {
+		evt.split(/\s+/).forEach(function(evt){
+			emit.apply(this, [target, evt].concat(slice(args, 2)));
+		});
+	} else {
+		return emit.apply(this, arguments);
+	}
+};
 
 
 /** detect env */
@@ -82,12 +95,14 @@ function emit(target, eventName, data, bubbles){
 	//ignore if no event specified
 	var evtCallbacks = listeners(target, evt);
 
+
 	//copy callbacks to fire because list can be changed by some callback (like `off`)
 	var fireList = slice(evtCallbacks);
 	var args = slice(arguments, 2);
 	for (var i = 0; i < fireList.length; i++ ) {
 		fireList[i] && fireList[i].apply(target, args);
 	}
+
 
 	return;
 }

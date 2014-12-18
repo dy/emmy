@@ -15,30 +15,35 @@ var off = require('./off');
  */
 function once(target, evt, fn){
 	//get target once method, if any
-	var onceMethod = target['once'] || target['one'] || target['addOnceEventListener'] || target['addOnceListener'];
+	var onceMethod = target['once'] || target['one'] || target['addOnceEventListener'] || target['addOnceListener'], cb;
 
-	//use target event system, if possible
-	if (onceMethod) {
-		//avoid self-recursions
-		if (icicle.freeze(target, 'one' + evt)){
-			var res = onceMethod.call(target, evt, fn);
-
-			//FIXME: save callback, just in case of removeListener
-			// listeners.add(target, evt, fn);
-			icicle.unfreeze(target, 'one' + evt);
-
-			return res;
-		}
-
-		//if still called itself second time - do default routine
-	}
 
 	//use own events
 	//wrap callback to once-call
-	var cb = once.wrap(target, evt, fn, off);
+	cb = once.wrap(target, evt, fn, off);
 
-	//bind wrapper default way - in case of own emit method
-	on(target, evt, cb);
+
+	//invoke method for each space-separated event from a list
+	evt.split(/\s+/).forEach(function(evt){
+		//use target event system, if possible
+		if (onceMethod) {
+			//avoid self-recursions
+			if (icicle.freeze(target, 'one' + evt)){
+				var res = onceMethod.call(target, evt, fn);
+
+				//FIXME: save callback, just in case of removeListener
+				// listeners.add(target, evt, fn);
+				icicle.unfreeze(target, 'one' + evt);
+
+				return res;
+			}
+
+			//if still called itself second time - do default routine
+		}
+
+		//bind wrapper default way - in case of own emit method
+		on(target, evt, cb);
+	});
 
 	return cb;
 }

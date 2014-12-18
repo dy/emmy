@@ -34,22 +34,25 @@ function on(target, evt, fn, condition){
 		cb = fn;
 	}
 
-	//use target event system, if possible
-	if (onMethod) {
-		//avoid self-recursions
-		//if it’s frozen - ignore call
-		if (icicle.freeze(target, 'on' + evt)){
-			onMethod.call(target, evt, cb);
-			icicle.unfreeze(target, 'on' + evt);
-		}
-		else {
-			return cb;
-		}
-	}
 
-	//save the callback anyway
-	listeners.add(target, evt, cb, condition);
+	//invoke method for each space-separated event from a list
+	evt.split(/\s+/).forEach(function(evt){
+		//use target event system, if possible
+		if (onMethod) {
+			//avoid self-recursions
+			//if it’s frozen - ignore call
+			if (icicle.freeze(target, 'on' + evt)){
+				onMethod.call(target, evt, cb);
+				icicle.unfreeze(target, 'on' + evt);
+			}
+			else {
+				return cb;
+			}
+		}
 
+		//save the callback anyway
+		listeners.add(target, evt, cb, condition);
+	});
 
 	return cb;
 }
