@@ -302,46 +302,62 @@ describe('Regression', function(){
 		}, 240);
 	});
 
-	it('Delegate', function(){
+	it('Delegate simple', function(){
 		if (!doc) return;
 
+
+		//TODO: fix this test. Don’t catch bubbling event higher than delegate target
 		var i = 0, j = 0;
 		var el = document.createElement('div');
+		el.className = 'el';
 		document.body.appendChild(el);
+		var el2 = document.createElement('div');
+		el.appendChild(el2);
+		el2.className = 'el2';
 
 		var inc = function(){
 			i++;
 		};
 
-		Emitter.delegate(document, 'hello', inc, 'p, div, .some');
+		Emitter.delegate(el, 'hello', inc, 'p, div, .some');
 
 		var sideLink = document.createElement('span');
-		document.body.appendChild(sideLink);
+		sideLink.className = 'side';
+		el.appendChild(sideLink);
 
 		Emitter.on(sideLink, 'hello', function(){
 			j++;
 		});
 
-		//emit not bubbling evt
-		Emitter.emit(document.body, 'hello');
+		//emit not bubbling evt (ignored)
+		Emitter.emit(el2, 'hello');
+		assert.equal(i, 0);
+
+		//emit bubbling evt too high (ignored)
+		Emitter.emit(document.body, 'hello', null, true);
 		assert.equal(i, 0);
 
 		//emit bubbling evt on passing element
-		Emitter.emit(el, 'hello', null, true);
+		Emitter.emit(el2, 'hello', null, true);
 		assert.equal(i, 1);
+		Emitter.emit(el, 'hello', null, true);
+		assert.equal(i, 2);
 
 		//emit not passing element bubbling evt (should be ignored)
+		// console.log('------- emit side');
 		Emitter.emit(sideLink, 'hello', null, true);
-		assert.equal(i, 1);
+		assert.equal(i, 2);
 		assert.equal(j, 1);
 
 
 		//unbind delegate
-		Emitter.off(document, 'hello');
+		// console.log('------- off');
+		Emitter.off(el, 'hello');
 
-		//emit bubbling evt on passing element (should be ignored)
+		//emit bubbling evt on passing element (should be ignored cause is off)
+		// console.log('------- emit el');
 		Emitter.emit(el, 'hello', null, true);
-		assert.equal(i, 1);
+		assert.equal(i, 2);
 		assert.equal(j, 1);
 	});
 
