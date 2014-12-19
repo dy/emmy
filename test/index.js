@@ -340,12 +340,12 @@ describe('Regression', function(){
 		Emitter.emit(el2, 'hello', null, true);
 		assert.equal(i, 1);
 		Emitter.emit(el, 'hello', null, true);
-		assert.equal(i, 2);
+		assert.equal(i, 1);
 
 		//emit not passing element bubbling evt (should be ignored)
 		// console.log('------- emit side');
 		Emitter.emit(sideLink, 'hello', null, true);
-		assert.equal(i, 2);
+		assert.equal(i, 1);
 		assert.equal(j, 1);
 
 
@@ -355,8 +355,8 @@ describe('Regression', function(){
 
 		//emit bubbling evt on passing element (should be ignored cause is off)
 		// console.log('------- emit el');
-		Emitter.emit(el, 'hello', null, true);
-		assert.equal(i, 2);
+		Emitter.emit(el2, 'hello', null, true);
+		assert.equal(i, 1);
 		assert.equal(j, 1);
 	});
 

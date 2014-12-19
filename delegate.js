@@ -38,8 +38,8 @@ delegate.wrap = function(target, evt, fn, selector){
 	return on.wrap(target, evt, fn, function(e){
 		var el = e.target;
 
-		//pass self evts instantly
-		if (el === target) return true;
+		//deny self instantly
+		if (el === target) return;
 
 
 		//find at least one element in-between delegate target and event source
