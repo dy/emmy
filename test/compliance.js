@@ -11,16 +11,18 @@ var Emitter = doc && typeof Emitter !== 'undefined' ? Emitter : require('..');
 var should = typeof chai !== 'undefined' ? chai.should() : require('chai').should();
 
 
-function Custom() {
+function CustomFn() {
   Emitter.call(this);
 }
 
-Custom.prototype.__proto__ = Emitter.prototype;
+//IE fails on this
+// CustomFn.prototype.__proto__ = Emitter.prototype;
+CustomFn.prototype = Object.create(Emitter.prototype);
 
-describe('Custom', function(){
+describe('CustomFn', function(){
   describe('with Emitter.call(this)', function(){
     it('should work', function(done){
-      var emitter = new Custom;
+      var emitter = new CustomFn;
       emitter.on('foo', done);
       emitter.emit('foo');
     })

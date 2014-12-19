@@ -50,7 +50,8 @@
     "sliced": ">=0.0.5",
     "key-name": ">=1.1.1",
     "query-relative": ">=1.5.2",
-    "mustring": ">=0.0.3"
+    "mustring": ">=0.0.3",
+    "contains": "~0.1.1"
   },
   "devDependencies": {
     "mocha": "*",

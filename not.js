@@ -7,6 +7,7 @@ module.exports = not;
 var on = require('./on');
 var closest = typeof document !== 'undefined' ? require('query-relative/closest') : null;
 var isFn = require('mutype/is-fn');
+var contains = require('contains');
 
 
 /**
@@ -38,12 +39,12 @@ not.wrap = function(target, evt, fn, selector){
 		var el = e.target;
 
 		//if element is not in the DOM - ignore evt
-		if (!document.contains(el)) return false;
+		if (!contains(target, el)) return false;
 
 		//If source element or anything in-between it and delegate element matches passed selector - ignore that event
 
 		var res = closest(el, selector);
-		if (res && target.contains(res)) return false;
+		if (res && contains(target, res)) return false;
 		return true;
 	});
 };

@@ -9,6 +9,7 @@ module.exports = delegate;
 var on = require('./on');
 var closest = typeof document !== 'undefined' ? require('query-relative/closest') : null;
 var isFn = require('mutype/is-fn');
+var contains = require('contains');
 
 /**
  * Bind listener to a target
@@ -45,7 +46,7 @@ delegate.wrap = function(target, evt, fn, selector){
 		//find at least one element in-between delegate target and event source
 		var holderEl = closest(el, selector);
 
-		if (target !== holderEl && target.contains(holderEl)) {
+		if (holderEl && target !== holderEl && contains(target, holderEl)) {
 			//save source of event
 			e.delegateTarget = holderEl;
 
