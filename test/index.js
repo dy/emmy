@@ -554,7 +554,7 @@ describe('Regression', function(){
 
 
 	it("delegateTarget", function(){
-		if (window.mochaPhantomJS) return;
+		if (!doc) return;
 
 		var a = document.createElement('div');
 		a.className = 'd';
