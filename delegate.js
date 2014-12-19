@@ -47,7 +47,7 @@ delegate.wrap = function(target, evt, fn, selector){
 
 		if (target !== holderEl && target.contains(holderEl)) {
 			//save source of event
-			e.delegateTarget = el;
+			e.delegateTarget = holderEl;
 
 			//NOTE: PhantomJS && IE8 fails on that:
 			// evt.currentTarget = el;

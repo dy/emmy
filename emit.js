@@ -78,11 +78,13 @@ function emit(target, eventName, data, bubbles){
 	}
 
 
+	var args = slice(arguments, 2);
+
 	//use locks to avoid self-recursion on objects wrapping this method
 	if (emitMethod) {
 		if (icicle.freeze(target, 'emit' + eventName)) {
 			//use target event system, if possible
-			emitMethod.call(target, evt, data, bubbles);
+			emitMethod.apply(target, [evt].concat(args));
 			icicle.unfreeze(target, 'emit' + eventName);
 
 			return;
@@ -100,7 +102,6 @@ function emit(target, eventName, data, bubbles){
 
 	//copy callbacks to fire because list can be changed by some callback (like `off`)
 	var fireList = slice(evtCallbacks);
-	var args = slice(arguments, 2);
 	for (var i = 0; i < fireList.length; i++ ) {
 		fireList[i] && fireList[i].apply(target, args);
 	}

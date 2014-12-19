@@ -550,6 +550,25 @@ describe('Regression', function(){
 		Emitter.off(null, 'click', function(){});
 		Emitter.emit(null, 'click');
 	});
+
+
+
+	it("delegateTarget", function(){
+		if (window.mochaPhantomJS) return;
+
+		var a = document.createElement('div');
+		a.className = 'd';
+		var b = document.createElement('div');
+		a.appendChild(b);
+		document.body.appendChild(a);
+
+		var cTarget;
+		Emitter.delegate(document, 'click', '.d', function(e){
+			cTarget = e.delegateTarget;
+		});
+		Emitter.emit(b, 'click', null, true);
+		assert.equal(cTarget, a);
+	});
 });
 
 
