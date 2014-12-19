@@ -11,6 +11,8 @@ var isString = require('mutype/is-string');
  * A simple wrapper to handle stringy/plain events
  */
 module.exports = function(target, evt){
+	if (!target) return;
+
 	var args = arguments;
 	if (isString(evt)) {
 		evt.split(/\s+/).forEach(function(evt){

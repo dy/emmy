@@ -16,6 +16,8 @@ var listeners = require('./listeners');
  * @return {[type]} [description]
  */
 function off(target, evt, fn){
+	if (!target) return;
+
 	var callbacks, i;
 
 	//unbind all listeners if no fn specified

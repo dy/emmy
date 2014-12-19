@@ -14,6 +14,8 @@ var off = require('./off');
  * @return {target}
  */
 function once(target, evt, fn){
+	if (!target) return;
+
 	//get target once method, if any
 	var onceMethod = target['once'] || target['one'] || target['addOnceEventListener'] || target['addOnceListener'], cb;
 

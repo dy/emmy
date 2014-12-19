@@ -515,6 +515,14 @@ describe('Regression', function(){
 			done();
 		}, 120);
 	});
+
+
+	it('ignore empty target', function(){
+		Emitter.on(null, 'click', function(){});
+		Emitter.once(null, 'click', function(){});
+		Emitter.off(null, 'click', function(){});
+		Emitter.emit(null, 'click');
+	});
 });
 
 

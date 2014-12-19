@@ -22,6 +22,8 @@ module.exports = on;
  * @return {object} A target
  */
 function on(target, evt, fn, condition){
+	if (!target) return;
+
 	//get target on method, if any
 	var onMethod = target['on'] || target['addEventListener'] || target['addListener'];
 
