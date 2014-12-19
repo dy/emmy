@@ -23,8 +23,8 @@ function later(target, evt, fn, interval) {
 later.wrap = function(target, evt, fn, interval){
 	//swap params, if needed
 	if (isFn(interval)) {
-		var tmp = selector;
-		selector = fn;
+		var tmp = interval;
+		interval = fn;
 		fn = tmp;
 	}
 

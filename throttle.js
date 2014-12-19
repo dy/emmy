@@ -9,6 +9,7 @@ module.exports = throttle;
 
 var on = require('./on');
 var off = require('./off');
+var isFn = require('mutype/is-fn');
 
 
 
@@ -32,6 +33,13 @@ function throttle(target, evt, fn, interval){
 
 /** Return wrapped with interval fn */
 throttle.wrap = function(target, evt, fn, interval){
+	//swap params, if needed
+	if (isFn(interval)) {
+		var tmp = interval;
+		interval = fn;
+		fn = tmp;
+	}
+
 	//wrap callback
 	var cb = function() {
 		//do call

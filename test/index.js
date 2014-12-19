@@ -277,11 +277,11 @@ describe('Regression', function(){
 		var a = {};
 
 		//should be called 10 times less often than dispatched event
-		Emitter.throttle(a, 'x', function(){
+		Emitter.throttle(a, 'x', 50, function(){
 			i++;
 			// console.log(new Date - initT);
 			assert.equal(this, a);
-		}, 50);
+		});
 
 		var interval = setInterval(function(){
 			Emitter.emit(a, 'x');
@@ -499,9 +499,9 @@ describe('Regression', function(){
 		var a = {};
 		var i = 0;
 
-		Emitter.later(a, 'x', function(){
+		Emitter.later(a, 'x', 100, function(){
 			i++;
-		}, 100);
+		});
 
 		Emitter.emit(a, 'x');
 		assert.equal(i, 0);
