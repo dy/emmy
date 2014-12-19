@@ -37,6 +37,8 @@ not.wrap = function(target, evt, fn, selector){
 	return on.wrap(target, evt, fn, function(e){
 		var el = e.target;
 
+		//if element is not in the DOM - ignore evt
+		if (!document.contains(el)) return false;
 
 		//If source element or anything in-between it and delegate element matches passed selector - ignore that event
 

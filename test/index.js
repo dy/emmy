@@ -400,6 +400,33 @@ describe('Regression', function(){
 		assert.equal(j, 1);
 	});
 
+	it(":not on elements which are no more in DOM", function(){
+		if (!doc) return;
+
+		var a = document.createElement('div');
+		a.className = 'a';
+		a.innerHTML = '<span class="x"></span>';
+		document.body.appendChild(a);
+
+		var i = 0;
+
+
+		Emitter.on(a, 'click', function(){
+			// console.log('---a click', this)
+			this.innerHTML = '<span></span>';
+		});
+
+		//look how element caused the event has been removed from DOM in the first callback, but doc is still triggered by it
+		Emitter.not(document, 'click', '.a', function(e){
+			// console.log('---document click', this, a.innerHTML)
+			i++;
+		});
+		// console.log('----emit click', a.firstChild)
+		Emitter.emit(a.firstChild, 'click', true, true);
+
+		assert.equal(i, 0);
+	});
+
 	it('Delegate with swapped order of params', function(){
 			if (!doc) return;
 
