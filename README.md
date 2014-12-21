@@ -5,7 +5,7 @@
 ](https://ci.testling.com/dfcreative/emmy)
 -->
 
-Emmy is extension to [component-emitter](https://github.com/component/emitter), which makes it more convenient:
+Emmy is extended [component-emitter](https://github.com/component/emitter) for green components development.
 
 1. Emits events on any target: plain object, element, jQuery, Backbone model, [color](https://github.com/dfcreative/color) etc. Uses target events first, if available, like `dispatchEvent` or `addEventListener` in DOM elements or `on`, `trigger` in jQuery objects.
 
@@ -16,6 +16,8 @@ Emmy is extension to [component-emitter](https://github.com/component/emitter), 
 3. Accepts space-separated multiple events.
 
 5. Works both in browsers and _io_, _1.41kb gzipped_.
+
+9999. **Asbestos-free**.
 
 
 
