@@ -229,24 +229,25 @@ describe('Regression', function(){
 
 
 
-
-/**
- * Standalone tests
- *
- * Unskip it if you want to testem
- */
-var on = require('../on'),
-	off = require('../off'),
-	emit = require('../emit'),
-	throttle = require('../throttle'),
-	delegate = require('../delegate'),
-	not = require('../not'),
-	keypass = require('../keypass'),
-	later = require('../later'),
-	once = require('../once');
-
-
 describe.skip('Standalone methods', function(){
+	/**
+	 * Standalone tests
+	 *
+	 * Unskip it if you want to testem
+	 */
+	before(function() {
+		var on = require('../on'),
+		off = require('../off'),
+		emit = require('../emit'),
+		throttle = require('../throttle'),
+		delegate = require('../delegate'),
+		not = require('../not'),
+		keypass = require('../keypass'),
+		later = require('../later'),
+		once = require('../once');
+	});
+
+
 	it('Delegate with swapped order of params', function(){
 			if (!doc) return;
 
