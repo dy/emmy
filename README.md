@@ -7,13 +7,11 @@
 
 Emmy is extension to [component-emitter](https://github.com/component/emitter), which makes it more convenient:
 
-1. Emits events on any target: plain object, element, jQuery, Backbone model, [color](https://github.com/dfcreative/color) etc.
+1. Emits events on any target: plain object, element, jQuery, Backbone model, [color](https://github.com/dfcreative/color) etc. Uses target events first, if available, like `dispatchEvent` or `addEventListener` in DOM elements or `on`, `trigger` in jQuery objects.
 
-2. Uses target events, if available, like `dispatchEvent` or `addEventListener` in DOM elements or `on`, `trigger` in jQuery objects.
+2. Inherits [component-emitter](https://github.com/component/emitter), in that it is [fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) and `instanceof Emitter === true`.
 
-3. [Fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) with [component-emitter](https://github.com/component/emitter). Instance of _Emitter_.
-
-4. Accepts space-separated multiple events.
+3. Accepts space-separated multiple events.
 
 5. Works both in browsers and _io_.
 
