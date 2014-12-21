@@ -11,15 +11,11 @@ Emmy is extension to [component-emitter](https://github.com/component/emitter), 
 
 2. Inherits [component-emitter](https://github.com/component/emitter), in that it is [fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) and `instanceof Emitter === true`.
 
+6. Provides additional standalone functions _delegate_, _not_, _throttle_, _later_ and _keypass_. Also each basic method _on_, _once_, _emit_, _off_ is available standalone as `require('emmy/<method>');`.
+
 3. Accepts space-separated multiple events.
 
-5. Works both in browsers and _io_.
-
-6. Provides additional methods _delegate_, _throttle_, _later_ and _keypass_.
-
-7. Provides each method standalone as `require('emmy/<method>');`.
-
-8. _1.41kb gzipped_.
+5. Works both in browsers and _io_, _1.41kb gzipped_.
 
 
 
