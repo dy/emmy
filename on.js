@@ -4,7 +4,7 @@
 
 
 var icicle = require('icicle');
-var listeners = require('./listeners');
+var emitter = require('component-emitter').prototype;
 
 
 module.exports = on;
@@ -22,7 +22,7 @@ module.exports = on;
  * @return {object} A target
  */
 function on(target, evt, fn, condition){
-	if (!target) return;
+	if (!target) return target;
 
 	//get target on method, if any
 	var onMethod = target['on'] || target['addEventListener'] || target['addListener'];
@@ -48,15 +48,15 @@ function on(target, evt, fn, condition){
 				icicle.unfreeze(target, 'on' + evt);
 			}
 			else {
-				return cb;
+				return target;
 			}
 		}
 
 		//save the callback anyway
-		listeners.add(target, evt, cb, condition);
+		emitter.on.call(target, evt, cb);
 	});
 
-	return cb;
+	return target;
 }
 
 
@@ -73,4 +73,4 @@ on.wrap = function(target, evt, fn, condition){
 	cb.fn = fn;
 
 	return cb;
-}
+};

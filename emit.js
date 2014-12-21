@@ -2,9 +2,9 @@
  * @module emmy/emit
  */
 var icicle = require('icicle');
-var listeners = require('./listeners');
 var slice = require('sliced');
 var isString = require('mutype/is-string');
+var emitter = require('component-emitter').prototype;
 
 
 /**
@@ -15,11 +15,12 @@ module.exports = function(target, evt){
 
 	var args = arguments;
 	if (isString(evt)) {
+		args = slice(arguments, 2);
 		evt.split(/\s+/).forEach(function(evt){
-			emit.apply(this, [target, evt].concat(slice(args, 2)));
+			emit.apply(this, [target, evt].concat(args));
 		});
 	} else {
-		return emit.apply(this, arguments);
+		return emit.apply(this, args);
 	}
 };
 
@@ -78,34 +79,25 @@ function emit(target, eventName, data, bubbles){
 	}
 
 
-	var args = slice(arguments, 2);
+	var args = [evt].concat(slice(arguments, 2));
 
 	//use locks to avoid self-recursion on objects wrapping this method
 	if (emitMethod) {
 		if (icicle.freeze(target, 'emit' + eventName)) {
 			//use target event system, if possible
-			emitMethod.apply(target, [evt].concat(args));
+			emitMethod.apply(target, args);
 			icicle.unfreeze(target, 'emit' + eventName);
 
-			return;
+			return target;
 		}
 
-		//if event was frozen - probably it is Emitter instance
+		//if event was frozen - probably it is emitter instance
 		//so perform normal callback
 	}
 
 
 	//fall back to default event system
-	//ignore if no event specified
-	var evtCallbacks = listeners(target, evt);
+	emitter.emit.apply(target, args);
 
-
-	//copy callbacks to fire because list can be changed by some callback (like `off`)
-	var fireList = slice(evtCallbacks);
-	for (var i = 0; i < fireList.length; i++ ) {
-		fireList[i] && fireList[i].apply(target, args);
-	}
-
-
-	return;
+	return target;
 }

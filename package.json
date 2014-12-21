@@ -9,8 +9,8 @@
   "scripts": {
     "test": "mocha --harmony",
     "build-min": "npm run build && npm run min && npm run clean && cat emmy.js | gzip-size | pretty-bytes ",
-    "build": "uncommon ./index -w \";(function(){window['Emitter']=Emitter;%output%;})()\" > emmy.dev.js",
-    "min": "ccjs emmy.dev.js --language_in=ECMASCRIPT5 --compilation_level=ADVANCED --process_jquery_primitives --externs=build/jquery-externs.js > emmy.js",
+    "build": "uncommon ./index -w \";(function(){window['Emitter']=Emmy;%output%;})();\" > emmy.dev.js",
+    "min": "ccjs emmy.dev.js --language_in=ECMASCRIPT5 --compilation_level=ADVANCED --process_jquery_primitives --externs=build/externs.js > emmy.js",
     "clean": "rm emmy.dev.js"
   },
   "repository": {
@@ -51,7 +51,8 @@
     "key-name": ">=1.1.1",
     "query-relative": ">=1.5.2",
     "mustring": ">=0.0.3",
-    "contains": "~0.1.1"
+    "contains": "~0.1.1",
+    "component-emitter": "~1.1.3"
   },
   "devDependencies": {
     "mocha": "*",

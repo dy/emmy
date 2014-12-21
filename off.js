@@ -4,7 +4,8 @@
 module.exports = off;
 
 var icicle = require('icicle');
-var listeners = require('./listeners');
+var slice = require('sliced');
+var emitter = require('component-emitter').prototype;
 
 
 /**
@@ -16,25 +17,29 @@ var listeners = require('./listeners');
  * @return {[type]} [description]
  */
 function off(target, evt, fn){
-	if (!target) return;
+	if (!target) return target;
 
 	var callbacks, i;
 
 	//unbind all listeners if no fn specified
 	if (fn === undefined) {
+		var args = slice(arguments, 1);
+
 		//try to use target removeAll method, if any
 		var allOff = target['removeAll'] || target['removeAllListeners'];
 
 		//call target removeAll
 		if (allOff) {
-			allOff.call(target, evt, fn);
+			allOff.apply(target, args);
 		}
 
+
 		//then forget own callbacks, if any
-		callbacks = listeners(target);
+		//FIXME: find better way to access target callbacks
+		callbacks = target._callbacks;
 
 		//unbind all evts
-		if (evt === undefined) {
+		if (!evt) {
 			for (evt in callbacks) {
 				off(target, evt);
 			}
@@ -51,7 +56,11 @@ function off(target, evt, fn){
 			});
 		}
 
-		return;
+
+		//then forget own callbacks, if any
+		emitter.off.apply(target,args);
+
+		return target;
 	}
 
 
@@ -72,23 +81,13 @@ function off(target, evt, fn){
 
 			//if it’s frozen - ignore call
 			else {
-				return;
+				return target;
 			}
 		}
 
-		//forget callback
-		var evtCallbacks = listeners(target, evt);
-
-		//remove specific handler
-		for (i = 0; i < evtCallbacks.length; i++) {
-			//once method has original callback in .fn
-			if (evtCallbacks[i] === fn || evtCallbacks[i].fn === fn) {
-				evtCallbacks.splice(i, 1);
-				break;
-			}
-		}
+		emitter.off.call(target, evt, fn);
 	});
 
 
-	return;
+	return target;
 }

@@ -5,34 +5,33 @@
 var doc = typeof document === 'undefined' ? undefined : document;
 var win = typeof window === 'undefined' ? undefined : window;
 
-var Emitter = doc && typeof Emitter !== 'undefined' ? Emitter : require('..');
+var Emmy = doc && typeof Emitter !== 'undefined' ? Emitter : require('..');
 var assert = typeof chai !== 'undefined' ? chai.assert : require('chai').assert;
-
 
 
 describe('Regression', function(){
 	it('on/emit/off', function(){
 		var a = {};
 		var i = 0;
-		Emitter.on(a, 'click', function(){i++});
-		Emitter.emit(a, 'click');
+		Emmy.on(a, 'click', function(){i++});
+		Emmy.emit(a, 'click');
 		assert.equal(i, 1);
-		Emitter.off(a, 'click');
-		Emitter.emit(a, 'click');
+		Emmy.off(a, 'click');
+		Emmy.emit(a, 'click');
 		assert.equal(i, 1);
 	});
 
 	it('removeAll', function(){
 		var a = {}, i = 0;
 
-		Emitter.on(a, 'y', function(){i++});
-		Emitter.on(a, 'y', function(){i++});
-		Emitter.emit(a, 'y');
+		Emmy.on(a, 'y', function(){i++});
+		Emmy.on(a, 'y', function(){i++});
+		Emmy.emit(a, 'y');
 
 		assert.equal(i, 2);
-		Emitter.off(a);
+		Emmy.off(a);
 
-		Emitter.emit(a, 'y');
+		Emmy.emit(a, 'y');
 		assert.equal(i, 2);
 	});
 
@@ -42,20 +41,20 @@ describe('Regression', function(){
 	it('Call list changed during `emit`', function(){
 		var a = {}, log = [];
 
-		Emitter.on(a, 'x', function(){
-			Emitter.off(a, 'x');
+		Emmy.on(a, 'x', function(){
+			Emmy.off(a, 'x');
 			log.push(1);
 		});
 
-		Emitter.on(a, 'x', function(){
+		Emmy.on(a, 'x', function(){
 			log.push(2);
 		});
 
-		Emitter.on(a, 'x', function(){
+		Emmy.on(a, 'x', function(){
 			log.push(3);
 		});
 
-		Emitter.emit(a, 'x');
+		Emmy.emit(a, 'x');
 
 		assert.deepEqual(log, [1,2,3]);
 	});
@@ -64,13 +63,13 @@ describe('Regression', function(){
 		var i = 0;
 		var a = {
 			emit: function(a){
-				Emitter.emit(this, a);
+				Emmy.emit(this, a);
 			},
 			fn: function(){
 				i++;
 			},
 			on: function(a, b){
-				Emitter.on(this, a, b);
+				Emmy.on(this, a, b);
 			}
 		};
 
@@ -81,7 +80,8 @@ describe('Regression', function(){
 
 	it('Object inheriting Emitter interface', function(){
 		var A = function (){};
-		A.prototype = Object.create(Emitter.prototype);
+
+		A.prototype = Object.create(Emmy.prototype);
 
 		var i = 0;
 		var a = new A;
@@ -97,7 +97,7 @@ describe('Regression', function(){
 
 		var user = new User;
 
-		Emitter(User.prototype);
+		Emmy(User.prototype);
 
 		var i = 0;
 
@@ -109,7 +109,7 @@ describe('Regression', function(){
 
 	it('Mixin object', function(){
 		var user = { name: 'tobi' };
-		Emitter(user);
+		Emmy(user);
 
 		var i = 0;
 
@@ -120,7 +120,7 @@ describe('Regression', function(){
 	});
 
 	it('Emitter instance', function(){
-		var emitter = new Emitter, i = 0;
+		var emitter = new Emmy, i = 0;
 		emitter.on('something', function(){i++});
 		emitter.emit('something');
 		assert.equal(i, 1);
@@ -129,10 +129,10 @@ describe('Regression', function(){
 	it('Once', function(){
 		var a = {}, i = 0, inc = function(){i++};
 
-		Emitter.once(a, 'x', inc);
-		Emitter.emit(a, 'x');
-		Emitter.emit(a, 'x');
-		Emitter.emit(a, 'x');
+		Emmy.once(a, 'x', inc);
+		Emmy.emit(a, 'x');
+		Emmy.emit(a, 'x');
+		Emmy.emit(a, 'x');
 
 		assert.equal(i, 1);
 	});
@@ -147,10 +147,10 @@ describe('Regression', function(){
 		var i = 0;
 		var inc = function(){i++};
 
-		Emitter.once(d, 'x', inc);
-		Emitter.emit(d, 'x');
-		Emitter.emit(d, 'x');
-		Emitter.emit(d, 'x');
+		Emmy.once(d, 'x', inc);
+		Emmy.emit(d, 'x');
+		Emmy.emit(d, 'x');
+		Emmy.emit(d, 'x');
 
 		assert.equal(i, 1);
 	});
@@ -160,13 +160,13 @@ describe('Regression', function(){
 
 		function inc(){i++};
 
-		Emitter.on(a, 'x', inc).once(a, 'x', inc).emit(a, 'x').emit(a, 'x');
+		Emmy.on(a, 'x', inc).once(a, 'x', inc).emit(a, 'x').emit(a, 'x');
 
 		assert.equal(i, 3);
 	});
 
 	it('Chainable instance calls', function(){
-		var a = new Emitter, i = 0;
+		var a = new Emmy, i = 0;
 
 		function inc(){i++};
 
@@ -180,7 +180,7 @@ describe('Regression', function(){
 	});
 
 	it('listeners && hasListeners', function(){
-		var a = new Emitter;
+		var a = new Emmy;
 
 		function fn(){}
 		function fn2(){}
@@ -195,81 +195,166 @@ describe('Regression', function(){
 	it('List arg in emit', function(){
 		var x = {}, i = 0, a = [1,2], b;
 
-		Emitter.on(x, 'y', function(e){i++; b = e});
-		Emitter.emit(x, 'y', a);
+		Emmy.on(x, 'y', function(e){i++; b = e});
+		Emmy.emit(x, 'y', a);
 
 		assert.equal(i, 1);
 		assert.equal(b, a);
 	});
 
-	//@deprecated - user can do it himself
-	it.skip('List of targets', function(){
-		var x = {}, y = {}, i = 0, j = 0;
-
-		Emitter.on([x, y], ['x', 'y'], [
-			function(e,f){i+=e+f},
-			function(e, f){j+=e+f}
-		]);
-
-		Emitter.emit([x,y], ['x', 'y'], 1, 2);
-
-		assert.equal(i, 12);
-		assert.equal(j, 12);
-
-
-		Emitter.off([x, y], ['x', 'y']);
-		Emitter.emit([x,y], ['x', 'y'], 1, 2);
-		assert.equal(i, 12);
-		assert.equal(j, 12);
-	});
-
 	it('Space-separated events', function(){
 		var x = {}, i = 0, j = 0;
 
-		Emitter.on(x, 'x y', function(e, f){i+=e+f});
-		Emitter.on(x, 'x y', function(e, f){j+=e+f});
+		Emmy.on(x, 'x y', function(e, f){i+=e+f});
+		Emmy.on(x, 'x y', function(e, f){j+=e+f});
 
-		Emitter.emit(x, 'x y', 1, 2);
+		Emmy.emit(x, 'x y', 1, 2);
 
 		assert.equal(i, 6);
 		assert.equal(j, 6);
 
-		Emitter.off(x, 'x y');
-		Emitter.emit(x, 'x y', 1, 2);
+		Emmy.off(x, 'x y');
+		Emmy.emit(x, 'x y', 1, 2);
 		assert.equal(i, 6);
 		assert.equal(j, 6);
 	});
 
-	//@deprecated
-	it.skip('Batch events', function(){
-		var x = {}, i = 0, j = 0;
+	it('ignore empty target', function(){
+		Emmy.on(null, 'click', function(){});
+		Emmy.once(null, 'click', function(){});
+		Emmy.off(null, 'click', function(){});
+		Emmy.emit(null, 'click');
+	});
+});
 
-		Emitter.on(x, {
-			x: function(e){i+=e},
-			y: function(e){j+=e}
+
+
+
+/**
+ * Standalone tests
+ *
+ * Unskip it if you want to testem
+ */
+var on = require('../on'),
+	off = require('../off'),
+	emit = require('../emit'),
+	throttle = require('../throttle'),
+	delegate = require('../delegate'),
+	not = require('../not'),
+	keypass = require('../keypass'),
+	later = require('../later'),
+	once = require('../once');
+
+
+describe.skip('Standalone methods', function(){
+	it('Delegate with swapped order of params', function(){
+			if (!doc) return;
+
+		var i = 0, j = 0;
+		var el = document.createElement('div');
+		document.body.appendChild(el);
+
+		var inc = function(){
+			i++;
+		};
+
+		delegate(document, 'hello', 'p, div, .some', inc);
+
+		var sideLink = document.createElement('span');
+		document.body.appendChild(sideLink);
+
+		on(sideLink, 'hello', function(){
+			j++;
 		});
 
-		Emitter.emit(x, {
-			x: 2,
-			y: 3
+		//emit not bubbling evt
+		emit(document.body, 'hello');
+		assert.equal(i, 0);
+
+		//emit bubbling evt on passing element
+		emit(el, 'hello', null, true);
+		assert.equal(i, 1);
+
+		//emit not passing element bubbling evt (should be ignored)
+		emit(sideLink, 'hello', null, true);
+		assert.equal(i, 1);
+		assert.equal(j, 1);
+
+
+		//unbind delegate
+		off(document, 'hello');
+
+		//emit bubbling evt on passing element (should be ignored)
+		emit(el, 'hello', null, true);
+		assert.equal(i, 1);
+		assert.equal(j, 1);
+	});
+
+	it('Not', function(){
+		if (!doc) return;
+
+		var j = 0;
+		var el = document.createElement('div');
+		document.body.appendChild(el);
+
+		var inc = function(){
+			j++;
+		};
+
+		not(document, 'hello', 'p, div, .some', inc);
+
+		var sideLink = document.createElement('span');
+		document.body.appendChild(sideLink);
+
+		//emit not bubbling evt - ignored
+		// console.log('emit body')
+		emit(document.body, 'hello');
+		assert.equal(j, 0);
+
+		//emit bubbling evt on ignoring element - ignored
+		// console.log('emit el')
+		emit(el, 'hello', null, true);
+		assert.equal(j, 0);
+
+		//emit bubbling evt on some other element - passed
+		// console.log('emit sideLink')
+		emit(sideLink, 'hello', null, true);
+		assert.equal(j, 1);
+
+
+		//unbind not
+		off(document, 'hello');
+
+		//emit bubbling evt on passing element (should be ignored)
+		emit(sideLink, 'hello', null, true);
+		assert.equal(j, 1);
+	});
+
+	it(':not on elements which are no more in DOM', function(){
+		if (!doc) return;
+
+		var a = document.createElement('div');
+		a.className = 'a';
+		a.innerHTML = '<span class="x"></span>';
+		document.body.appendChild(a);
+
+		var i = 0;
+
+
+		on(a, 'click', function(){
+			// console.log('---a click', this)
+			this.innerHTML = '<span></span>';
 		});
 
-		assert.equal(i, 2);
-		assert.equal(j, 3);
-
-
-		Emitter.off(x, {
-			x: undefined,
-			y: undefined
+		//look how element caused the event has been removed from DOM in the first callback, but doc is still triggered by it
+		not(document, 'click', '.a', function(e){
+			// console.log('---document click', this, a.innerHTML)
+			i++;
 		});
+		// console.log('----emit click', a.firstChild)
+		emit(a.firstChild, 'click', true, true);
 
-		Emitter.emit(x, {
-			'x': 2,
-			'y': 3
-		});
-
-		assert.equal(i, 2);
-		assert.equal(j, 3);
+		assert.equal(i, 0);
 	});
 
 	it('Throttle', function(done){
@@ -277,14 +362,14 @@ describe('Regression', function(){
 		var a = {};
 
 		//should be called 10 times less often than dispatched event
-		Emitter.throttle(a, 'x', 50, function(){
+		throttle(a, 'x', 50, function(){
 			i++;
 			// console.log(new Date - initT);
 			assert.equal(this, a);
 		});
 
 		var interval = setInterval(function(){
-			Emitter.emit(a, 'x');
+			emit(a, 'x');
 		}, 5);
 
 		//should be called instantly
@@ -318,154 +403,44 @@ describe('Regression', function(){
 			i++;
 		};
 
-		Emitter.delegate(el, 'hello', inc, 'p, div, .some');
+		delegate(el, 'hello', inc, 'p, div, .some');
 
 		var sideLink = document.createElement('span');
 		sideLink.className = 'side';
 		el.appendChild(sideLink);
 
-		Emitter.on(sideLink, 'hello', function(){
+		on(sideLink, 'hello', function(){
 			j++;
 		});
 
 		//emit not bubbling evt (ignored)
-		Emitter.emit(el2, 'hello');
+		emit(el2, 'hello');
 		assert.equal(i, 0);
 
 		//emit bubbling evt too high (ignored)
-		Emitter.emit(document.body, 'hello', null, true);
+		emit(document.body, 'hello', null, true);
 		assert.equal(i, 0);
 
 		//emit bubbling evt on passing element
-		Emitter.emit(el2, 'hello', null, true);
+		emit(el2, 'hello', null, true);
 		assert.equal(i, 1);
-		Emitter.emit(el, 'hello', null, true);
+		emit(el, 'hello', null, true);
 		assert.equal(i, 1);
 
 		//emit not passing element bubbling evt (should be ignored)
 		// console.log('------- emit side');
-		Emitter.emit(sideLink, 'hello', null, true);
+		emit(sideLink, 'hello', null, true);
 		assert.equal(i, 1);
 		assert.equal(j, 1);
 
 
 		//unbind delegate
 		// console.log('------- off');
-		Emitter.off(el, 'hello');
+		off(el, 'hello');
 
 		//emit bubbling evt on passing element (should be ignored cause is off)
 		// console.log('------- emit el');
-		Emitter.emit(el2, 'hello', null, true);
-		assert.equal(i, 1);
-		assert.equal(j, 1);
-	});
-
-	it('Not', function(){
-		if (!doc) return;
-
-		var j = 0;
-		var el = document.createElement('div');
-		document.body.appendChild(el);
-
-		var inc = function(){
-			j++;
-		};
-
-		Emitter.not(document, 'hello', 'p, div, .some', inc);
-
-		var sideLink = document.createElement('span');
-		document.body.appendChild(sideLink);
-
-		//emit not bubbling evt - ignored
-		// console.log("emit body")
-		Emitter.emit(document.body, 'hello');
-		assert.equal(j, 0);
-
-		//emit bubbling evt on ignoring element - ignored
-		// console.log("emit el")
-		Emitter.emit(el, 'hello', null, true);
-		assert.equal(j, 0);
-
-		//emit bubbling evt on some other element - passed
-		// console.log("emit sideLink")
-		Emitter.emit(sideLink, 'hello', null, true);
-		assert.equal(j, 1);
-
-
-		//unbind not
-		Emitter.off(document, 'hello');
-
-		//emit bubbling evt on passing element (should be ignored)
-		Emitter.emit(sideLink, 'hello', null, true);
-		assert.equal(j, 1);
-	});
-
-	it(":not on elements which are no more in DOM", function(){
-		if (!doc) return;
-
-		var a = document.createElement('div');
-		a.className = 'a';
-		a.innerHTML = '<span class="x"></span>';
-		document.body.appendChild(a);
-
-		var i = 0;
-
-
-		Emitter.on(a, 'click', function(){
-			// console.log('---a click', this)
-			this.innerHTML = '<span></span>';
-		});
-
-		//look how element caused the event has been removed from DOM in the first callback, but doc is still triggered by it
-		Emitter.not(document, 'click', '.a', function(e){
-			// console.log('---document click', this, a.innerHTML)
-			i++;
-		});
-		// console.log('----emit click', a.firstChild)
-		Emitter.emit(a.firstChild, 'click', true, true);
-
-		assert.equal(i, 0);
-	});
-
-	it('Delegate with swapped order of params', function(){
-			if (!doc) return;
-
-		var i = 0, j = 0;
-		var el = document.createElement('div');
-		document.body.appendChild(el);
-
-		var inc = function(){
-			i++;
-		};
-
-		Emitter.delegate(document, 'hello', 'p, div, .some', inc);
-
-		var sideLink = document.createElement('span');
-		document.body.appendChild(sideLink);
-
-		Emitter.on(sideLink, 'hello', function(){
-			j++;
-		});
-
-		//emit not bubbling evt
-		Emitter.emit(document.body, 'hello');
-		assert.equal(i, 0);
-
-		//emit bubbling evt on passing element
-		Emitter.emit(el, 'hello', null, true);
-		assert.equal(i, 1);
-
-		//emit not passing element bubbling evt (should be ignored)
-		Emitter.emit(sideLink, 'hello', null, true);
-		assert.equal(i, 1);
-		assert.equal(j, 1);
-
-
-		//unbind delegate
-		Emitter.off(document, 'hello');
-
-		//emit bubbling evt on passing element (should be ignored)
-		Emitter.emit(el, 'hello', null, true);
+		emit(el2, 'hello', null, true);
 		assert.equal(i, 1);
 		assert.equal(j, 1);
 	});
@@ -474,48 +449,48 @@ describe('Regression', function(){
 		if (!doc) return;
 
 		var k = 0, a = 0, ka=0, z = 0;
-		var el = document.createElement("div");
+		var el = document.createElement('div');
 
-		Emitter.keypass(el, "keydown", function(e){
+		keypass(el, 'keydown', function(e){
 			z++;
 		});
-		Emitter.keypass(el, "keydown", function(e){
+		keypass(el, 'keydown', function(e){
 			a++;
 		}, 83);
-		Emitter.keypass(el, "keydown", function(e){
+		keypass(el, 'keydown', function(e){
 			k++;
 		}, 'enter');
-		Emitter.keypass(el, "keydown", function(e){
+		keypass(el, 'keydown', function(e){
 			ka++;
 		}, [65, 'enter', '68']);
 
 
-		var evt = createKeyEvt("keydown", 65);
-		Emitter.emit(el, evt);
+		var evt = createKeyEvt('keydown', 65);
+		emit(el, evt);
 		assert.equal(z, 0);
 		assert.equal(a, 0);
 		assert.equal(k, 0);
 		assert.equal(ka, 1);
 
 		// s
-		evt = createKeyEvt("keydown", 83);
-		Emitter.emit(el, evt);
+		evt = createKeyEvt('keydown', 83);
+		emit(el, evt);
 		assert.equal(z, 0);
 		assert.equal(a, 1);
 		assert.equal(k, 0);
 		assert.equal(ka, 1);
 
 		// s2
-		evt = createKeyEvt("keydown", 83);
-		Emitter.emit(el, evt);
+		evt = createKeyEvt('keydown', 83);
+		emit(el, evt);
 		assert.equal(z, 0);
 		assert.equal(a, 2);
 		assert.equal(k, 0);
 		assert.equal(ka, 1);
 
 		//enter
-		evt = createKeyEvt("keydown", 13);
-		Emitter.emit(el, evt);
+		evt = createKeyEvt('keydown', 13);
+		emit(el, evt);
 		assert.equal(z, 0);
 		assert.equal(a, 2);
 		assert.equal(k, 1);
@@ -526,11 +501,11 @@ describe('Regression', function(){
 		var a = {};
 		var i = 0;
 
-		Emitter.later(a, 'x', 100, function(){
+		later(a, 'x', 100, function(){
 			i++;
 		});
 
-		Emitter.emit(a, 'x');
+		emit(a, 'x');
 		assert.equal(i, 0);
 
 		setTimeout(function(){
@@ -543,17 +518,7 @@ describe('Regression', function(){
 		}, 120);
 	});
 
-
-	it('ignore empty target', function(){
-		Emitter.on(null, 'click', function(){});
-		Emitter.once(null, 'click', function(){});
-		Emitter.off(null, 'click', function(){});
-		Emitter.emit(null, 'click');
-	});
-
-
-
-	it("delegateTarget", function(){
+	it('delegateTarget', function(){
 		if (!doc) return;
 
 		var a = document.createElement('div');
@@ -563,15 +528,13 @@ describe('Regression', function(){
 		document.body.appendChild(a);
 
 		var cTarget;
-		Emitter.delegate(document, 'click', '.d', function(e){
+		delegate(document, 'click', '.d', function(e){
 			cTarget = e.delegateTarget;
 		});
-		Emitter.emit(b, 'click', null, true);
+		emit(b, 'click', null, true);
 		assert.equal(cTarget, a);
 	});
 });
-
-
 
 
 
