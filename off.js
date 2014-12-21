@@ -38,6 +38,9 @@ function off(target, evt, fn){
 		//FIXME: find better way to access target callbacks
 		callbacks = target._callbacks;
 
+		//ignore empty callbacks
+		if (!callbacks) return;
+
 		//unbind all evts
 		if (!evt) {
 			for (evt in callbacks) {
