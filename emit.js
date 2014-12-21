@@ -75,7 +75,12 @@ function emit(target, eventName, data, bubbles){
 
 	//detect target events
 	else {
-		emitMethod = target['emit'] || target['trigger'] || target['fire'] || target['dispatchEvent'];
+		//emit - default
+		//trigger - jquery
+		//dispatchEvent - DOM
+		//raise - node-state
+		//fire - ???
+		emitMethod = target['emit'] || target['trigger'] || target['fire'] || target['dispatchEvent'] || target['raise'];
 	}
 
 
