@@ -24,7 +24,7 @@ module.exports = on;
 function on(target, evt, fn, condition){
 	if (!target) return target;
 
-	//get target on method, if any
+	//get target `on` method, if any
 	var onMethod = target['on'] || target['addEventListener'] || target['addListener'];
 
 	var cb;

@@ -8,30 +8,40 @@ var win = typeof window === 'undefined' ? undefined : window;
 var Emmy = doc && typeof Emitter !== 'undefined' ? Emitter : require('..');
 var assert = typeof chai !== 'undefined' ? chai.assert : require('chai').assert;
 
+var on = require('../on'),
+	off = require('../off'),
+	once = require('../once'),
+	emit = require('../emit'),
+	delegate = require('../delegate'),
+	throttle = require('../throttle'),
+	later = require('../later'),
+	not = require('../not'),
+	keypass = require('../keypass');
+
 
 describe('Regression', function(){
 	it('on/emit/off', function(){
 		var a = {};
 		var i = 0;
-		Emmy.on(a, 'click', function(){i++});
-		Emmy.emit(a, 'click');
+		on(a, 'click', function(){i++});
+		emit(a, 'click');
 		assert.equal(i, 1);
-		Emmy.off(a, 'click');
-		Emmy.emit(a, 'click');
+		off(a, 'click');
+		emit(a, 'click');
 		assert.equal(i, 1);
 	});
 
 	it('removeAll', function(){
 		var a = {}, i = 0;
 
-		Emmy.on(a, 'y', function(){i++});
-		Emmy.on(a, 'y', function(){i++});
-		Emmy.emit(a, 'y');
+		on(a, 'y', function(){i++});
+		on(a, 'y', function(){i++});
+		emit(a, 'y');
 
 		assert.equal(i, 2);
-		Emmy.off(a);
+		off(a);
 
-		Emmy.emit(a, 'y');
+		emit(a, 'y');
 		assert.equal(i, 2);
 	});
 
@@ -41,20 +51,20 @@ describe('Regression', function(){
 	it('Call list changed during `emit`', function(){
 		var a = {}, log = [];
 
-		Emmy.on(a, 'x', function(){
-			Emmy.off(a, 'x');
+		on(a, 'x', function(){
+			off(a, 'x');
 			log.push(1);
 		});
 
-		Emmy.on(a, 'x', function(){
+		on(a, 'x', function(){
 			log.push(2);
 		});
 
-		Emmy.on(a, 'x', function(){
+		on(a, 'x', function(){
 			log.push(3);
 		});
 
-		Emmy.emit(a, 'x');
+		emit(a, 'x');
 
 		assert.deepEqual(log, [1,2,3]);
 	});
@@ -63,13 +73,13 @@ describe('Regression', function(){
 		var i = 0;
 		var a = {
 			emit: function(a){
-				Emmy.emit(this, a);
+				emit(this, a);
 			},
 			fn: function(){
 				i++;
 			},
 			on: function(a, b){
-				Emmy.on(this, a, b);
+				on(this, a, b);
 			}
 		};
 
@@ -129,10 +139,10 @@ describe('Regression', function(){
 	it('Once', function(){
 		var a = {}, i = 0, inc = function(){i++};
 
-		Emmy.once(a, 'x', inc);
-		Emmy.emit(a, 'x');
-		Emmy.emit(a, 'x');
-		Emmy.emit(a, 'x');
+		once(a, 'x', inc);
+		emit(a, 'x');
+		emit(a, 'x');
+		emit(a, 'x');
 
 		assert.equal(i, 1);
 	});
@@ -147,20 +157,23 @@ describe('Regression', function(){
 		var i = 0;
 		var inc = function(){i++};
 
-		Emmy.once(d, 'x', inc);
-		Emmy.emit(d, 'x');
-		Emmy.emit(d, 'x');
-		Emmy.emit(d, 'x');
+		once(d, 'x', inc);
+		emit(d, 'x');
+		emit(d, 'x');
+		emit(d, 'x');
 
 		assert.equal(i, 1);
 	});
 
-	it('Chainable static calls', function(){
+	it.skip('Chainable static calls (there’re no more static methods)', function(){
 		var a = {}, i = 0;
 
 		function inc(){i++};
 
-		Emmy.on(a, 'x', inc).once(a, 'x', inc).emit(a, 'x').emit(a, 'x');
+		on(a, 'x', inc);
+		once(a, 'x', inc);
+		emit(a, 'x');
+		emit(a, 'x');
 
 		assert.equal(i, 3);
 	});
@@ -195,8 +208,8 @@ describe('Regression', function(){
 	it('List arg in emit', function(){
 		var x = {}, i = 0, a = [1,2], b;
 
-		Emmy.on(x, 'y', function(e){i++; b = e});
-		Emmy.emit(x, 'y', a);
+		on(x, 'y', function(e){i++; b = e});
+		emit(x, 'y', a);
 
 		assert.equal(i, 1);
 		assert.equal(b, a);
@@ -205,31 +218,71 @@ describe('Regression', function(){
 	it('Space-separated events', function(){
 		var x = {}, i = 0, j = 0;
 
-		Emmy.on(x, 'x y', function(e, f){i+=e+f});
-		Emmy.on(x, 'x y', function(e, f){j+=e+f});
+		on(x, 'x y', function(e, f){i+=e+f});
+		on(x, 'x y', function(e, f){j+=e+f});
 
-		Emmy.emit(x, 'x y', 1, 2);
+		emit(x, 'x y', 1, 2);
 
 		assert.equal(i, 6);
 		assert.equal(j, 6);
 
-		Emmy.off(x, 'x y');
-		Emmy.emit(x, 'x y', 1, 2);
+		off(x, 'x y');
+		emit(x, 'x y', 1, 2);
 		assert.equal(i, 6);
 		assert.equal(j, 6);
 	});
 
 	it('ignore empty target', function(){
-		Emmy.on(null, 'click', function(){});
-		Emmy.once(null, 'click', function(){});
-		Emmy.off(null, 'click', function(){});
-		Emmy.emit(null, 'click');
+		on(null, 'click', function(){});
+		once(null, 'click', function(){});
+		off(null, 'click', function(){});
+		emit(null, 'click');
+	});
+
+	it('Scope events', function(){
+		var i = 0, j = 0;
+
+		on(document, 'click.x touchstart.x', function(){
+			i++;
+		});
+
+		on(document, 'click touchstart', function(){
+			j++;
+		});
+
+
+		emit(document, 'click touchstart');
+		assert.equal(i,2);
+		assert.equal(j,2);
+
+		off(document, 'click.x touchstart.x');
+
+		emit(document, 'click touchstart');
+		assert.equal(i,2);
+		assert.equal(j,4);
+	});
+
+	it('Does not call natural `on` twice', function(){
+		var el = document.createElement('div');
+		var i = 0;
+
+		once(el, 'x', function(){
+			i++;
+		});
+		on(el, 'x', function(){
+			i++;
+		});
+
+		emit(el, 'x');
+		assert.equal(i, 2);
+		emit(el, 'x');
+		assert.equal(i, 3);
 	});
 });
 
 
 
-describe.skip('Standalone methods', function(){
+describe('Standalone methods', function(){
 	/**
 	 * Standalone tests
 	 *
@@ -249,7 +302,7 @@ describe.skip('Standalone methods', function(){
 
 
 	it('Delegate with swapped order of params', function(){
-			if (!doc) return;
+		if (!doc) return;
 
 		var i = 0, j = 0;
 		var el = document.createElement('div');

@@ -1,4 +1,4 @@
-# Emmy [![Build Status](https://travis-ci.org/dfcreative/emmy.svg?branch=master)](https://travis-ci.org/dfcreative/emmy)  [![Code Climate](https://codeclimate.com/github/dfcreative/emmy/badges/gpa.svg)](https://codeclimate.com/github/dfcreative/emmy) <a href="UNLICENSE"><img src="http://upload.wikimedia.org/wikipedia/commons/6/62/PD-icon.svg" width="20"/></a>
+# Emmy [![Build Status](https://travis-ci.org/dfcreative/emmy.svg?branch=master)](https://travis-ci.org/dfcreative/emmy) [![Code Climate](https://codeclimate.com/github/dfcreative/emmy/badges/gpa.svg)](https://codeclimate.com/github/dfcreative/emmy) [!size](https://img.shields.io/badge/size-1.35kb-brightgreen.svg) <a href="UNLICENSE"><img src="http://upload.wikimedia.org/wikipedia/commons/6/62/PD-icon.svg" width="20"/></a>
 
 <!--
 [![browser support](https://ci.testling.com/dfcreative/emmy.png)
@@ -9,16 +9,15 @@ Emmy is extended [component-emitter](https://github.com/component/emitter) for g
 
 1. Emits events on any target: plain object, element, jQuery, Backbone model, [color](https://github.com/dfcreative/color) etc. Uses target events first, if available, like `dispatchEvent` or `addEventListener` in DOM elements or `on`, `trigger` in jQuery objects.
 
-2. Inherits [component-emitter](https://github.com/component/emitter), in that it is [fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) and `instanceof Emitter === true`.
+2. Inherits [component-emitter](https://github.com/component/emitter), in that it is [fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) and `instanceof Emitter === true`. That way it also avoids redundant code by keeping _component-emitter_ dependency untouched.
 
-6. Provides additional standalone functions _delegate_, _not_, _throttle_, _later_ and _keypass_. Also each basic method _on_, _once_, _emit_, _off_ is available standalone as `require('emmy/<method>');`.
+6. Provides standalone _on_, _once_, _emit_, _off_, as well as additional _delegate_, _not_, _throttle_, _later_ and _keypass_. Each is available as `require('emmy/<method>');`.
 
 3. Accepts space-separated multiple events.
 
-5. Works both in browsers and _io_, _1.41kb gzipped_.
+5. Works both in browsers and _io_.
 
 9999. **Asbestos-free**.
-
 
 
 
