@@ -5,7 +5,7 @@ module.exports = off;
 
 var icicle = require('icicle');
 var slice = require('sliced');
-var emitter = require('component-emitter').prototype;
+var listeners = require('./listeners');
 
 
 /**
@@ -36,7 +36,7 @@ function off(target, evt, fn){
 
 		//then forget own callbacks, if any
 		//FIXME: find better way to access target callbacks
-		callbacks = target._callbacks;
+		callbacks = listeners(target);
 
 		//ignore empty callbacks
 		if (!callbacks) return;
@@ -58,10 +58,6 @@ function off(target, evt, fn){
 				}
 			});
 		}
-
-
-		//then forget own callbacks, if any
-		emitter.off.apply(target,args);
 
 		return target;
 	}
@@ -88,7 +84,18 @@ function off(target, evt, fn){
 			}
 		}
 
-		emitter.off.call(target, evt, fn);
+
+		//forget callback
+		var evtCallbacks = listeners(target, evt);
+
+		//remove specific handler
+		for (i = 0; i < evtCallbacks.length; i++) {
+			//once method has original callback in .fn
+			if (evtCallbacks[i] === fn || evtCallbacks[i].fn === fn) {
+				evtCallbacks.splice(i, 1);
+				break;
+			}
+		}
 	});
 
 

@@ -19,7 +19,7 @@ var isString = require('mutype/is-string');
  * @return {Function} Wrapped handler
  */
 function keypass(target, evt, fn, keys){
-	return on(target, evt,  keypass.wrap(target, evt, fn, keys));
+	return on(target, evt, keypass.wrap(target, evt, fn, keys));
 }
 
 /** Return wrapped callback filtering keys */

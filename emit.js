@@ -4,7 +4,7 @@
 var icicle = require('icicle');
 var slice = require('sliced');
 var isString = require('mutype/is-string');
-var emitter = require('component-emitter').prototype;
+var listeners = require('./listeners');
 
 
 /**
@@ -84,13 +84,13 @@ function emit(target, eventName, data, bubbles){
 	}
 
 
-	var args = [evt].concat(slice(arguments, 2));
+	var args = slice(arguments, 2);
 
 	//use locks to avoid self-recursion on objects wrapping this method
 	if (emitMethod) {
 		if (icicle.freeze(target, 'emit' + eventName)) {
 			//use target event system, if possible
-			emitMethod.apply(target, args);
+			emitMethod.apply(target, [evt].concat(args));
 			icicle.unfreeze(target, 'emit' + eventName);
 
 			return target;
@@ -102,7 +102,13 @@ function emit(target, eventName, data, bubbles){
 
 
 	//fall back to default event system
-	emitter.emit.apply(target, args);
+	var evtCallbacks = listeners(target, evt);
+
+	//copy callbacks to fire because list can be changed by some callback (like `off`)
+	var fireList = slice(evtCallbacks);
+	for (var i = 0; i < fireList.length; i++ ) {
+		fireList[i] && fireList[i].apply(target, args);
+	}
 
 	return target;
 }

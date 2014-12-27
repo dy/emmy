@@ -4,7 +4,7 @@
 
 
 var icicle = require('icicle');
-var emitter = require('component-emitter').prototype;
+var listeners = require('./listeners');
 
 
 module.exports = on;
@@ -21,21 +21,13 @@ module.exports = on;
  *
  * @return {object} A target
  */
-function on(target, evt, fn, condition){
+function on(target, evt, fn){
 	if (!target) return target;
 
 	//get target `on` method, if any
 	var onMethod = target['on'] || target['addEventListener'] || target['addListener'];
 
-	var cb;
-
-	//apply condition wrapper
-	if (condition) {
-		cb = on.wrap(fn, condition);
-	} else {
-		cb = fn;
-	}
-
+	var cb = fn;
 
 	//invoke method for each space-separated event from a list
 	evt.split(/\s+/).forEach(function(evt){
@@ -53,7 +45,7 @@ function on(target, evt, fn, condition){
 		}
 
 		//save the callback anyway
-		emitter.on.call(target, evt, cb);
+		listeners.add(target, evt, cb);
 	});
 
 	return target;
