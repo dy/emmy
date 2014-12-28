@@ -240,24 +240,26 @@ describe('Regression', function(){
 	});
 
 	it('Scope events', function(){
-		var i = 0, j = 0;
+		var i = 0, j = 0, el = document;
 
-		on(document, 'click.x touchstart.x', function(){
+		on(el, 'click.x touchstart.x', function(e){
+			// console.log(e.type)
 			i++;
 		});
 
-		on(document, 'click touchstart', function(){
+		on(el, 'click touchstart', function(e){
+			// console.log(e.type)
 			j++;
 		});
 
 
-		emit(document, 'click touchstart');
+		emit(el, 'click touchstart');
 		assert.equal(i,2);
 		assert.equal(j,2);
 
-		off(document, 'click.x touchstart.x');
+		off(el, 'click.x touchstart.x');
 
-		emit(document, 'click touchstart');
+		emit(el, 'click touchstart');
 		assert.equal(i,2);
 		assert.equal(j,4);
 	});

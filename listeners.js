@@ -5,8 +5,11 @@
  * @module emmy/listeners
  */
 
+/** Storage of callbacks */
 var cache = new WeakMap;
 
+/** Storage of classes */
+var alias = new WeakMap;
 
 
 /**
@@ -19,6 +22,7 @@ var cache = new WeakMap;
  */
 function listeners(target, evt){
 	var listeners = cache.get(target);
+	evt = evt.split('.')[0];
 	if (!evt) return listeners || {};
 	return listeners && listeners[evt] || [];
 }
@@ -28,12 +32,20 @@ function listeners(target, evt){
  * Add a new listener
  */
 listeners.add = function(target, evt, cb){
+	var evtParts = evt.split('.');
+	evt = evtParts.shift();
+
 	//ensure set of callbacks for the target exists
 	if (!cache.has(target)) cache.set(target, {});
 	var targetCallbacks = cache.get(target);
 
 	//save a new callback
 	(targetCallbacks[evt] = targetCallbacks[evt] || []).push(cb);
+
+	//for each evt part create an alias
+	for (var i = evtParts.length, ns; i--;){
+		ns = evtParts[i];
+	}
 };
 
 

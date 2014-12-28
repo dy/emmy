@@ -35,14 +35,10 @@ function off(target, evt, fn){
 
 
 		//then forget own callbacks, if any
-		//FIXME: find better way to access target callbacks
-		callbacks = listeners(target);
-
-		//ignore empty callbacks
-		if (!callbacks) return;
 
 		//unbind all evts
 		if (!evt) {
+			callbacks = listeners(target);
 			for (evt in callbacks) {
 				off(target, evt);
 			}
@@ -51,10 +47,10 @@ function off(target, evt, fn){
 		else {
 			//invoke method for each space-separated event from a list
 			evt.split(/\s+/).forEach(function(evt){
-				if (callbacks[evt]) {
-					for (var i = callbacks[evt].length; i--;){
-						off(target, evt, callbacks[evt][i]);
-					}
+				callbacks = listeners(target, evt);
+
+				for (var i = callbacks.length; i--;){
+					off(target, evt, callbacks[i]);
 				}
 			});
 		}
