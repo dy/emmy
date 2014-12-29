@@ -28,14 +28,10 @@ Emmy is enhanced event emitter and event methods for green components.
 
 # Use
 
-For browser use browserify.
-
-Install:
-
 `$ npm install emmy`
 
 
-### Standalone methods:
+### Standalone methods
 
 ```js
 var on = require('emmy/on');
