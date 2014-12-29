@@ -23,32 +23,35 @@ Emmy is enhanced event emitter and event methods for green components.
 
 
 
-#### [Try it](http://jsfiddle.net/dfcreative/j2tquytv/)
+#### [Try Emmy](http://jsfiddle.net/dfcreative/j2tquytv/)
 
 
 # Use
 
-For browser use browserify or standalone [emmy.js](/emmy.js).
+For browser use browserify.
 
 Install:
 
 `$ npm install emmy`
 
 
-### Wrapping methods:
+### Standalone methods:
 
 ```js
-var Emitter = require('emmy');
+var on = require('emmy/on');
+var once = require('emmy/once');
+var off = require('emmy/off');
+var emit = require('emmy/emit');
 
-Emitter.on(target, 'evt', function(){});
-Emitter.emit(target, 'evt', data1, data2);
-Emitter.off(target, 'evt');
+on(target, 'evt', function(){});
+emit(target, 'evt', data1, data2);
+off(target, 'evt');
 
 //typical use-case
-Emitter.once(webWorker, 'message', function(){...});
+once(webWorker, 'message', function(){...});
 ```
 
-_Use:_ bind events to any object in an unobtrusive way.
+_Use:_ bind events to any object in an unobtrusive way. Also use if only one method is required and/or to reduce size of build.
 
 
 ### Create `Emitter` instance
@@ -119,16 +122,6 @@ actor
 
 _Use:_ make instances of class `instanceof Emitter`.
 
-
-### Standalone
-
-```js
-var once = require('emmy/once');
-
-once(worker, 'message', function(){});
-```
-
-_Use:_ if only one specific event method is required or to reduce size of build.
 
 
 
