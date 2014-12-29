@@ -47,8 +47,10 @@ function off(target, evt, fn){
 		else {
 			//invoke method for each space-separated event from a list
 			evt.split(/\s+/).forEach(function(evt){
-				callbacks = listeners(target, evt);
+				var evtParts = evt.split('.');
+				evt = evtParts.shift();
 
+				callbacks = listeners(target, evt, evtParts);
 				for (var i = callbacks.length; i--;){
 					off(target, evt, callbacks[i]);
 				}
@@ -62,9 +64,10 @@ function off(target, evt, fn){
 	//target events (string notation to advanced_optimizations)
 	var offMethod = target['off'] || target['removeEventListener'] || target['removeListener'];
 
-
 	//invoke method for each space-separated event from a list
 	evt.split(/\s+/).forEach(function(evt){
+		var evtParts = evt.split('.');
+		evt = evtParts.shift();
 
 		//use target `off`, if possible
 		if (offMethod) {
@@ -80,18 +83,8 @@ function off(target, evt, fn){
 			}
 		}
 
-
 		//forget callback
-		var evtCallbacks = listeners(target, evt);
-
-		//remove specific handler
-		for (i = 0; i < evtCallbacks.length; i++) {
-			//once method has original callback in .fn
-			if (evtCallbacks[i] === fn || evtCallbacks[i].fn === fn) {
-				evtCallbacks.splice(i, 1);
-				break;
-			}
-		}
+		listeners.remove(target, evt, fn, evtParts);
 	});
 
 

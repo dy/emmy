@@ -31,6 +31,9 @@ function on(target, evt, fn){
 
 	//invoke method for each space-separated event from a list
 	evt.split(/\s+/).forEach(function(evt){
+		var evtParts = evt.split('.');
+		evt = evtParts.shift();
+
 		//use target event system, if possible
 		if (onMethod) {
 			//avoid self-recursions
@@ -45,7 +48,7 @@ function on(target, evt, fn){
 		}
 
 		//save the callback anyway
-		listeners.add(target, evt, cb);
+		listeners.add(target, evt, cb, evtParts);
 	});
 
 	return target;

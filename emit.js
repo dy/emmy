@@ -4,6 +4,8 @@
 var icicle = require('icicle');
 var slice = require('sliced');
 var isString = require('mutype/is-string');
+var isNode = require('mutype/is-node');
+var isEvent = require('mutype/is-event');
 var listeners = require('./listeners');
 
 
@@ -17,6 +19,8 @@ module.exports = function(target, evt){
 	if (isString(evt)) {
 		args = slice(arguments, 2);
 		evt.split(/\s+/).forEach(function(evt){
+			evt = evt.split('.')[0];
+
 			emit.apply(this, [target, evt].concat(args));
 		});
 	} else {
@@ -46,14 +50,14 @@ function emit(target, eventName, data, bubbles){
 	var emitMethod, evt = eventName;
 
 	//Create proper event for DOM objects
-	if (target.nodeType || target === doc || target === win) {
+	if (isNode(target) || target === win) {
 		//NOTE: this doesnot bubble on off-DOM elements
 
-		if (eventName instanceof Event) {
+		if (isEvent(eventName)) {
 			evt = eventName;
 		} else {
 			//IE9-compliant constructor
-			evt = document.createEvent('CustomEvent');
+			evt = doc.createEvent('CustomEvent');
 			evt.initCustomEvent(eventName, bubbles, true, data);
 
 			//a modern constructor would be:
@@ -85,6 +89,7 @@ function emit(target, eventName, data, bubbles){
 
 
 	var args = slice(arguments, 2);
+
 
 	//use locks to avoid self-recursion on objects wrapping this method
 	if (emitMethod) {

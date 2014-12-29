@@ -242,23 +242,29 @@ describe('Regression', function(){
 	it('Scope events', function(){
 		var i = 0, j = 0, el = document;
 
-		on(el, 'click.x touchstart.x', function(e){
-			// console.log(e.type)
+		var fn1 = function(e){
+			// console.log('--ex')
 			i++;
-		});
-
-		on(el, 'click touchstart', function(e){
-			// console.log(e.type)
+		}, fn2 = function(e){
+			// console.log('--e')
 			j++;
-		});
+		};
 
+		// console.log('---onx')
+		on(el, 'click.x touchstart.x', fn1);
 
+		// console.log('---on')
+		on(el, 'click touchstart', fn2);
+
+		// console.log('---emit')
 		emit(el, 'click touchstart');
 		assert.equal(i,2);
 		assert.equal(j,2);
 
+		// console.log('---off')
 		off(el, 'click.x touchstart.x');
 
+		// console.log('---emit')
 		emit(el, 'click touchstart');
 		assert.equal(i,2);
 		assert.equal(j,4);

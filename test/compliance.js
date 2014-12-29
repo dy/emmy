@@ -94,6 +94,7 @@ describe('Emitter', function(){
 
       emitter.once('foo', one);
       emitter.once('fee', one);
+
       emitter.off('foo', one);
 
       emitter.emit('foo');
