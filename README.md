@@ -146,9 +146,7 @@ Function | Arguments | Description
 
 
 
-### Emmy methods
-
-Can be used both as static and prototype methods: `Emmy.on(<target>, <event>, <method>, ...<data>)` and `emitter.on(<event>, <handler>, ...<data>)`.
+### Prototype methods
 
 Method | Arguments | Description |
 ---|---|---
