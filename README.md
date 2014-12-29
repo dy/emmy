@@ -5,11 +5,11 @@
 ](https://ci.testling.com/dfcreative/emmy)
 -->
 
-Emmy is event emitter and event methods for green components development.
+Emmy is enhanced event emitter and event methods for green components development.
 
 1. Emits events on any target: plain object, element, jQuery, Backbone model, [color](https://github.com/dfcreative/color) etc. Uses target events first, if available, like `dispatchEvent` or `addEventListener` in DOM elements or `on`, `trigger` in jQuery objects.
 
-2. It is [fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) with [component-emitter](https://github.com/component/emitter), but behaves in an unobtrusive way, not creating `_callbacks` property on targets but using `WeakMap` instead.
+2. It is [fully compliant](https://cdn.rawgit.com/dfcreative/emmy/master/test/index.html) with [component-emitter](https://github.com/component/emitter), but behaves in an unobtrusive way, not polluting target with `_callbacks` property by leveraging _WeakMaps_.
 
 6. Provides standalone _on_, _once_, _emit_, _off_, as well as additional _delegate_, _not_, _throttle_, _later_ and _keypass_. Each is available as `require('emmy/<method>');`.
 

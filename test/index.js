@@ -5,6 +5,9 @@
 var doc = typeof document === 'undefined' ? undefined : document;
 var win = typeof window === 'undefined' ? undefined : window;
 
+/** A native env emitter */
+var nativeEmitter = doc ? doc : new (require('events').EventEmitter);
+
 var Emmy = doc && typeof Emitter !== 'undefined' ? Emitter : require('..');
 var assert = typeof chai !== 'undefined' ? chai.assert : require('chai').assert;
 
@@ -148,12 +151,8 @@ describe('Regression', function(){
 	});
 
 	it('Once on object having self events', function(){
-		if (typeof document !== 'undefined') {
-			var d =  document.createElement('div');
-		} else {
-			var EventEmitter = require('events').EventEmitter;
-			var d = new EventEmitter;
-		}
+		var d = nativeEmitter;
+
 		var i = 0;
 		var inc = function(){i++};
 
@@ -240,7 +239,7 @@ describe('Regression', function(){
 	});
 
 	it('Scope events', function(){
-		var i = 0, j = 0, el = document;
+		var i = 0, j = 0, el = nativeEmitter;
 
 		var fn1 = function(e){
 			// console.log('--ex')
@@ -268,10 +267,12 @@ describe('Regression', function(){
 		emit(el, 'click touchstart');
 		assert.equal(i,2);
 		assert.equal(j,4);
+
+		off(el);
 	});
 
 	it('Does not call natural `on` twice', function(){
-		var el = document.createElement('div');
+		var el = nativeEmitter;
 		var i = 0;
 
 		once(el, 'x', function(){
