@@ -18,12 +18,12 @@ var cache = new WeakMap;
  * @return {(object|array)} List/set of listeners
  */
 function listeners(target, evt, tags){
-	var listeners = cache.get(target);
+	var cbs = cache.get(target);
 
-	if (!evt) return listeners || {};
-	if (!listeners || !listeners[evt]) return [];
+	if (!evt) return cbs || {};
+	if (!cbs || !cbs[evt]) return [];
 
-	var result = listeners[evt];
+	var result = cbs[evt];
 
 	//if there are evt namespaces specified - filter callbacks
 	if (tags && tags.length) {

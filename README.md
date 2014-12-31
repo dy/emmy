@@ -22,10 +22,6 @@ Emmy is enhanced event emitter and event methods for green components.
 9999. **Asbestos-free**.
 
 
-
-#### [Try Emmy](http://jsfiddle.net/dfcreative/j2tquytv/)
-
-
 # Use
 
 `$ npm install emmy`
