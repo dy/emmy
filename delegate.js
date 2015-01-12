@@ -44,7 +44,7 @@ delegate.wrap = function(target, evt, fn, selector){
 
 
 		//find at least one element in-between delegate target and event source
-		var holderEl = closest(el, selector);
+		var holderEl = closest(el, selector, true);
 
 		if (holderEl && target !== holderEl && contains(target, holderEl)) {
 			//save source of event
