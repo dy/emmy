@@ -15,11 +15,11 @@ var	on = require('./on'),
 	once = require('./once'),
 	emit = require('./emit'),
 	listeners = require('./listeners'),
-	// keypass = require('./keypass'),
-	// throttle = require('./throttle'),
-	// later = require('./later'),
-	// delegate = require('./delegate'),
-	// not = require('./not'),
+	keypass = require('./keypass'),
+	throttle = require('./throttle'),
+	later = require('./later'),
+	delegate = require('./delegate'),
+	not = require('./not'),
 	slice = require('sliced');
 
 
@@ -63,6 +63,22 @@ proto.listeners = function(a){
 proto.hasListeners = function(a){
 	return !!listeners(this, a).length;
 };
+
+
+/**
+ * Provide static methods
+ */
+Emmy.on = on;
+Emmy.off = off;
+Emmy.once = once;
+Emmy.emit = emit;
+Emmy.listeners = listeners;
+Emmy.keypass = keypass;
+Emmy.throttle = throttle;
+Emmy.later = later;
+Emmy.delegate = delegate;
+Emmy.not = not;
+Emmy.slice = slice;
 
 
 module.exports = Emmy;

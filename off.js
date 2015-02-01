@@ -62,7 +62,7 @@ function off(target, evt, fn){
 
 
 	//target events (string notation to advanced_optimizations)
-	var offMethod = target['off'] || target['removeEventListener'] || target['removeListener'];
+	var offMethod = target['off'] || target['removeEventListener'] || target['removeListener'] || target['detachEvent'];
 
 	//invoke method for each space-separated event from a list
 	evt.split(/\s+/).forEach(function(evt){
