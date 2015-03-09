@@ -5,7 +5,9 @@
 ](https://ci.testling.com/dfcreative/emmy)
 -->
 
-Event functions for green components, which use target’s events, if possible, and fall back to own unobtrusive implementation of events. They also recognize multiple events `on(el, 'click touchstart', cb)` and [namespaces](http://api.jquery.com/on/#event-names) `on(el, 'click.x', cb); off(el, 'click.x');`.
+Event functions for green components.
+It uses target’s events, if possible, and falls back to own unobtrusive implementation of events.
+It also recognizes multiple events `on(el, 'click touchstart', cb)` and [namespaces](http://api.jquery.com/on/#event-names) `on(el, 'click.x', cb); off(el, 'click.x');`.
 
 Use as an universal way to bind events to anything: plain objects, elements, jQuery objects, Backbone models, [color](https://github.com/dfcreative/color), webWorkers etc.
 
@@ -32,7 +34,7 @@ once(webWorker, 'message', function(){...});
 
 ## Emitter
 
-To use Emmy as EventEmitter, just `require('emmy')`. Thought it is recommended to use [native Emitter](https://npmjs.org/package/events), as a more widespread solution.
+To use Emmy as EventEmitter, just `require('emmy')`. Thought it is recommended to use [native Emitter](https://npmjs.org/package/events), as a more conventional solution.
 
 
 # API
