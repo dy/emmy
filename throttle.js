@@ -23,7 +23,7 @@ var isFn = require('mutype/is-fn');
  *
  * @return {Function} A wrapped callback
  */
-function throttle(target, evt, fn, interval){
+function throttle (target, evt, fn, interval) {
 	//FIXME: find cases where objects has own throttle method, then use target’s throttle
 
 	//bind wrapper
@@ -32,7 +32,7 @@ function throttle(target, evt, fn, interval){
 
 
 /** Return wrapped with interval fn */
-throttle.wrap = function(target, evt, fn, interval){
+throttle.wrap = function (target, evt, fn, interval) {
 	//swap params, if needed
 	if (isFn(interval)) {
 		var tmp = interval;
@@ -42,16 +42,26 @@ throttle.wrap = function(target, evt, fn, interval){
 
 	//wrap callback
 	var cb = function() {
-		//do call
-		fn.apply(target, arguments);
+		//opened state
+		if (!cb.closedInterval) {
+			//do call
+			fn.apply(target, arguments);
 
-		//ignore calls
-		off(target, evt, cb);
+			//close till the interval is passed
+			cb.closedInterval = setTimeout(function () {
+				//reset interval
+				cb.closedInterval = null;
 
-		//till the interval is passed
-		setTimeout(function(){
-			on(target, evt, cb);
-		}, interval);
+				//do after-call
+				if (cb.closedCall) cb.apply(target, arguments);
+			}, interval);
+		}
+
+		//closed state
+		else {
+			//if trigger happened during the pause - defer it’s call
+			cb.closedCall = true;
+		}
 	};
 
 	cb.fn = fn;

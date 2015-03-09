@@ -5,29 +5,15 @@
 ](https://ci.testling.com/dfcreative/emmy)
 -->
 
-Emmy is enhanced event emitter and event methods for green components.
+Event functions for green components, which use target’s events, if possible, and fall back to own unobtrusive implementation of events. They also recognize multiple events `on(el, 'click touchstart', cb)` and [namespaces](http://api.jquery.com/on/#event-names) `on(el, 'click.x', cb); off(el, 'click.x');`.
 
-1. Emits events on any target: plain object, element, jQuery, Backbone model, [color](https://github.com/dfcreative/color) etc. Uses target events first, if available, like `dispatchEvent` or `addEventListener` on DOM elements or `on`, `trigger` on jQuery objects.
-
-2. Fully compliant with [component-emitter](https://github.com/component/emitter), but behaves in an unobtrusive way, not polluting target with `_callbacks` property by leveraging _WeakMaps_.
-
-6. Provides standalone _on_, _once_, _emit_, _off_ and additional _delegate_, _not_, _throttle_, _later_ and _keypass_ methods. Each is available as `require('emmy/<method>');`.
-
-3. Accepts space-separated multiple events, e.g. `on(el, 'click touchstart', cb)`.
-
-4. Handles [event-namespaces](http://api.jquery.com/on/#event-names), e.g. `on(el, 'click.x', cb); off(el, 'click.x');`.
-
-5. Works both in browsers and _io_.
-
-9999. **Asbestos-free**.
+Use as an universal way to bind events to anything: plain objects, elements, jQuery objects, Backbone models, [color](https://github.com/dfcreative/color), webWorkers etc.
 
 
 # Use
 
 `$ npm install emmy`
 
-
-### Standalone methods
 
 ```js
 var on = require('emmy/on');
@@ -43,111 +29,28 @@ off(target, 'evt');
 once(webWorker, 'message', function(){...});
 ```
 
-_Use:_ bind events to any object in an unobtrusive way. Also use if only one method is required and/or to reduce size of build.
 
+## Emitter
 
-### Create `Emitter` instance
-
-```js
-var Emitter = require('emmy');
-
-var emitter = new Emitter;
-emitter.emit('something');
-```
-
-_Use:_ сreate a new object with event methods.
-
-
-### Mixin object
-
-```js
-var Emitter = require('emmy');
-
-user = Emitter({name: 'John'});
-
-user.emit('hello');
-```
-
-_Use:_ extend existing object with event methods.
-
-
-### Mixin prototype
-
-```js
-var Emitter = require('emmy');
-Emitter(User.prototype);
-```
-
-_Use:_ extend existing class prototype with event methods.
-
-
-### Inherit Emitter
-
-```js
-var Emitter = require('emmy');
-
-function Actor(){};
-
-//Give out emmy to an actor :)
-Actor.prototype = Object.create(Emitter);
-
-var actor = new Actor();
-
-actor
-//Bind events
-.on('event', handler)
-.on('otherEvent', handler)
-.on('event2', [handler1, handler2]) //bind list of handlers
-
-
-//Unbind events
-.off('event', handler)
-.off('otherEvent') //unbind all 'otherEvent' callbacks
-.off('event2', [handler1, handler2]); //unbind list of handlers
-.off(target) //unbind all events
-
-
-//Emit events
-.emit('a')
-.emit('b', data, bubbles);
-```
-
-_Use:_ make instances of class `instanceof Emitter`.
-
-
+To use Emmy as EventEmitter, just `require('emmy')`. Thought it is recommended to use [native Emitter](https://npmjs.org/package/events), as a more widespread solution.
 
 
 # API
 
-### Standalone functions
-
 Process single target/event/callback.
 
-Function | Arguments | Description
----|---|---
-`on` | target, event, callback | Bind event handler to a target.
-`once` | target, event, callback | Bind single-shot event handler to a target.
-`off` | target, event?, callback? | Unbind event handler from a target. If calback isn’t passed - unbind all callbacks for an event. If no event passed - unbind all.
-`emit` | target, event, callback, data1, data2, ... | Emit an event on a target, passing _dataN_. If target is an element then _data1_ is _e.details_, _data2_ is _bubbles_. So to fire bubbling event, call `emit` | element, 'click', null, true.
-`later` | target, event, callback, delay | Bind an event handler which triggers a _delay_ later than actual event occures.
-`throttle` | target, event, callback, interval | Bind an event handler which won’t be called more often than an _interval_.
-`delegate` | target, event, callback, selector | Bind an event handler catching bubbling events from target’s descendants.
-`not` | target, event, callback, selector | Bind an event handler catching events from target’s descendants ignoring ones that match selector.
-`keypass` | target, event, callback, keylist | Bind an event handler which triggers only if `e.which` or `e.keyCode` is one from the defined _keylist_. Any [keyname](http://github.com/dfcreative/keyname) can be declared instead of a code.
-`listeners` | target [, event] | Get list of listeners registered for an event.
-
-
-
-### Prototype methods
-
-Method | Arguments | Description |
----|---|---
-`.on` | event, handler | Register _handler_ for _event_.
-`.once` | event, handler | Register single-shot _event_ _handler_.
-`.off` | event, handler  | Remove an _event_ _handler_. If no _handler_ passed - remove all registered handlers. In no _event_ passed - remove all registered listeners for all events.
-`.emit` | event, data1, data2, ... | Emit an _event_ with params passed. Each argument after _event_ will be passed to the callback.
-`.listeners` | event | Get list of listeners for an `event`.
-`.hasListeners` | event | Check if emitter has `event` handlers.
+Function | Description
+---|---
+`on(target, event, callback)` | Bind event handler to a target.
+`once(target, event, callback)` | Bind single-shot event handler to a target.
+`off(target, event?, callback?)` | Unbind event handler from a target. If calback isn’t passed - unbind all callbacks for an event. If no event passed - unbind all.
+`emit(target, event, callback, data1, data2, ...)` | Emit an event on a target, passing _dataN_. If target is an element then _data1_ is _e.details_, _data2_ is _bubbles_. So to fire bubbling event, call `emit(element, 'click', null, true)`.
+`later(target, event, callback, delay)` | Bind an event handler which triggers a _delay_ later than actual event occures.
+`throttle(target, event, callback, interval)` | Bind an event handler which won’t be called more often than an _interval_.
+`delegate(target, event, callback, selector)` | Bind an event handler catching bubbling events from target’s descendants.
+`not(target, event, callback, selector)` | Bind an event handler catching events from target’s descendants ignoring ones that match selector.
+`keypass(target, event, callback, keylist)` | Bind an event handler which triggers only if `e.which` or `e.keyCode` is one from the defined _keylist_. Any [keyname](http://github.com/dfcreative/keyname) can be declared instead of a code.
+`listeners(target, event?)` | Get list of listeners registered for an event.
 
 
 

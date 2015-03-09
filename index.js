@@ -5,9 +5,7 @@
  */
 
 
-//TODO: normalize cross-browser events like animationend
-//TODO: implement unobtrusize approach to store callbacks (unlike component-emitter)
-//TODO: implement classes scoping
+//TODO: normalize cross-browser events, like animationend (prefixes)
 
 
 var	on = require('./on'),
