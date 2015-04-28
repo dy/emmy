@@ -82,6 +82,8 @@ function off(target, evt, fn) {
 			}
 		}
 
+		if (fn.closedCall) fn.closedCall = false;
+
 		//forget callback
 		listeners.remove(target, evt, fn, evtParts);
 	});

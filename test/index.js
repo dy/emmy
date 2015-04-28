@@ -290,7 +290,7 @@ describe('Regression', function () {
 		assert.equal(i, 3);
 	});
 
-	it('Unbind multiple namespaced events via throttle', function (done) {
+	it.only('Unbind multiple namespaced events via throttle', function (done) {
 		var target = {}//nativeEmitter;
 
 		var log = [];
@@ -306,12 +306,16 @@ describe('Regression', function () {
 		},8);
 
 		emit(target, 'x');
+		emit(target, 'x');
+		emit(target, 'x');
 
 		off(target, 'x.y');
 
 		assert.deepEqual(log, [1,2,3]);
 
 		setTimeout(function () {
+			emit(target, 'x');
+			emit(target, 'x');
 			emit(target, 'x');
 		},2);
 
