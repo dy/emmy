@@ -85,7 +85,7 @@ function hasTags(cb, tags){
 	if (cb._ns) {
 		//if cb is tagged with a ns and includes one of the ns passed - keep it
 		for (var i = tags.length; i--;){
-			if (cb._ns.indexOf(tags[i] >= 0)) return true;
+			if (cb._ns.indexOf(tags[i]) >= 0) return true;
 		}
 	}
 }

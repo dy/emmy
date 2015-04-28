@@ -5,9 +5,9 @@
 ](https://ci.testling.com/dfcreative/emmy)
 -->
 
-Event functions for green components.
+High-level event functions for green components.
 It uses target’s events, if possible, and falls back to own unobtrusive implementation of events.
-It also recognizes multiple events `on(el, 'click touchstart', cb)` and [namespaces](http://api.jquery.com/on/#event-names) `on(el, 'click.x', cb); off(el, 'click.x');`.
+It handles multiple events `on(el, 'click touchstart', cb)` and [namespaces](http://api.jquery.com/on/#event-names) `on(el, 'click.x', cb); off(el, 'click.x');`.
 
 Use as an universal way to bind events to anything: plain objects, elements, jQuery objects, Backbone models, [color](https://github.com/dfcreative/color), webWorkers etc.
 

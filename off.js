@@ -49,7 +49,6 @@ function off(target, evt, fn){
 			evt.split(/\s+/).forEach(function(evt){
 				var evtParts = evt.split('.');
 				evt = evtParts.shift();
-
 				callbacks = listeners(target, evt, evtParts);
 				for (var i = callbacks.length; i--;){
 					off(target, evt, callbacks[i]);
