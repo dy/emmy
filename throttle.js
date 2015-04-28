@@ -41,7 +41,7 @@ throttle.wrap = function (target, evt, fn, interval) {
 	}
 
 	//wrap callback
-	var cb = function() {
+	var cb = function () {
 		//opened state
 		if (!cb.closedInterval) {
 			//do call

@@ -34,7 +34,7 @@ once(webWorker, 'message', function(){...});
 
 ## Emitter
 
-To use Emmy as EventEmitter, just `require('emmy')`. Thought it is recommended to use [native Emitter](https://npmjs.org/package/events), as a more conventional solution.
+To use Emmy as EventEmitter, just `require('emmy')`. Though it is recommended to use [native Emitter](https://npmjs.org/package/events), as a more conventional solution.
 
 
 # API

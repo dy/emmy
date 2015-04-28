@@ -16,7 +16,7 @@ var listeners = require('./listeners');
  *
  * @return {[type]} [description]
  */
-function off(target, evt, fn){
+function off(target, evt, fn) {
 	if (!target) return target;
 
 	var callbacks, i;
@@ -46,11 +46,11 @@ function off(target, evt, fn){
 		//unbind all callbacks for an evt
 		else {
 			//invoke method for each space-separated event from a list
-			evt.split(/\s+/).forEach(function(evt){
+			evt.split(/\s+/).forEach(function (evt) {
 				var evtParts = evt.split('.');
 				evt = evtParts.shift();
 				callbacks = listeners(target, evt, evtParts);
-				for (var i = callbacks.length; i--;){
+				for (var i = callbacks.length; i--;) {
 					off(target, evt, callbacks[i]);
 				}
 			});
@@ -64,14 +64,14 @@ function off(target, evt, fn){
 	var offMethod = target['off'] || target['removeEventListener'] || target['removeListener'] || target['detachEvent'];
 
 	//invoke method for each space-separated event from a list
-	evt.split(/\s+/).forEach(function(evt){
+	evt.split(/\s+/).forEach(function (evt) {
 		var evtParts = evt.split('.');
 		evt = evtParts.shift();
 
 		//use target `off`, if possible
 		if (offMethod) {
 			//avoid self-recursion from the outside
-			if (icicle.freeze(target, 'off' + evt)){
+			if (icicle.freeze(target, 'off' + evt)) {
 				offMethod.call(target, evt, fn);
 				icicle.unfreeze(target, 'off' + evt);
 			}
