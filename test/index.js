@@ -290,34 +290,36 @@ describe('Regression', function () {
 		assert.equal(i, 3);
 	});
 
-	it('Unbind multiple namespaced events', function (done) {
+	it('Unbind multiple namespaced events via throttle', function (done) {
 		var target = {}//nativeEmitter;
 
 		var log = [];
 
 		throttle(target, 'x.y', function () {
 			log.push(1);
-		});
+		},8);
 		throttle(target, 'x.z', function () {
 			log.push(2);
-		});
+		},8);
 		throttle(target, 'x', function () {
 			log.push(3);
-		});
+		},8);
 
 		emit(target, 'x');
 
+		off(target, 'x.y');
+
+		assert.deepEqual(log, [1,2,3]);
+
 		setTimeout(function () {
-			assert.deepEqual(log, [1,2,3]);
-			off(target, 'x.y');
 			emit(target, 'x');
-		},10)
+		},2);
 
 
 		setTimeout(function () {
 			assert.deepEqual(log, [1,2,3,2,3]);
 			done();
-		}, 30)
+		}, 40);
 	});
 });
 
