@@ -7,8 +7,8 @@
 module.exports = delegate;
 
 var on = require('./on');
-var closest = typeof document !== 'undefined' ? require('query-relative/closest') : null;
-var isFn = require('mutype/is-fn');
+var closest = typeof document !== 'undefined' ? require('closest') : null;
+var isFn = require('is-function');
 var contains = require('contains');
 
 /**

@@ -45,18 +45,18 @@
   },
   "homepage": "https://github.com/dfcreative/emmy",
   "dependencies": {
+    "closest": "^0.0.1",
+    "contains": "^0.1.1",
     "icicle": ">=0.1.1",
-    "mutype": ">=0.3.5",
-    "sliced": ">=0.0.5",
+    "is-function": "^1.0.1",
     "key-name": ">=1.1.1",
-    "query-relative": ">=1.6",
     "mustring": ">=0.0.3",
-    "contains": "^0.1.1"
+    "mutype": "^0.3.9",
+    "sliced": ">=0.0.5"
   },
   "devDependencies": {
     "mocha": "*",
     "chai": ">=1.9.1",
-    "phantomjs": ">=1.9.7",
     "mocha-phantomjs": "*",
     "require-stub": "*",
     "jquery": "~2.1.1",

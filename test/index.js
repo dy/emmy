@@ -290,7 +290,7 @@ describe('Regression', function () {
 		assert.equal(i, 3);
 	});
 
-	it.only('Unbind multiple namespaced events via throttle', function (done) {
+	it('Unbind multiple namespaced events via throttle', function (done) {
 		var target = {}//nativeEmitter;
 
 		var log = [];
