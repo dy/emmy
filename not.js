@@ -5,7 +5,7 @@
 module.exports = not;
 
 var on = require('./on');
-var closest = typeof document !== 'undefined' ? require('query-relative/closest') : null;
+var closest = typeof document !== 'undefined' ? require('closest') : null;
 var isFn = require('mutype/is-fn');
 var contains = require('contains');
 
