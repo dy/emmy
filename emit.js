@@ -84,7 +84,7 @@ function emit(target, eventName, data, bubbles){
 		//dispatchEvent - DOM
 		//raise - node-state
 		//fire - ???
-		emitMethod = target['emit'] || target['trigger'] || target['fire'] || target['dispatchEvent'] || target['raise'];
+		emitMethod = target['dispatchEvent'] || target['emit'] || target['trigger'] || target['fire'] || target['raise'];
 	}
 
 

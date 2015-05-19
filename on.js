@@ -25,7 +25,10 @@ function on(target, evt, fn){
 	if (!target) return target;
 
 	//get target `on` method, if any
-	var onMethod = target['on'] || target['addEventListener'] || target['addListener'] || target['attachEvent'];
+	//prefer native-like method name
+	//user may occasionally expose `on` to the global, in case of browserify
+	//but it is unlikely one would replace native `addEventListener`
+	var onMethod =  target['addEventListener'] || target['addListener'] || target['attachEvent'] || target['on'];
 
 	var cb = fn;
 
