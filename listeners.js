@@ -81,7 +81,12 @@ listeners.add = function(target, evt, cb, tags){
 	var targetCallbacks = target[cbPropName];
 
 	//ensure set of callbacks for the target exists
-	if (!targetCallbacks) targetCallbacks = target[cbPropName] = {};
+	if (!targetCallbacks) {
+		targetCallbacks = {};
+		Object.defineProperty(target, cbPropName, {
+			value: targetCallbacks
+		});
+	}
 
 	//save a new callback
 	(targetCallbacks[evt] = targetCallbacks[evt] || []).push(cb);
