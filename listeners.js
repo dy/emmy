@@ -5,12 +5,24 @@
  * @module emmy/listeners
  */
 
-/** Storage of callbacks */
-var cache = new WeakMap;
+
+/**
+ * Property name to provide on targets.
+ *
+ * Can’t use global WeakMap -
+ * it is impossible to provide singleton global cache of callbacks for targets
+ * not polluting global scope. So it is better to pollute target scope than the global.
+ *
+ * Otherwise, each emmy instance will create it’s own cache, which leads to mess.
+ *
+ * Also can’t use `._events` property on targets, as it is done in `events` module,
+ * because it is incompatible. Emmy targets universal events wrapper, not the native implementation.
+ */
+var cbPropName = '_callbacks';
 
 
 /**
- * Get listeners for the target/evt (optionally)
+ * Get listeners for the target/evt (optionally).
  *
  * @param {object} target a target object
  * @param {string}? evt an evt name, if undefined - return object with events
@@ -18,7 +30,7 @@ var cache = new WeakMap;
  * @return {(object|array)} List/set of listeners
  */
 function listeners(target, evt, tags){
-	var cbs = cache.get(target);
+	var cbs = target[cbPropName];
 
 	if (!evt) return cbs || {};
 	if (!cbs || !cbs[evt]) return [];
@@ -41,7 +53,7 @@ function listeners(target, evt, tags){
  */
 listeners.remove = function(target, evt, cb, tags){
 	//get callbacks for the evt
-	var evtCallbacks = cache.get(target);
+	var evtCallbacks = target[cbPropName];
 	if (!evtCallbacks || !evtCallbacks[evt]) return false;
 
 	var callbacks = evtCallbacks[evt];
@@ -66,9 +78,10 @@ listeners.remove = function(target, evt, cb, tags){
 listeners.add = function(target, evt, cb, tags){
 	if (!cb) return;
 
+	var targetCallbacks = target[cbPropName];
+
 	//ensure set of callbacks for the target exists
-	if (!cache.has(target)) cache.set(target, {});
-	var targetCallbacks = cache.get(target);
+	if (!targetCallbacks) targetCallbacks = target[cbPropName] = {};
 
 	//save a new callback
 	(targetCallbacks[evt] = targetCallbacks[evt] || []).push(cb);
