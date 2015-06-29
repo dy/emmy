@@ -346,6 +346,32 @@ describe('Regression', function () {
 		assert.equal(i,1);
 		assert.equal(j,1);
 	});
+
+	it.skip('Return false', function () {
+		if (!doc) return;
+
+		var el = doc.createElement('div');
+		var innerEl = doc.createElement('div');
+		el.appendChild(innerEl);
+		doc.body.appendChild(el);
+
+		var i = 0;
+
+		on(el, 'click', function () {
+			i++;
+		});
+
+		innerEl.click();
+		assert.equal(i,1);
+
+		innerEl.onclick = function () {
+			//this seems to don’t work in DOM either; it’s just a jquery convention
+			return false;
+		}
+
+		innerEl.click();
+		assert.equal(i,1);
+	});
 });
 
 
@@ -567,6 +593,34 @@ describe('Standalone methods', function () {
 		innerEl.click();
 
 		assert.equal(i, 1);
+	});
+
+	it('Delegate to list', function () {
+		if (!doc) return;
+
+		var el = doc.createElement('div');
+		var innerEl = doc.createElement('div');
+		var innerEl2 = doc.createElement('div');
+		el.appendChild(innerEl);
+		el.appendChild(innerEl2);
+
+		doc.body.appendChild(el);
+
+		var i = 0;
+
+		delegate(el, 'click', [innerEl, innerEl2], function (e) {
+			if (e.delegateTarget === innerEl) {
+				i++;
+			}
+			else if (e.delegateTarget === innerEl2) {
+				i++;
+			}
+		});
+
+		innerEl.click();
+		innerEl2.click();
+
+		assert.equal(i, 2);
 	});
 
 	it('Keypass', function () {

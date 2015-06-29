@@ -1,17 +1,19 @@
 # Emmy [![Build Status](https://travis-ci.org/dfcreative/emmy.svg?branch=master)](https://travis-ci.org/dfcreative/emmy) [![Code Climate](https://codeclimate.com/github/dfcreative/emmy/badges/gpa.svg)](https://codeclimate.com/github/dfcreative/emmy)
 
-High-level event functions for green components.
+Event helpers toolkit.
 
 It uses target events, if possible, and then falls back to own safe implementation.
 
 It handles multiple events `on(el, 'click touchstart', cb)` and [namespaces](http://api.jquery.com/on/#event-names) `on(el, 'click.x', cb); off(el, 'click.x');`.
 
-It is best as an universal way to bind events to anything: plain objects, elements, jQuery objects, Backbone models, [color](https://github.com/dfcreative/color), webWorkers etc.
+It may bind events to anything: plain objects, elements, jQuery objects, Backbone models, [color](https://github.com/dfcreative/color), webWorkers etc.
+
+It is a useful tiny replacement for jquery events.
 
 
 ## Use
 
-`$ npm install emmy`
+[![npm install emmy](https://nodei.co/npm/emmy.png?mini=true)](https://npmjs.org/package/emmy)
 
 
 ```js
@@ -28,6 +30,12 @@ off(target, 'evt');
 once(webWorker, 'message', function(){...});
 ```
 
+You might need to polyfill `Element.contains`, `Element.closest` and `Array.some` for old browsers:
+
+```
+https://cdn.polyfill.io/v1/polyfill.js?features=default,Node.prototype.contains,Element.prototype.closest,Array.prototype.some,
+```
+
 
 ## API
 
@@ -35,6 +43,9 @@ once(webWorker, 'message', function(){...});
 
 Bind an event handler to a target.
 
+### `on(target, events)`
+
+Bind all events defined in object.
 
 ### `once(target, event, callback)`
 
@@ -51,27 +62,27 @@ Unbind event handler from a target. If calback isn’t passed - unbind all callb
 Emit an event on a target, passing `dataN`. If target is an element then `data1` is `e.details`, `data2` is `bubbles`. So to fire bubbling event, call `emit(element, 'click', null, true)`.
 
 
-### `later(target, event, callback, delay)`
+### `later(target, event, delay, callback)`
 
 Bind an event handler which triggers a `delay` later than actual event occures.
 
 
-### `throttle(target, event, callback, interval)`
+### `throttle(target, event, interval, callback)`
 
 Bind an event handler which won’t be called more often than an `interval`.
 
 
-### `delegate(target, event, callback, selector)`
+### `delegate(target, event, selector, callback)`
 
-Bind an event handler catching bubbling events from target’s descendants.
+Bind an event handler catching bubbling events from target’s descendants. `selector` can be a string, an element or a list of elements/selectors.
 
 
-### `not(target, event, callback, selector)`
+### `not(target, event, selector, callback)`
 
 Bind an event handler catching events from target’s descendants ignoring ones that match selector.
 
 
-### `keypass(target, event, callback, keylist)`
+### `keypass(target, event, keylist, callback)`
 
 Bind an event handler which triggers only if `e.which` or `e.keyCode` is one from the defined `keylist`. Any [keyname](http://github.com/dfcreative/key-name) can be declared instead of a code.
 
@@ -82,11 +93,8 @@ Get list of listeners registered for an event.
 
 
 
-# Afterword
+# Analogs
 
-Emmy implements maximally minimal coverage for main use-cases. It’s not supposed to recognize broad range of input values. For that take a look at [enot (event notation system)](https://github.com/dfcreative/enot) — an easy wrapper for emmy with humanized event notation.
-
-There’s also a similar project - [emmitt](https://github.com/airportyh/emmitt), but it can’t emit bubbling events nor DOM-events, it does not provide an Emitter class and a bunch of useful methods.
-
-
-[![NPM](https://nodei.co/npm/emmy.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/emmy/)
+* [enot (event notation system)](https://github.com/dfcreative/enot) — an easy wrapper for emmy with humanized event notation.
+* [emmitt](https://github.com/airportyh/emmitt) — universal event wrapper.
+* [event](https://github.com/component/event) — unified DOM event binder.

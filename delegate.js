@@ -7,6 +7,7 @@ module.exports = delegate;
 var on = require('./on');
 var isFn = require('is-function');
 var isString = require('mutype/is-string');
+var isArrayLike = require('mutype/is-array-like');
 
 
 /**
@@ -18,12 +19,12 @@ var isString = require('mutype/is-string');
  *
  * @return {function} A callback
  */
-function delegate(target, evt, fn, selector){
+function delegate (target, evt, fn, selector) {
 	return on(target, evt, delegate.wrap(target, evt, fn, selector));
 }
 
 
-delegate.wrap = function(target, evt, fn, selector){
+delegate.wrap = function (target, evt, fn, selector) {
 	//swap params, if needed
 	if (isFn(selector)) {
 		var tmp = selector;
@@ -31,20 +32,28 @@ delegate.wrap = function(target, evt, fn, selector){
 		fn = tmp;
 	}
 
-	return on.wrap(target, evt, fn, function(e){
+	return on.wrap(target, evt, fn, function cb(e) {
 		var el = e.target;
 
 		//deny self instantly
-		if (el === target) return;
-
-
-		//find at least one element in-between delegate target and event source
-		var holderEl = isString(selector) ? el.closest(selector) : selector;
-
-		if (holderEl && target !== holderEl && target.contains(holderEl)) {
-			//save source of event
-			e.delegateTarget = holderEl;
-			return true;
+		if (el === target) {
+			return;
 		}
+
+		//wrap to detect list of selectors
+		if (!isArrayLike(selector)) {
+			selector = [selector];
+		}
+
+		return selector.some(function (selector) {
+			//find at least one element in-between delegate target and event source
+			var holderEl = isString(selector) ? el.closest(selector) : selector;
+
+			if (holderEl && target !== holderEl && target.contains(holderEl)) {
+				//save source of event
+				e.delegateTarget = holderEl;
+				return true;
+			}
+		});
 	});
 };
