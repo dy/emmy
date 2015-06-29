@@ -7,7 +7,7 @@
     "*.js"
   ],
   "scripts": {
-    "test": "mochify",
+    "test": "mocha --harmony",
     "watch": "watchify -r ./index.js:../ -r chai -d -o test/bundle.js"
   },
   "repository": {

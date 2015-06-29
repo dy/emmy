@@ -526,11 +526,31 @@ describe('Standalone methods', function () {
 		assert.equal(j, 1);
 	});
 
+	it('Delegate to element', function () {
+		if (!doc) return;
+
+		var el = doc.createElement('div');
+		var innerEl = doc.createElement('div');
+		el.appendChild(innerEl);
+
+		doc.body.appendChild(el);
+
+		var i = 0;
+
+		delegate(el, 'click', innerEl, function (e) {
+			if (e.delegateTarget === innerEl) i++;
+		});
+
+		innerEl.click();
+
+		assert.equal(i, 1);
+	});
+
 	it('Keypass', function () {
 		if (!doc) return;
 
 		var k = 0, a = 0, ka=0, z = 0;
-		var el = document.createElement('div');
+		var el = doc.createElement('div');
 
 		keypass(el, 'keydown', function(e){
 			z++;
