@@ -41,7 +41,7 @@ https://cdn.polyfill.io/v1/polyfill.js?features=default,Node.prototype.contains,
 
 ### `on(target, event, callback)`
 
-Bind an event handler to a target.
+Bind an event handler to a target. `event` may contain a class suffix: `click.my-element`.
 
 ### `on(target, events)`
 
@@ -55,6 +55,8 @@ Bind single-shot event handler to a target.
 ### `off(target, event?, callback?)`
 
 Unbind event handler from a target. If calback isn’t passed - unbind all callbacks for an event. If no event passed - unbind all known callbacks for any events.
+
+Also you can pass only class suffix to unbind all events for a class: `off(target, '.my-element')`.
 
 
 ### `emit(target, event, callback, data1, data2, ...)`

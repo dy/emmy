@@ -31,15 +31,34 @@ var cbPropName = '_callbacks';
  */
 function listeners(target, evt, tags){
 	var cbs = target[cbPropName];
+	var result;
 
-	if (!evt) return cbs || {};
-	if (!cbs || !cbs[evt]) return [];
+	if (!evt) {
+		result = cbs || {};
 
-	var result = cbs[evt];
+		//filter cbs by tags
+		if (tags) {
+			var filteredResult = {};
+			for (var evt in result) {
+				filteredResult[evt] = result[evt].filter(function (cb) {
+					return hasTags(cb, tags);
+				});
+			}
+			result = filteredResult;
+		}
+
+		return result;
+	}
+
+	if (!cbs || !cbs[evt]) {
+		return [];
+	}
+
+	result = cbs[evt];
 
 	//if there are evt namespaces specified - filter callbacks
 	if (tags && tags.length) {
-		result = result.filter(function(cb){
+		result = result.filter(function (cb) {
 			return hasTags(cb, tags);
 		});
 	}

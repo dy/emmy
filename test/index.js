@@ -712,6 +712,33 @@ describe('Standalone methods', function () {
 		emit(b, 'click', null, true);
 		assert.equal(cTarget, a);
 	});
+
+	it('off by className', function () {
+		var el = {};
+		var i = 0;
+
+		on(el, 'x.1', function () {
+			i++
+		});
+		on(el, 'x.2', function () {
+			i++
+		})
+		on(el, 'y.1', function () {
+			i++
+		});
+
+		emit(el, 'x');
+		assert.equal(i, 2);
+		emit(el, 'y');
+		assert.equal(i, 3);
+
+		off(el, '.1');
+
+		emit(el, 'x');
+		assert.equal(i, 4);
+		emit(el, 'y');
+		assert.equal(i, 4);
+	});
 });
 
 

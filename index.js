@@ -5,9 +5,6 @@
  */
 
 
-//TODO: off all events by classname
-
-
 var	on = require('./on'),
 	off = require('./off'),
 	once = require('./once'),

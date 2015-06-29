@@ -6,6 +6,7 @@ module.exports = off;
 var icicle = require('icicle');
 var slice = require('sliced');
 var listeners = require('./listeners');
+var isArray = require('mutype/is-array');
 
 
 /**
@@ -50,8 +51,19 @@ function off(target, evt, fn) {
 				var evtParts = evt.split('.');
 				evt = evtParts.shift();
 				callbacks = listeners(target, evt, evtParts);
-				for (var i = callbacks.length; i--;) {
-					off(target, evt, callbacks[i]);
+
+				//returned array of callbacks (as event is defined)
+				if (evt) {
+					var obj = {};
+					obj[evt] = callbacks;
+					callbacks = obj;
+				}
+
+				//for each group of callbacks - unbind all
+				for (var evtName in callbacks) {
+					slice(callbacks[evtName]).forEach(function (cb) {
+						off(target, evtName, cb);
+					});
 				}
 			});
 		}
