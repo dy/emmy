@@ -2,14 +2,13 @@
  * @module  emmy/delegate
  */
 
-//TODO: use jquery delegate, if possible
-
 module.exports = delegate;
 
 var on = require('./on');
-var closest = typeof document !== 'undefined' ? require('closest') : null;
 var isFn = require('is-function');
 var contains = require('contains');
+var isString = require('is-string');
+
 
 /**
  * Bind listener to a target
@@ -44,20 +43,11 @@ delegate.wrap = function(target, evt, fn, selector){
 
 
 		//find at least one element in-between delegate target and event source
-		var holderEl = closest(el, selector, true);
+		var holderEl = isString(selector) ? el.closest(selector) : selector;
 
 		if (holderEl && target !== holderEl && contains(target, holderEl)) {
 			//save source of event
 			e.delegateTarget = holderEl;
-
-			//NOTE: PhantomJS && IE8 fails on that:
-			// evt.currentTarget = el;
-			// Object.defineProperty(evt, 'currentTarget', {
-			// 	get: function(){
-			// 		return el;
-			// 	}
-			// });
-
 			return true;
 		}
 	});
