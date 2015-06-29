@@ -49,6 +49,7 @@
     "contains": "^0.1.1",
     "icicle": ">=0.1.1",
     "is-function": "^1.0.1",
+    "is-string": "^1.0.4",
     "key-name": ">=1.1.1",
     "mustring": ">=0.0.3",
     "mutype": "^0.3.9",
