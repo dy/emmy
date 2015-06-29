@@ -2,26 +2,24 @@
  * Main tests file
  */
 
-//TODO: mochify
-
 var doc = typeof document === 'undefined' ? undefined : document;
 var win = typeof window === 'undefined' ? undefined : window;
 
 /** A native env emitter */
-var nativeEmitter = doc ? doc : new (require('events').EventEmitter);
+var nativeEmitter = doc ? doc : new (require('events'));
 
-var Emmy = doc && typeof Emitter !== 'undefined' ? Emitter : require('..');
+var Emmy = doc && typeof Emitter !== 'undefined' ? Emitter : require('../');
 var assert = typeof chai !== 'undefined' ? chai.assert : require('chai').assert;
 
-var on = require('../on'),
-	off = require('../off'),
-	once = require('../once'),
-	emit = require('../emit'),
-	delegate = require('../delegate'),
-	throttle = require('../throttle'),
-	later = require('../later'),
-	not = require('../not'),
-	keypass = require('../keypass');
+var on = Emmy.on,
+	off = Emmy.off,
+	once = Emmy.once,
+	emit = Emmy.emit,
+	delegate = Emmy.delegate,
+	throttle = Emmy.throttle,
+	later = Emmy.later,
+	not = Emmy.not,
+	keypass = Emmy.keypass;
 
 
 describe('Regression', function () {
@@ -330,24 +328,6 @@ describe('Regression', function () {
 
 
 describe('Standalone methods', function () {
-	/**
-	 * Standalone tests
-	 *
-	 * Unskip it if you want to testem
-	 */
-	before(function() {
-		var on = require('../on'),
-		off = require('../off'),
-		emit = require('../emit'),
-		throttle = require('../throttle'),
-		delegate = require('../delegate'),
-		not = require('../not'),
-		keypass = require('../keypass'),
-		later = require('../later'),
-		once = require('../once');
-	});
-
-
 	it('Delegate with swapped order of params', function () {
 		if (!doc) return;
 

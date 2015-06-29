@@ -7,11 +7,8 @@
     "*.js"
   ],
   "scripts": {
-    "test": "mocha --harmony",
-    "build-min": "npm run build && npm run min && npm run clean && cat emmy.js | gzip-size | pretty-bytes ",
-    "build": "uncommon ./index -w \";(function(){window['Emitter']=Emmy;%output%;})();\" > emmy.dev.js",
-    "min": "ccjs emmy.dev.js --language_in=ECMASCRIPT5 --compilation_level=ADVANCED --process_jquery_primitives --externs=build/externs.js > emmy.js",
-    "clean": "rm emmy.dev.js"
+    "test": "mochify",
+    "watch": "watchify -r ./index.js:../ -r chai -d -o test/bundle.js"
   },
   "repository": {
     "type": "git",
@@ -45,8 +42,6 @@
   },
   "homepage": "https://github.com/dfcreative/emmy",
   "dependencies": {
-    "closest": "^0.0.1",
-    "contains": "^0.1.1",
     "icicle": ">=0.1.1",
     "is-function": "^1.0.1",
     "is-string": "^1.0.4",
@@ -56,14 +51,13 @@
     "sliced": ">=0.0.5"
   },
   "devDependencies": {
-    "mocha": "*",
+    "browserify": ">=5.12.0",
     "chai": ">=1.9.1",
-    "mocha-phantomjs": "*",
-    "require-stub": "*",
     "jquery": "~2.1.1",
-    "polymer-weakmap": ">=1.0.0",
+    "mocha": "*",
+    "require-stub": "*",
     "testling": ">=1.7.1",
-    "browserify": ">=5.12.0"
+    "watchify": "^3.2.3"
   },
   "testling": {
     "files": "test/index.js",

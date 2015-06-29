@@ -27,9 +27,9 @@ var	on = require('./on'),
 
 
 /**
- * @constructor
+ * Emitter class.
  *
- * Main Emitter interface.
+ * @constructor
  */
 function Emmy(target){
 	if (!target) return;

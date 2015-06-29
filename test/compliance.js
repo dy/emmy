@@ -7,7 +7,7 @@
 var doc = typeof document === 'undefined' ? undefined : document;
 var win = typeof window === 'undefined' ? undefined : window;
 
-var Emitter = doc && typeof Emitter !== 'undefined' ? Emitter : require('..');
+var Emitter = doc && typeof Emitter !== 'undefined' ? Emitter : require('../');
 var should = typeof chai !== 'undefined' ? chai.should() : require('chai').should();
 
 

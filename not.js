@@ -5,9 +5,8 @@
 module.exports = not;
 
 var on = require('./on');
-var closest = typeof document !== 'undefined' ? require('closest') : null;
 var isFn = require('mutype/is-fn');
-var contains = require('contains');
+var isString = require('mutype/is-string');
 
 
 /**
@@ -25,9 +24,6 @@ function not(target, evt, fn, selector){
 
 /** Return wrapper calling fn in case if selector passes */
 not.wrap = function(target, evt, fn, selector){
-	//ignore non-DOM
-	if (!closest) return;
-
 	//swap params, if needed
 	if (isFn(selector)) {
 		var tmp = selector;
@@ -39,12 +35,12 @@ not.wrap = function(target, evt, fn, selector){
 		var el = e.target;
 
 		//if element is not in the DOM - ignore evt
-		if (!contains(target, el)) return false;
+		if (!target.contains(el)) return false;
 
 		//If source element or anything in-between it and delegate element matches passed selector - ignore that event
 
-		var res = closest(el, selector);
-		if (res && contains(target, res)) return false;
+		var res = isString(selector) ? el.closest(selector) : selector;
+		if (res && target.contains(res)) return false;
 		return true;
 	});
 };

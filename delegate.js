@@ -6,8 +6,7 @@ module.exports = delegate;
 
 var on = require('./on');
 var isFn = require('is-function');
-var contains = require('contains');
-var isString = require('is-string');
+var isString = require('mutype/is-string');
 
 
 /**
@@ -25,9 +24,6 @@ function delegate(target, evt, fn, selector){
 
 
 delegate.wrap = function(target, evt, fn, selector){
-	//ignore non-DOM
-	if (!closest) return;
-
 	//swap params, if needed
 	if (isFn(selector)) {
 		var tmp = selector;
@@ -45,7 +41,7 @@ delegate.wrap = function(target, evt, fn, selector){
 		//find at least one element in-between delegate target and event source
 		var holderEl = isString(selector) ? el.closest(selector) : selector;
 
-		if (holderEl && target !== holderEl && contains(target, holderEl)) {
+		if (holderEl && target !== holderEl && target.contains(holderEl)) {
 			//save source of event
 			e.delegateTarget = holderEl;
 			return true;
