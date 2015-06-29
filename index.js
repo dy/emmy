@@ -5,7 +5,6 @@
  */
 
 
-//TODO: normalize cross-browser events, like animationend (prefixes)
 //TODO: handle event-objects passed
 //TODO: test return false from callback
 //TODO: pass array to delegate listeners

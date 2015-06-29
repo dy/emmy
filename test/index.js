@@ -323,6 +323,29 @@ describe('Regression', function () {
 			done();
 		}, 40);
 	});
+
+	it('Object w/events', function () {
+		var el = {};
+		var i = 0, j = 0;
+
+		on(el, {
+			a: function () {i++},
+			b: function () {j++}
+		});
+		emit(el, 'a');
+		emit(el, 'b');
+
+		assert.equal(i,1);
+		assert.equal(j,1);
+
+		off(el, 'a b');
+
+		emit(el, 'a');
+		emit(el, 'b');
+
+		assert.equal(i,1);
+		assert.equal(j,1);
+	});
 });
 
 

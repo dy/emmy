@@ -5,7 +5,7 @@
 
 var icicle = require('icicle');
 var listeners = require('./listeners');
-
+var isObject = require('mutype/is-object');
 
 module.exports = on;
 
@@ -23,6 +23,14 @@ module.exports = on;
  */
 function on(target, evt, fn){
 	if (!target) return target;
+
+	//consider object of events
+	if (isObject(evt)) {
+		for(var evtName in evt) {
+			on(target, evtName, evt[evtName]);
+		}
+		return target;
+	}
 
 	//get target `on` method, if any
 	//prefer native-like method name
