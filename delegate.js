@@ -24,7 +24,7 @@ function delegate (target, evt, fn, selector) {
 }
 
 
-delegate.wrap = function (target, evt, fn, selector) {
+delegate.wrap = function (container, evt, fn, selector) {
 	//swap params, if needed
 	if (isFn(selector)) {
 		var tmp = selector;
@@ -32,11 +32,11 @@ delegate.wrap = function (target, evt, fn, selector) {
 		fn = tmp;
 	}
 
-	return on.wrap(target, evt, fn, function cb(e) {
-		var el = e.target;
+	return on.wrap(container, evt, fn, function cb(e) {
+		var srcEl = e.target;
 
 		//deny self instantly
-		if (el === target) {
+		if (srcEl === container) {
 			return;
 		}
 
@@ -46,14 +46,23 @@ delegate.wrap = function (target, evt, fn, selector) {
 		}
 
 		return selector.some(function (selector) {
+			var delegateTarget;
+			if (!isString(selector)) {
+				if (!selector.contains(srcEl)) return false;
+				delegateTarget = selector;
+			}
 			//find at least one element in-between delegate target and event source
-			var holderEl = isString(selector) ? el.closest(selector) : selector;
+			else {
+				delegateTarget = srcEl.closest(selector);
+			}
 
-			if (holderEl && target !== holderEl && target.contains(holderEl)) {
+			if (delegateTarget && container !== delegateTarget && container.contains(delegateTarget)) {
 				//save source of event
-				e.delegateTarget = holderEl;
+				e.delegateTarget = delegateTarget;
 				return true;
 			}
+
+			return false;
 		});
 	});
 };

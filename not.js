@@ -39,7 +39,16 @@ not.wrap = function(target, evt, fn, selector){
 
 		//If source element or anything in-between it and delegate element matches passed selector - ignore that event
 
-		var res = isString(selector) ? el.closest(selector) : selector;
+		var res;
+		if (!isString(selector)) {
+			if (!selector.contains(el)) return false;
+			res = selector;
+		}
+		//find at least one element in-between delegate target and event source
+		else {
+			res = el.closest(selector);
+		}
+
 		if (res && target.contains(res)) return false;
 		return true;
 	});
