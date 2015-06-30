@@ -40,6 +40,8 @@ function on(target, evt, fn){
 
 	var cb = fn;
 
+	evt = '' + evt;
+
 	//invoke method for each space-separated event from a list
 	evt.split(/\s+/).forEach(function(evt){
 		var evtParts = evt.split('.');

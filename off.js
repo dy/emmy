@@ -46,6 +46,8 @@ function off(target, evt, fn) {
 		}
 		//unbind all callbacks for an evt
 		else {
+			evt = '' + evt;
+
 			//invoke method for each space-separated event from a list
 			evt.split(/\s+/).forEach(function (evt) {
 				var evtParts = evt.split('.');

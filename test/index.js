@@ -739,6 +739,14 @@ describe('Standalone methods', function () {
 		emit(el, 'y');
 		assert.equal(i, 4);
 	});
+
+	it('off number', function () {
+		var el = {};
+		on(el, 'x.123', function () {
+			i++
+		});
+		off(el, 123);
+	});
 });
 
 
