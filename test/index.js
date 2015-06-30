@@ -6,7 +6,7 @@ var doc = typeof document === 'undefined' ? undefined : document;
 var win = typeof window === 'undefined' ? undefined : window;
 
 /** A native env emitter */
-var nativeEmitter = doc ? doc : new (require('events'));
+var nativeEmitter = doc ? doc : new (require('events').EventEmitter);
 
 var Emmy = doc && typeof Emitter !== 'undefined' ? Emitter : require('../');
 var assert = typeof chai !== 'undefined' ? chai.assert : require('chai').assert;
