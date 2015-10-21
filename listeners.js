@@ -17,7 +17,9 @@
  *
  * Also can’t use `._events` property on targets, as it is done in `events` module,
  * because it is incompatible. Emmy targets universal events wrapper, not the native implementation.
+ *
  */
+//FIXME: new npm forces flat modules structure, so weakmaps are better providing that there’s the one emmy across the project.
 var cbPropName = '_callbacks';
 
 

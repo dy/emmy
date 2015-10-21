@@ -18,6 +18,8 @@ var	on = require('./on'),
 	slice = require('sliced');
 
 
+//TODO: pass context as a last argument
+
 
 /**
  * Emitter class.
