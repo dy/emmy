@@ -53,7 +53,7 @@ delegate.wrap = function (container, evt, fn, selector) {
 			}
 			//find at least one element in-between delegate target and event source
 			else {
-				delegateTarget = srcEl.closest(selector);
+				delegateTarget = srcEl.closest && srcEl.closest(selector);
 			}
 
 			if (delegateTarget && container !== delegateTarget && container.contains(delegateTarget)) {

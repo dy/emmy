@@ -46,7 +46,7 @@ not.wrap = function(target, evt, fn, selector){
 		}
 		//find at least one element in-between delegate target and event source
 		else {
-			res = el.closest(selector);
+			res = el.closest && el.closest(selector);
 		}
 
 		if (res && target.contains(res)) return false;
