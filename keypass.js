@@ -28,7 +28,7 @@ keypass.wrap = function(target, evt, fn, keys){
 
 	//prepare keys list to match against
 	keys = isArray(keys) ? keys : isString(keys) ? keys.split(/\s*,\s*/) : [keys];
-	keys = keys.map(function (v) { return v.toUpperCase(); });
+	keys = keys.map(function (v) { return v.toLowerCase(); });
 
 	return on.wrap(target, evt, fn, function(e){
 		var key, which = e.which !== undefined ? e.which : e.keyCode;
