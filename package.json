@@ -46,7 +46,7 @@
     "is-function": "^1.0.1",
     "is-string": "^1.0.4",
     "key-name": ">=1.1.1",
-    "mustring": "^0.0.3",
+    "mustring": "^0.0.5",
     "mutype": "^0.3.9",
     "sliced": ">=0.0.5"
   },
