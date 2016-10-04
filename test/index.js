@@ -2,6 +2,7 @@
  * Main tests file
  */
 
+var test = require('tst');
 var doc = typeof document === 'undefined' ? undefined : document;
 var win = typeof window === 'undefined' ? undefined : window;
 
@@ -22,8 +23,8 @@ var on = Emmy.on,
 	keypass = Emmy.keypass;
 
 
-describe('Regression', function () {
-	it('on/emit/off', function () {
+test('Regression', function () {
+	test('on/emit/off', function () {
 		var a = {};
 		var i = 0;
 		on(a, 'click', function () {i++});
@@ -34,7 +35,7 @@ describe('Regression', function () {
 		assert.equal(i, 1);
 	});
 
-	it('removeAll', function () {
+	test('removeAll', function () {
 		var a = {}, i = 0;
 
 		on(a, 'y', function () {i++});
@@ -48,10 +49,10 @@ describe('Regression', function () {
 		assert.equal(i, 2);
 	});
 
-	it.skip('IE8, IE9', function () {
+	test.skip('IE8, IE9', function () {
 	});
 
-	it('Call list changed during `emit`', function () {
+	test('Call list changed during `emit`', function () {
 		var a = {}, log = [];
 
 		on(a, 'x', function () {
@@ -72,7 +73,7 @@ describe('Regression', function () {
 		assert.deepEqual(log, [1,2,3]);
 	});
 
-	it('Objects artifically implementing Emitter interface', function () {
+	test('Objects artifically implementing Emitter interface', function () {
 		var i = 0;
 		var a = {
 			emit: function(a){
@@ -91,7 +92,7 @@ describe('Regression', function () {
 		assert.equal(i, 1);
 	});
 
-	it('Object inheriting Emitter interface', function () {
+	test('Object inheriting Emitter interface', function () {
 		var A = function (){};
 
 		A.prototype = Object.create(Emmy.prototype);
@@ -103,7 +104,7 @@ describe('Regression', function () {
 		assert.equal(i, 1);
 	});
 
-	it('Mixin prototype', function () {
+	test('Mixin prototype', function () {
 		function User(name){
 			this.name = name || 'tobi';
 		}
@@ -120,7 +121,7 @@ describe('Regression', function () {
 		assert.equal(i, 1);
 	});
 
-	it('Mixin object', function () {
+	test('Mixin object', function () {
 		var user = { name: 'tobi' };
 		Emmy(user);
 
@@ -132,14 +133,14 @@ describe('Regression', function () {
 		assert.equal(i, 2);
 	});
 
-	it('Emitter instance', function () {
+	test('Emitter instance', function () {
 		var emitter = new Emmy, i = 0;
 		emitter.on('something', function () {i++});
 		emitter.emit('something');
 		assert.equal(i, 1);
 	});
 
-	it('Once', function () {
+	test('Once', function () {
 		var a = {}, i = 0, inc = function () {i++};
 
 		once(a, 'x', inc);
@@ -150,7 +151,7 @@ describe('Regression', function () {
 		assert.equal(i, 1);
 	});
 
-	it('Once on object having self events', function () {
+	test('Once on object having self events', function () {
 		var d = nativeEmitter;
 
 		var i = 0;
@@ -164,7 +165,7 @@ describe('Regression', function () {
 		assert.equal(i, 1);
 	});
 
-	it.skip('Chainable static calls (there’re no more static methods)', function () {
+	test.skip('Chainable static calls (there’re no more static methods)', function () {
 		var a = {}, i = 0;
 
 		function inc(){i++};
@@ -177,7 +178,7 @@ describe('Regression', function () {
 		assert.equal(i, 3);
 	});
 
-	it('Chainable instance calls', function () {
+	test('Chainable instance calls', function () {
 		var a = new Emmy, i = 0;
 
 		function inc(){i++};
@@ -191,7 +192,7 @@ describe('Regression', function () {
 		assert.equal(i, 3);
 	});
 
-	it('listeners && hasListeners', function () {
+	test('listeners && hasListeners', function () {
 		var a = new Emmy;
 
 		function fn(){}
@@ -204,7 +205,7 @@ describe('Regression', function () {
 		assert.notOk(a.listeners('z').length);
 	});
 
-	it('List arg in emit', function () {
+	test('List arg in emit', function () {
 		var x = {}, i = 0, a = [1,2], b;
 
 		on(x, 'y', function(e){i++; b = e});
@@ -214,7 +215,7 @@ describe('Regression', function () {
 		assert.equal(b, a);
 	});
 
-	it('Space-separated events', function () {
+	test('Space-separated events', function () {
 		var x = {}, i = 0, j = 0;
 
 		on(x, 'x y', function(e, f){i+=e+f});
@@ -231,14 +232,14 @@ describe('Regression', function () {
 		assert.equal(j, 6);
 	});
 
-	it('ignore empty target', function () {
+	test('ignore empty target', function () {
 		on(null, 'click', function () {});
 		once(null, 'click', function () {});
 		off(null, 'click', function () {});
 		emit(null, 'click');
 	});
 
-	it('Scope events', function () {
+	test('Scope events', function () {
 		var i = 0, j = 0, el = nativeEmitter;
 
 		var fn1 = function(e){
@@ -271,7 +272,7 @@ describe('Regression', function () {
 		off(el);
 	});
 
-	it('Does not call natural `on` twice', function () {
+	test('Does not call natural `on` twice', function () {
 		var el = nativeEmitter;
 		var i = 0;
 
@@ -288,7 +289,7 @@ describe('Regression', function () {
 		assert.equal(i, 3);
 	});
 
-	it('Unbind multiple namespaced events via throttle', function (done) {
+	test('Unbind multiple namespaced events via throttle', function (done) {
 		var target = {}//nativeEmitter;
 
 		var log = [];
@@ -324,7 +325,7 @@ describe('Regression', function () {
 		}, 40);
 	});
 
-	it('Object w/events', function () {
+	test('Object w/events', function () {
 		var el = {};
 		var i = 0, j = 0;
 
@@ -347,7 +348,7 @@ describe('Regression', function () {
 		assert.equal(j,1);
 	});
 
-	it.skip('Return false', function () {
+	test.skip('Return false', function () {
 		if (!doc) return;
 
 		var el = doc.createElement('div');
@@ -376,8 +377,8 @@ describe('Regression', function () {
 
 
 
-describe('Standalone methods', function () {
-	it('Delegate with swapped order of params', function () {
+test('Standalone methods', function () {
+	test('Delegate with swapped order of params', function () {
 		if (!doc) return;
 
 		var i = 0, j = 0;
@@ -420,7 +421,7 @@ describe('Standalone methods', function () {
 		assert.equal(j, 1);
 	});
 
-	it('Not', function () {
+	test('Not', function () {
 		if (!doc) return;
 
 		var j = 0;
@@ -460,7 +461,7 @@ describe('Standalone methods', function () {
 		assert.equal(j, 1);
 	});
 
-	it(':not on elements which are no more in DOM', function () {
+	test(':not on elements which are no more in DOM', function () {
 		if (!doc) return;
 
 		var a = document.createElement('div');
@@ -487,7 +488,7 @@ describe('Standalone methods', function () {
 		assert.equal(i, 0);
 	});
 
-	it('Throttle', function(done){
+	test('Throttle', function(done){
 		var i = 0;
 		var a = {};
 
@@ -516,7 +517,7 @@ describe('Standalone methods', function () {
 		}, 240);
 	});
 
-	it('Delegate simple', function () {
+	test('Delegate simple', function () {
 		if (!doc) return;
 
 
@@ -575,7 +576,7 @@ describe('Standalone methods', function () {
 		assert.equal(j, 1);
 	});
 
-	it('Delegate to element', function () {
+	test('Delegate to element', function () {
 		if (!doc) return;
 
 		var el = doc.createElement('div');
@@ -595,7 +596,7 @@ describe('Standalone methods', function () {
 		assert.equal(i, 1);
 	});
 
-	it('Delegate to list', function () {
+	test('Delegate to list', function () {
 		if (!doc) return;
 
 		var el = doc.createElement('div');
@@ -623,7 +624,7 @@ describe('Standalone methods', function () {
 		assert.equal(i, 2);
 	});
 
-	it('Keypass', function () {
+	test('Keypass', function () {
 		if (!doc) return;
 
 		var k = 0, a = 0, ka=0, z = 0;
@@ -675,7 +676,7 @@ describe('Standalone methods', function () {
 		assert.equal(ka, 2);
 	});
 
-	it('Later', function(done){
+	test('Later', function(done){
 		var a = {};
 		var i = 0;
 
@@ -696,7 +697,7 @@ describe('Standalone methods', function () {
 		}, 120);
 	});
 
-	it('delegateTarget', function () {
+	test('delegateTarget', function () {
 		if (!doc) return;
 
 		var a = document.createElement('div');
@@ -713,7 +714,7 @@ describe('Standalone methods', function () {
 		assert.equal(cTarget, a);
 	});
 
-	it('off by className', function () {
+	test('off by className', function () {
 		var el = {};
 		var i = 0;
 
@@ -740,7 +741,7 @@ describe('Standalone methods', function () {
 		assert.equal(i, 4);
 	});
 
-	it('off number', function () {
+	test('off number', function () {
 		var el = {};
 		on(el, 'x.123', function () {
 			i++

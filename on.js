@@ -5,7 +5,7 @@
 
 var icicle = require('icicle');
 var listeners = require('./listeners');
-var isObject = require('mutype/is-object');
+var isObject = require('is-plain-obj');
 
 module.exports = on;
 

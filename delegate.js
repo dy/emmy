@@ -6,8 +6,6 @@ module.exports = delegate;
 
 var on = require('./on');
 var isFn = require('is-function');
-var isString = require('mutype/is-string');
-var isArrayLike = require('mutype/is-array-like');
 
 
 /**
@@ -41,13 +39,13 @@ delegate.wrap = function (container, evt, fn, selector) {
 		}
 
 		//wrap to detect list of selectors
-		if (!isArrayLike(selector)) {
+		if (!Array.isArray(selector)) {
 			selector = [selector];
 		}
 
 		return selector.some(function (selector) {
 			var delegateTarget;
-			if (!isString(selector)) {
+			if (typeof selector != 'string') {
 				if (!selector.contains(srcEl)) return false;
 				delegateTarget = selector;
 			}

@@ -6,7 +6,6 @@ module.exports = later;
 
 
 var on = require('./on');
-var isFn = require('mutype/is-fn');
 
 
 /**
@@ -22,7 +21,7 @@ function later(target, evt, fn, interval) {
 /** Return wrapped callback */
 later.wrap = function(target, evt, fn, interval){
 	//swap params, if needed
-	if (isFn(interval)) {
+	if (interval instanceof Function) {
 		var tmp = interval;
 		interval = fn;
 		fn = tmp;

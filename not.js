@@ -5,8 +5,6 @@
 module.exports = not;
 
 var on = require('./on');
-var isFn = require('mutype/is-fn');
-var isString = require('mutype/is-string');
 
 
 /**
@@ -25,7 +23,7 @@ function not(target, evt, fn, selector){
 /** Return wrapper calling fn in case if selector passes */
 not.wrap = function(target, evt, fn, selector){
 	//swap params, if needed
-	if (isFn(selector)) {
+	if (selector instanceof Function) {
 		var tmp = selector;
 		selector = fn;
 		fn = tmp;
@@ -40,7 +38,7 @@ not.wrap = function(target, evt, fn, selector){
 		//If source element or anything in-between it and delegate element matches passed selector - ignore that event
 
 		var res;
-		if (!isString(selector)) {
+		if (typeof selector != 'string') {
 			if (!selector.contains(el)) return false;
 			res = selector;
 		}

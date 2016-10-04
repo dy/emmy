@@ -3,10 +3,8 @@
  */
 var icicle = require('icicle');
 var slice = require('sliced');
-var isString = require('mutype/is-string');
-var isNode = require('mutype/is-node');
-var isEvent = require('mutype/is-event');
 var listeners = require('./listeners');
+var isBrowser = require('is-browser');
 
 
 /**
@@ -16,7 +14,7 @@ module.exports = function(target, evt){
 	if (!target) return;
 
 	var args = arguments;
-	if (isString(evt)) {
+	if (typeof evt === 'string') {
 		args = slice(arguments, 2);
 		evt.split(/\s+/).forEach(function(evt){
 			evt = evt.split('.')[0];
@@ -50,10 +48,10 @@ function emit(target, eventName, data, bubbles){
 	var emitMethod, evt = eventName;
 
 	//Create proper event for DOM objects
-	if (isNode(target) || target === win) {
+	if (isBrowser && (target instanceof Node || target === win)) {
 		//NOTE: this doesnot bubble on off-DOM elements
 
-		if (isEvent(eventName)) {
+		if (isBrowser && eventName instanceof Event) {
 			evt = eventName;
 		} else {
 			//IE9-compliant constructor

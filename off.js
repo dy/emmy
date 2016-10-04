@@ -6,7 +6,6 @@ module.exports = off;
 var icicle = require('icicle');
 var slice = require('sliced');
 var listeners = require('./listeners');
-var isArray = require('mutype/is-array');
 
 
 /**
