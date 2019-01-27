@@ -2,9 +2,9 @@
 
 Events micro toolkit.
 
-* :heavy_check_mark: Multiple events `on(el, 'click touchstart', cb)`
-* :heavy_check_mark: Prefixes `on(el, 'click.x', cb), off(el, '.x')`
-* :heavy_check_mark: Harnesses native event mechanism, if available.
+* [x] Multiple events `on(el, 'click touchstart', cb)`
+* [x] Prefixes `on(el, 'click.x', cb), off(el, '.x')`
+* [x] Harnesses native event mechanism, if available.
 
 ## Usage
 
@@ -13,20 +13,20 @@ Events micro toolkit.
 ```js
 import {on, off, emit} from 'emmy'
 
-on(el, 'evt', e => { console.log(e) })
+on(el, 'evt', e => {})
 emit(el, 'evt', {x: 1})
 off(el, 'evt')
 ```
 
 ## API
 
-### `on(target, event, callback?, opts?) | on(target, events)`
+### `on(target, event, callback?, opts?)`, `on(target, events)`
 
 Bind `event` handler to `target` or bind dict of `events`.
 
 * `target` can be any non-primitive object. In case of objects with own events mechanism, such as _HTMLElement_ or _Stream_, the own handler is used but reference to the handler is kept.
 * `event` can be a string with single or multiple events, an array or a dict of events with callbacks. Each event name may have a suffix, ie. `click.tag1.tag2`.
-* `delegate` is an optional string with selector to delegate events or an object with the properties:
+* `opts` can provide `opts.throttle` and `opts.delegate` params.
 
 ```js
 // dragging scheme
@@ -50,6 +50,8 @@ on(target, {
 })
 ```
 
+---
+
 ### `off(target, event?, callback?)`
 
 Remove `event` handler from a `target`. If `callback` isn't passed - all registered listeners are removed. If `event` isn't passed - all registered callbacks for all known events are removed (useful on destroying the target).
@@ -65,9 +67,13 @@ off(target, handler)
 off(target, '.special')
 ```
 
+---
+
 ### `emit(target, event, data?, options?)`
 
 Emit an `event` on a `target`. `event` can be a string or an _Event_ instance. If `target` is an element then `data` is placed to `e.details`. `options` can define triggering params, eg. `{bubbles: true}`.
+
+---
 
 ### `let emitter = require('emmy')(emitter?)`
 
