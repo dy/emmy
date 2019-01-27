@@ -1,6 +1,6 @@
 {
   "name": "emmy",
-  "version": "6.0.1",
+  "version": "6.0.2",
   "description": "Events micro toolkit.",
   "main": "index.js",
   "files": [
