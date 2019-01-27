@@ -34,6 +34,38 @@ t('on/emit/off', function (t) {
 	t.end()
 });
 
+t('the most expected classes case', function (t) {
+	var a = {}
+
+	var i = 0, j = 0
+	on(a, 'x', e => {
+		i++
+	})
+	on(a, 'x.a', e => {
+		j++
+	})
+
+	emit(a, 'x')
+	t.equal(i , 1, 'not-prefixed')
+	t.equal(j , 1, 'prefixed')
+
+	emit(a, 'x.a')
+	t.equal(i , 1, 'not prefixed')
+	t.equal(j , 2, 'prefixed')
+
+	off(a, '.a')
+
+	emit(a, 'x')
+	t.equal(i , 2, 'not prefixed')
+	t.equal(j , 2, 'prefixed')
+
+	emit(a, 'x.a')
+	t.equal(i , 2)
+	t.equal(j , 2)
+
+	t.end()
+})
+
 t.skip('readme', function (t) {
 
 })

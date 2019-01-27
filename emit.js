@@ -8,7 +8,7 @@ var listeners = require('./listeners');
 /**
  * A simple wrapper to handle stringy/plain events
  */
-module.exports = function (target, evt){
+module.exports = function (target, evt, a, b){
 	if (!target) return;
 
 	var args = arguments;
@@ -17,8 +17,6 @@ module.exports = function (target, evt){
 	if (typeof evt === 'string') {
 		args = [].slice.call(arguments, 2);
 		evt.split(/\s+/).forEach(function(evt){
-			evt = evt.split('.')[0];
-
 			emit.apply(this, [target, evt].concat(args));
 		});
 
@@ -104,8 +102,12 @@ function emit(target, eventName, data, bubbles){
 		//so perform normal callback
 	}
 
+	// invoke method for each space-separated event from a list
+	var evtParts = evt.split('.');
+	evt = evtParts.shift();
+
 	//fall back to default event system
-	var evtCallbacks = listeners.get(target, evt);
+	var evtCallbacks = listeners.get(target, evt, evtParts);
 
 	//copy callbacks to fire because list can be changed by some callback (like `off`)
 	var fireList = evtCallbacks.slice();

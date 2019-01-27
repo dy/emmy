@@ -32,7 +32,7 @@ function get (target, evt, tags) {
 		result = cbs || {};
 
 		// filter cbs by tags
-		if (tags) {
+		if (tags && tags.length) {
 			var filteredResult = {};
 			for (var evt in result) {
 				filteredResult[evt] = result[evt].filter(function (cb) {
