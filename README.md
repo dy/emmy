@@ -2,15 +2,13 @@
 
 Events micro toolkit.
 
-* Binds multiple events at once `on(el, 'click touchstart', cb)`
-* Enables namespace `on(el, 'click.x', cb); off(el, '.x');`
-* Harnesses target event mechanism, if available.
+:heavy_check_mark: Multiple events `on(el, 'click touchstart', cb)`
+:heavy_check_mark: Events prefix `on(el, 'click.x', cb); off(el, '.x');`
+:heavy_check_mark: Harnesses target event mechanism, if available.
 
 ## Usage
 
 [![npm install emmy](https://nodei.co/npm/emmy.png?mini=true)](https://npmjs.org/package/emmy)
-
-#### Use event methods:
 
 ```js
 import {on, off, emit} from 'emmy'
@@ -22,9 +20,9 @@ off(el, 'evt')
 
 ## API
 
-### `on(target, event[s], callback?, delegate?)`
+### `on(target, event, callback?, opts?) | on(target, events)`
 
-Bind `event`[s] handler[s] to `target`.
+Bind `event` handler to `target` or bind dict of `events`.
 
 * `target` can be any non-primitive object. In case of objects with own events mechanism, such as _HTMLElement_ or _Stream_, the own handler is used but reference to the handler is kept.
 * `event` can be a string with single or multiple events, an array or a dict of events with callbacks. Each event name may have a suffix, ie. `click.tag1.tag2`.
