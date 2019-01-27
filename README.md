@@ -1,102 +1,97 @@
-# Emmy [![Build Status](https://travis-ci.org/dfcreative/emmy.svg?branch=master)](https://travis-ci.org/dfcreative/emmy) [![Code Climate](https://codeclimate.com/github/dfcreative/emmy/badges/gpa.svg)](https://codeclimate.com/github/dfcreative/emmy)
+# Emmy [![Build Status](https://travis-ci.org/dy/emmy.svg?branch=master)](https://travis-ci.org/dy/emmy)
 
-Event helpers toolkit.
+Events micro toolkit.
 
-It uses target events, if possible, and then falls back to own safe implementation.
+* Binds multiple events at once `on(el, 'click touchstart', cb)`
+* Enables namespace `on(el, 'click.x', cb); off(el, '.x');`
+* Harnesses target event mechanism, if available.
 
-It handles multiple events `on(el, 'click touchstart', cb)` and [namespaces](http://api.jquery.com/on/#event-names) `on(el, 'click.x', cb); off(el, 'click.x');`.
-
-It may bind events to anything: plain objects, elements, jQuery objects, Backbone models, [color](https://github.com/dfcreative/color), webWorkers etc.
-
-It is a useful tiny replacement for jquery events.
-
-
-## Use
+## Usage
 
 [![npm install emmy](https://nodei.co/npm/emmy.png?mini=true)](https://npmjs.org/package/emmy)
 
+#### Use event methods:
 
 ```js
-var on = require('emmy/on');
-var once = require('emmy/once');
-var off = require('emmy/off');
-var emit = require('emmy/emit');
+import {on, off, emit} from 'emmy'
 
-on(target, 'evt', function(){});
-emit(target, 'evt', data1, data2);
-off(target, 'evt');
-
-//typical use-case
-once(webWorker, 'message', function(){...});
+on(el, 'evt', e => { console.log(e) })
+emit(el, 'evt', {x: 1})
+off(el, 'evt')
 ```
-
-You might need to polyfill `Element.contains`, `Element.closest` and `Array.some` for old browsers:
-
-```
-https://cdn.polyfill.io/v1/polyfill.js?features=default,Node.prototype.contains,Element.prototype.closest,Array.prototype.some,
-```
-
 
 ## API
 
-### `on(target, event, callback)`
+### `on(target, event[s], callback?, delegate?)`
 
-Bind an event handler to a target. `event` may contain a class suffix: `click.my-element`.
+Bind `event`[s] handler[s] to `target`.
 
-### `on(target, events)`
+* `target` can be any non-primitive object. In case of objects with own events mechanism, such as _HTMLElement_ or _Stream_, the own handler is used but reference to the handler is kept.
+* `event` can be a string with single or multiple events, an array or a dict of events with callbacks. Each event name may have a suffix, ie. `click.tag1.tag2`.
+* `delegate` is an optional string with selector to delegate events or an object with the properties:
 
-Bind all events defined in object.
+```js
+// dragging scheme
+on(el, 'mousedown touchstart', () => {
+	// ...init drag
 
-### `once(target, event, callback)`
+	on(el, 'mousemove.drag touchmove.drag', () => {
+		// ...handle drag
+	}, {throttle: raf})
 
-Bind single-shot event handler to a target.
+	on(el, 'mouseup.drag touchend.drag', () => {
+		off(el, '.drag')
+		// ...end drag
+	})
+})
 
+// bind events dict
+on(target, {
+	click: handler,
+	mousedown: specialHandler
+})
+```
 
 ### `off(target, event?, callback?)`
 
-Unbind event handler from a target. If calback isn’t passed - unbind all callbacks for an event. If no event passed - unbind all known callbacks for any events.
+Remove `event` handler from a `target`. If `callback` isn't passed - all registered listeners are removed. If `event` isn't passed - all registered callbacks for all known events are removed (useful on destroying the target).
 
-Also you can pass only class suffix to unbind all events for a class: `off(target, '.my-element')`.
+```js
+// remove handler the standard way
+off(target, 'click', handler)
 
+// remove handler for all registered events
+off(target, handler)
 
-### `emit(target, event, callback, data1, data2, ...)`
+// remove all events with provided suffix[es]
+off(target, '.special')
+```
 
-Emit an event on a target, passing `dataN`. If target is an element then `data1` is `e.details`, `data2` is `bubbles`. So to fire bubbling event, call `emit(element, 'click', null, true)`.
+### `emit(target, event, data?, options?)`
 
+Emit an `event` on a `target`. `event` can be a string or an _Event_ instance. If `target` is an element then `data` is placed to `e.details`. `options` can define triggering params, eg. `{bubbles: true}`.
 
-### `later(target, event, delay, callback)`
+### `let emitter = require('emmy')(emitter?)`
 
-Bind an event handler which triggers a `delay` later than actual event occures.
+Emmy can also be used as events provider for a target.
 
+```js
+import Events from 'emmy'
 
-### `throttle(target, event, interval, callback)`
+// turn target into an event emitter
+Events(target)
+target.on('.x', e => {})
+target.emit('change.x')
+target.off('.x')
 
-Bind an event handler which won’t be called more often than an `interval`.
-
-
-### `delegate(target, event, selector, callback)`
-
-Bind an event handler catching bubbling events from target’s descendants. `selector` can be a string, an element or a list of elements/selectors.
-
-
-### `not(target, event, selector, callback)`
-
-Bind an event handler catching events from target’s descendants ignoring ones that match selector.
-
-
-### `keypass(target, event, keylist, callback)`
-
-Bind an event handler which triggers only if `e.which` or `e.keyCode` is one from the defined `keylist`. Any [keyname](http://github.com/dfcreative/key-name) can be declared instead of a code.
-
-
-### `listeners(target, event?)`
-
-Get list of listeners registered for an event.
+// create event emitter instance
+let emitter = new Emitter()
+emitter.on('.x', e => {})
+emitter.emit('a.x b.x')
+emitter.off('a b')
+```
 
 
+## License
 
-# Analogs
-
-* [enot (event notation system)](https://github.com/dfcreative/enot) — an easy wrapper for emmy with humanized event notation.
-* [emmitt](https://github.com/airportyh/emmitt) — universal event wrapper.
-* [event](https://github.com/component/event) — unified DOM event binder.
+MIT © Dmitry Ivanov.

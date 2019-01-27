@@ -2,28 +2,31 @@
  * @module emmy/emit
  */
 var icicle = require('icicle');
-var slice = require('sliced');
 var listeners = require('./listeners');
-var isBrowser = require('is-browser');
 
 
 /**
  * A simple wrapper to handle stringy/plain events
  */
-module.exports = function(target, evt){
+module.exports = function (target, evt){
 	if (!target) return;
 
 	var args = arguments;
+
+	// event string
 	if (typeof evt === 'string') {
-		args = slice(arguments, 2);
+		args = [].slice.call(arguments, 2);
 		evt.split(/\s+/).forEach(function(evt){
 			evt = evt.split('.')[0];
 
 			emit.apply(this, [target, evt].concat(args));
 		});
-	} else {
-		return emit.apply(this, args);
+
+		return target
 	}
+
+	// Event instance
+	return emit.apply(this, args);
 };
 
 
@@ -48,10 +51,10 @@ function emit(target, eventName, data, bubbles){
 	var emitMethod, evt = eventName;
 
 	//Create proper event for DOM objects
-	if (isBrowser && (target instanceof Node || target === win)) {
+	if (doc && ((target instanceof Node) || target === win)) {
 		//NOTE: this doesnot bubble on off-DOM elements
 
-		if (isBrowser && eventName instanceof Event) {
+		if (doc && eventName instanceof Event) {
 			evt = eventName;
 		} else {
 			//IE9-compliant constructor
@@ -82,12 +85,10 @@ function emit(target, eventName, data, bubbles){
 		//dispatchEvent - DOM
 		//raise - node-state
 		//fire - ???
-		emitMethod = target['dispatchEvent'] || target['emit'] || target['trigger'] || target['fire'] || target['raise'];
+		emitMethod = target.dispatchEvent || target.emit || target.trigger || target.fire || target.raise;
 	}
 
-
-	var args = slice(arguments, 2);
-
+	var args = [].slice.call(arguments, 2);
 
 	//use locks to avoid self-recursion on objects wrapping this method
 	if (emitMethod) {
@@ -103,12 +104,11 @@ function emit(target, eventName, data, bubbles){
 		//so perform normal callback
 	}
 
-
 	//fall back to default event system
-	var evtCallbacks = listeners(target, evt);
+	var evtCallbacks = listeners.get(target, evt);
 
 	//copy callbacks to fire because list can be changed by some callback (like `off`)
-	var fireList = slice(evtCallbacks);
+	var fireList = evtCallbacks.slice();
 	for (var i = 0; i < fireList.length; i++ ) {
 		fireList[i] && fireList[i].apply(target, args);
 	}

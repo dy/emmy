@@ -2,7 +2,7 @@
  * Main tests file
  */
 
-var test = require('tst');
+var t = require('tape');
 var doc = typeof document === 'undefined' ? undefined : document;
 var win = typeof window === 'undefined' ? undefined : window;
 
@@ -10,7 +10,6 @@ var win = typeof window === 'undefined' ? undefined : window;
 var nativeEmitter = doc ? doc : new (require('events').EventEmitter);
 
 var Emmy = doc && typeof Emitter !== 'undefined' ? Emitter : require('../');
-var assert = typeof chai !== 'undefined' ? chai.assert : require('chai').assert;
 
 var on = Emmy.on,
 	off = Emmy.off,
@@ -23,731 +22,787 @@ var on = Emmy.on,
 	keypass = Emmy.keypass;
 
 
-test('Regression', function () {
-	test('on/emit/off', function () {
-		var a = {};
-		var i = 0;
-		on(a, 'click', function () {i++});
-		emit(a, 'click');
-		assert.equal(i, 1);
-		off(a, 'click');
-		emit(a, 'click');
-		assert.equal(i, 1);
-	});
-
-	test('removeAll', function () {
-		var a = {}, i = 0;
-
-		on(a, 'y', function () {i++});
-		on(a, 'y', function () {i++});
-		emit(a, 'y');
-
-		assert.equal(i, 2);
-		off(a);
-
-		emit(a, 'y');
-		assert.equal(i, 2);
-	});
-
-	test.skip('IE8, IE9', function () {
-	});
-
-	test('Call list changed during `emit`', function () {
-		var a = {}, log = [];
-
-		on(a, 'x', function () {
-			off(a, 'x');
-			log.push(1);
-		});
-
-		on(a, 'x', function () {
-			log.push(2);
-		});
-
-		on(a, 'x', function () {
-			log.push(3);
-		});
-
-		emit(a, 'x');
-
-		assert.deepEqual(log, [1,2,3]);
-	});
-
-	test('Objects artifically implementing Emitter interface', function () {
-		var i = 0;
-		var a = {
-			emit: function(a){
-				emit(this, a);
-			},
-			fn: function () {
-				i++;
-			},
-			on: function(a, b){
-				on(this, a, b);
-			}
-		};
-
-		a.on('fn', a.fn);
-		a.emit('fn');
-		assert.equal(i, 1);
-	});
-
-	test('Object inheriting Emitter interface', function () {
-		var A = function (){};
-
-		A.prototype = Object.create(Emmy.prototype);
-
-		var i = 0;
-		var a = new A;
-		a.on('fn', function () {i++;});
-		a.emit('fn');
-		assert.equal(i, 1);
-	});
-
-	test('Mixin prototype', function () {
-		function User(name){
-			this.name = name || 'tobi';
-		}
-
-		var user = new User;
-
-		Emmy(User.prototype);
-
-		var i = 0;
-
-		user.on('hello', function () {i++});
-		user.emit('hello');
-
-		assert.equal(i, 1);
-	});
-
-	test('Mixin object', function () {
-		var user = { name: 'tobi' };
-		Emmy(user);
-
-		var i = 0;
-
-		user.on('hello dude', function () {i++});
-		user.emit('hello dude');
-
-		assert.equal(i, 2);
-	});
-
-	test('Emitter instance', function () {
-		var emitter = new Emmy, i = 0;
-		emitter.on('something', function () {i++});
-		emitter.emit('something');
-		assert.equal(i, 1);
-	});
-
-	test('Once', function () {
-		var a = {}, i = 0, inc = function () {i++};
-
-		once(a, 'x', inc);
-		emit(a, 'x');
-		emit(a, 'x');
-		emit(a, 'x');
-
-		assert.equal(i, 1);
-	});
-
-	test('Once on object having self events', function () {
-		var d = nativeEmitter;
-
-		var i = 0;
-		var inc = function () {i++};
-
-		once(d, 'x', inc);
-		emit(d, 'x');
-		emit(d, 'x');
-		emit(d, 'x');
-
-		assert.equal(i, 1);
-	});
-
-	test.skip('Chainable static calls (there’re no more static methods)', function () {
-		var a = {}, i = 0;
-
-		function inc(){i++};
-
-		on(a, 'x', inc);
-		once(a, 'x', inc);
-		emit(a, 'x');
-		emit(a, 'x');
-
-		assert.equal(i, 3);
-	});
-
-	test('Chainable instance calls', function () {
-		var a = new Emmy, i = 0;
-
-		function inc(){i++};
-
-		a
-		.on('x', inc)
-		.once('x', inc)
-		.emit('x')
-		.emit('x');
-
-		assert.equal(i, 3);
-	});
-
-	test('listeners && hasListeners', function () {
-		var a = new Emmy;
-
-		function fn(){}
-		function fn2(){}
-
-		a.on('x', fn).on('y', fn).on('x', fn2);
-
-		assert.sameMembers(a.listeners('x'), [fn, fn2]);
-		assert.ok(a.listeners('x').length);
-		assert.notOk(a.listeners('z').length);
-	});
-
-	test('List arg in emit', function () {
-		var x = {}, i = 0, a = [1,2], b;
-
-		on(x, 'y', function(e){i++; b = e});
-		emit(x, 'y', a);
-
-		assert.equal(i, 1);
-		assert.equal(b, a);
-	});
-
-	test('Space-separated events', function () {
-		var x = {}, i = 0, j = 0;
-
-		on(x, 'x y', function(e, f){i+=e+f});
-		on(x, 'x y', function(e, f){j+=e+f});
-
-		emit(x, 'x y', 1, 2);
-
-		assert.equal(i, 6);
-		assert.equal(j, 6);
-
-		off(x, 'x y');
-		emit(x, 'x y', 1, 2);
-		assert.equal(i, 6);
-		assert.equal(j, 6);
-	});
-
-	test('ignore empty target', function () {
-		on(null, 'click', function () {});
-		once(null, 'click', function () {});
-		off(null, 'click', function () {});
-		emit(null, 'click');
-	});
-
-	test('Scope events', function () {
-		var i = 0, j = 0, el = nativeEmitter;
-
-		var fn1 = function(e){
-			// console.log('--ex')
-			i++;
-		}, fn2 = function(e){
-			// console.log('--e')
-			j++;
-		};
-
-		// console.log('---onx')
-		on(el, 'click.x touchstart.x', fn1);
-
-		// console.log('---on')
-		on(el, 'click touchstart', fn2);
-
-		// console.log('---emit')
-		emit(el, 'click touchstart');
-		assert.equal(i,2);
-		assert.equal(j,2);
-
-		// console.log('---off')
-		off(el, 'click.x touchstart.x');
-
-		// console.log('---emit')
-		emit(el, 'click touchstart');
-		assert.equal(i,2);
-		assert.equal(j,4);
-
-		off(el);
-	});
-
-	test('Does not call natural `on` twice', function () {
-		var el = nativeEmitter;
-		var i = 0;
-
-		once(el, 'x', function () {
-			i++;
-		});
-		on(el, 'x', function () {
-			i++;
-		});
-
-		emit(el, 'x');
-		assert.equal(i, 2);
-		emit(el, 'x');
-		assert.equal(i, 3);
-	});
-
-	test('Unbind multiple namespaced events via throttle', function (done) {
-		var target = {}//nativeEmitter;
-
-		var log = [];
-
-		throttle(target, 'x.y', function () {
-			log.push(1);
-		},8);
-		throttle(target, 'x.z', function () {
-			log.push(2);
-		},8);
-		throttle(target, 'x', function () {
-			log.push(3);
-		},8);
-
-		emit(target, 'x');
-		emit(target, 'x');
-		emit(target, 'x');
-
-		off(target, 'x.y');
-
-		assert.deepEqual(log, [1,2,3]);
-
-		setTimeout(function () {
-			emit(target, 'x');
-			emit(target, 'x');
-			emit(target, 'x');
-		},2);
-
-
-		setTimeout(function () {
-			assert.deepEqual(log, [1,2,3,2,3]);
-			done();
-		}, 40);
-	});
-
-	test('Object w/events', function () {
-		var el = {};
-		var i = 0, j = 0;
-
-		on(el, {
-			a: function () {i++},
-			b: function () {j++}
-		});
-		emit(el, 'a');
-		emit(el, 'b');
-
-		assert.equal(i,1);
-		assert.equal(j,1);
-
-		off(el, 'a b');
-
-		emit(el, 'a');
-		emit(el, 'b');
-
-		assert.equal(i,1);
-		assert.equal(j,1);
-	});
-
-	test.skip('Return false', function () {
-		if (!doc) return;
-
-		var el = doc.createElement('div');
-		var innerEl = doc.createElement('div');
-		el.appendChild(innerEl);
-		doc.body.appendChild(el);
-
-		var i = 0;
-
-		on(el, 'click', function () {
-			i++;
-		});
-
-		innerEl.click();
-		assert.equal(i,1);
-
-		innerEl.onclick = function () {
-			//this seems to don’t work in DOM either; it’s just a jquery convention
-			return false;
-		}
-
-		innerEl.click();
-		assert.equal(i,1);
-	});
+t('on/emit/off', function (t) {
+	var a = {};
+	var i = 0;
+	on(a, 'click', function () {i++});
+	emit(a, 'click');
+	t.equal(i, 1);
+	off(a, 'click');
+	emit(a, 'click');
+	t.equal(i, 1);
+	t.end()
 });
 
+t.skip('readme', function (t) {
 
+})
 
-test('Standalone methods', function () {
-	test('Delegate with swapped order of params', function () {
-		if (!doc) return;
+t('removeAll', function (t) {
+	var a = {}, i = 0;
 
-		var i = 0, j = 0;
-		var el = document.createElement('div');
-		document.body.appendChild(el);
+	on(a, 'y', function () {i++});
+	on(a, 'y', function () {i++});
+	emit(a, 'y');
 
-		var inc = function () {
+	t.equal(i, 2);
+	off(a);
+
+	emit(a, 'y');
+	t.equal(i, 2);
+
+	t.end()
+});
+
+t.skip('IE8, IE9', function () {
+});
+
+t('Call list changed during `emit`', function (t) {
+	var a = {}, log = [];
+
+	on(a, 'x', function () {
+		off(a, 'x');
+		log.push(1);
+	});
+
+	on(a, 'x', function () {
+		log.push(2);
+	});
+
+	on(a, 'x', function () {
+		log.push(3);
+	});
+
+	emit(a, 'x');
+
+	t.deepEqual(log, [1,2,3]);
+
+	t.end()
+});
+
+t('Objects artifically implementing Emitter interface', function (t) {
+	var i = 0;
+	var a = {
+		emit: function(a){
+			emit(this, a);
+		},
+		fn: function () {
 			i++;
-		};
+		},
+		on: function(a, b){
+			on(this, a, b);
+		}
+	};
 
-		delegate(document, 'hello', 'p, div, .some', inc);
+	a.on('fn', a.fn);
+	a.emit('fn');
+	t.equal(i, 1);
 
-		var sideLink = document.createElement('span');
-		document.body.appendChild(sideLink);
+	t.end()
+});
 
-		on(sideLink, 'hello', function () {
-			j++;
-		});
+t.skip('Object inheriting Emitter interface', function (t) {
+	// skip since we don't support that anymore
+	var A = function (){};
 
-		//emit not bubbling evt
-		emit(document.body, 'hello');
-		assert.equal(i, 0);
+	A.prototype = Object.create(Emmy);
+	// Emmy(A.prototype)
 
-		//emit bubbling evt on passing element
-		emit(el, 'hello', null, true);
-		assert.equal(i, 1);
+	var i = 0;
+	var a = new A;
+	a.on('fn', function () {i++;});
+	a.emit('fn');
+	t.equal(i, 1);
 
-		//emit not passing element bubbling evt (should be ignored)
-		emit(sideLink, 'hello', null, true);
-		assert.equal(i, 1);
-		assert.equal(j, 1);
+	t.end()
+});
 
+t('Mixin prototype', function (t) {
+	function User(name){
+		this.name = name || 'tobi';
+	}
 
-		//unbind delegate
-		off(document, 'hello');
+	var user = new User;
 
-		//emit bubbling evt on passing element (should be ignored)
-		emit(el, 'hello', null, true);
-		assert.equal(i, 1);
-		assert.equal(j, 1);
+	Emmy(User.prototype);
+
+	var i = 0;
+
+	user.on('hello', function () {i++});
+	user.emit('hello');
+
+	t.equal(i, 1);
+
+	t.end()
+});
+
+t('Mixin object', function (t) {
+	var user = { name: 'tobi' };
+	Emmy(user);
+
+	var i = 0;
+
+	user.on('hello dude', function () {i++});
+	user.emit('hello dude');
+
+	t.equal(i, 2);
+
+	t.end()
+});
+
+t('Emitter instance', function (t) {
+	var emitter = new Emmy, i = 0;
+	emitter.on('something', function () {i++});
+	emitter.emit('something');
+	t.equal(i, 1);
+
+	t.end()
+});
+
+t('Once', function (t) {
+	var a = {}, i = 0, inc = function () {
+		i++
+		off(a, inc)
+	};
+
+	on(a, 'x', inc);
+	emit(a, 'x');
+	emit(a, 'x');
+	emit(a, 'x');
+
+	t.equal(i, 1);
+
+	t.end()
+});
+
+t('Once on object having self events', function (t) {
+	var d = nativeEmitter;
+
+	var i = 0;
+	var inc = function () {i++; off(d, inc);};
+
+	on(d, 'x', inc);
+	emit(d, 'x');
+	emit(d, 'x');
+	emit(d, 'x');
+
+	t.equal(i, 1);
+
+	t.end()
+});
+
+t.skip('Chainable static calls (there’re no more static methods)', function () {
+	var a = {}, i = 0;
+
+	function inc(){i++};
+
+	on(a, 'x', inc);
+	once(a, 'x', inc);
+	emit(a, 'x');
+	emit(a, 'x');
+
+	t.equal(i, 3);
+});
+
+t('Chainable instance calls', function (t) {
+	var a = new Emmy, i = 0;
+
+	function inc(){i++};
+
+	a
+	.on('x', inc)
+	.on('x', () => {off(a, inc); inc();})
+	.emit('x')
+	.emit('x');
+
+	t.equal(i, 3);
+
+	t.end()
+});
+
+t.skip('listeners && hasListeners', function (t) {
+	var a = new Emmy;
+
+	function fn(){}
+	function fn2(){}
+
+	a.on('x', fn).on('y', fn).on('x', fn2);
+
+	t.sameMembers(a.listeners('x'), [fn, fn2]);
+	t.ok(a.listeners('x').length);
+	t.notOk(a.listeners('z').length);
+});
+
+t('List arg in emit', function (t) {
+	var x = {}, i = 0, a = [1,2], b;
+
+	on(x, 'y', function(e){i++; b = e});
+	emit(x, 'y', a);
+
+	t.equal(i, 1);
+	t.equal(b, a);
+
+	t.end()
+});
+
+t('Space-separated events', function (t) {
+	var x = {}, i = 0, j = 0;
+
+	on(x, 'x y', function(e, f){i+=e+f});
+	on(x, 'x y', function(e, f){j+=e+f});
+
+	emit(x, 'x y', 1, 2);
+
+	t.equal(i, 6);
+	t.equal(j, 6);
+
+	off(x, 'x y');
+	emit(x, 'x y', 1, 2);
+	t.equal(i, 6);
+	t.equal(j, 6);
+
+	t.end()
+});
+
+t('ignore empty target', function (t) {
+	on(null, 'click', function () {});
+	on(null, 'click', function () {});
+	off(null, 'click', function () {});
+	emit(null, 'click');
+
+	t.end()
+});
+
+t('Scope events', function (t) {
+	var i = 0, j = 0, el = nativeEmitter;
+
+	var fn1 = function(e){
+		// console.log('--ex')
+		i++;
+	}, fn2 = function(e){
+		// console.log('--e')
+		j++;
+	};
+
+	// console.log('---onx')
+	on(el, 'click.x touchstart.x', fn1);
+
+	// console.log('---on')
+	on(el, 'click touchstart', fn2);
+
+	// console.log('---emit')
+	emit(el, 'click touchstart');
+	t.equal(i,2);
+	t.equal(j,2);
+
+	// console.log('---off')
+	off(el, 'click.x touchstart.x');
+
+	// console.log('---emit')
+	emit(el, 'click touchstart');
+	t.equal(i,2);
+	t.equal(j,4);
+
+	off(el);
+
+	t.end()
+});
+
+t('Does not call natural `on` twice', function (t) {
+	var el = nativeEmitter;
+	var i = 0;
+
+	on(el, 'x', function x() {
+		off(el, x)
+		i++;
+	});
+	on(el, 'x', function () {
+		i++;
 	});
 
-	test('Not', function () {
-		if (!doc) return;
+	emit(el, 'x');
+	t.equal(i, 2);
+	emit(el, 'x');
+	t.equal(i, 3);
 
-		var j = 0;
-		var el = document.createElement('div');
-		document.body.appendChild(el);
+	t.end()
+});
 
-		var inc = function () {
-			j++;
-		};
+t('Unbind multiple namespaced events via throttle', async function (t) {
+	var target = {}//nativeEmitter;
 
-		not(document, 'hello', 'p, div, .some', inc);
+	var log = [];
 
-		var sideLink = document.createElement('span');
-		document.body.appendChild(sideLink);
+	on(target, 'x.y', function () {
+		log.push(1);
+	}, 8);
+	on(target, 'x.z', function () {
+		log.push(2);
+	}, 8);
+	on(target, 'x', function () {
+		log.push(3);
+	}, 8);
 
-		//emit not bubbling evt - ignored
-		// console.log('emit body')
-		emit(document.body, 'hello');
-		assert.equal(j, 0);
+	emit(target, 'x');
+	emit(target, 'x');
+	emit(target, 'x');
 
-		//emit bubbling evt on ignoring element - ignored
-		// console.log('emit el')
-		emit(el, 'hello', null, true);
-		assert.equal(j, 0);
+	off(target, 'x.y');
 
-		//emit bubbling evt on some other element - passed
-		// console.log('emit sideLink')
-		emit(sideLink, 'hello', null, true);
-		assert.equal(j, 1);
+	t.deepEqual(log, [1,2,3]);
 
+	await delay(10)
+	t.deepEqual(log, [1,2,3,2,3]);
+	emit(target, 'x');
+	emit(target, 'x');
+	emit(target, 'x');
 
-		//unbind not
-		off(document, 'hello');
+	await delay(20)
+	t.deepEqual(log, [1,2,3,2,3,2,3]);
+	await delay(20)
+	t.deepEqual(log, [1,2,3,2,3,2,3]);
+	emit(target, 'x');
+	emit(target, 'x');
+	t.deepEqual(log, [1,2,3,2,3,2,3,2,3]);
+	await delay(20)
+	t.deepEqual(log, [1,2,3,2,3,2,3,2,3,2,3]);
 
-		//emit bubbling evt on passing element (should be ignored)
-		emit(sideLink, 'hello', null, true);
-		assert.equal(j, 1);
+	t.end();
+});
+
+t('Object w/events', function (t) {
+	var el = {};
+	var i = 0, j = 0;
+
+	on(el, {
+		a: function () {i++},
+		b: function () {j++}
+	});
+	emit(el, 'a');
+	emit(el, 'b');
+
+	t.equal(i,1);
+	t.equal(j,1);
+
+	off(el, 'a b');
+
+	emit(el, 'a');
+	emit(el, 'b');
+
+	t.equal(i,1);
+	t.equal(j,1);
+
+	t.end()
+});
+
+t.skip('Return false', function () {
+	if (!doc) return;
+
+	var el = doc.createElement('div');
+	var innerEl = doc.createElement('div');
+	el.appendChild(innerEl);
+	doc.body.appendChild(el);
+
+	var i = 0;
+
+	on(el, 'click', function () {
+		i++;
 	});
 
-	test(':not on elements which are no more in DOM', function () {
-		if (!doc) return;
+	innerEl.click();
+	t.equal(i,1);
 
-		var a = document.createElement('div');
-		a.className = 'a';
-		a.innerHTML = '<span class="x"></span>';
-		document.body.appendChild(a);
+	innerEl.onclick = function () {
+		//this seems to don’t work in DOM either; it’s just a jquery convention
+		return false;
+	}
 
-		var i = 0;
+	innerEl.click();
+	t.equal(i,1);
+});
 
+t('Delegate with swapped order of params', function (t) {
+	if (!doc) return t.end();
 
-		on(a, 'click', function () {
-			// console.log('---a click', this)
-			this.innerHTML = '<span></span>';
-		});
+	var i = 0, j = 0;
+	var el = document.createElement('div');
+	document.body.appendChild(el);
 
-		//look how element caused the event has been removed from DOM in the first callback, but doc is still triggered by it
-		not(document, 'click', '.a', function(e){
-			// console.log('---document click', this, a.innerHTML)
-			i++;
-		});
-		// console.log('----emit click', a.firstChild)
-		emit(a.firstChild, 'click', true, true);
+	var inc = function () {
+		i++;
+	};
 
-		assert.equal(i, 0);
+	on(document, 'hello', 'p, div, .some', inc);
+
+	var sideLink = document.createElement('span');
+	document.body.appendChild(sideLink);
+
+	on(sideLink, 'hello', function () {
+		j++;
 	});
 
-	test('Throttle', function(done){
-		var i = 0;
-		var a = {};
+	//emit not bubbling evt
+	emit(document.body, 'hello');
+	t.equal(i, 0);
 
-		//should be called 10 times less often than dispatched event
-		throttle(a, 'x', 50, function () {
-			i++;
-			// console.log(new Date - initT);
-			assert.equal(this, a);
-		});
+	//emit bubbling evt on passing element
+	emit(el, 'hello', null, true);
+	t.equal(i, 1);
 
-		var interval = setInterval(function () {
-			emit(a, 'x');
-		}, 5);
+	//emit not passing element bubbling evt (should be ignored)
+	emit(sideLink, 'hello', null, true);
+	t.equal(i, 1);
+	t.equal(j, 1);
 
-		//should be called instantly
-		setTimeout(function () {
-			assert.equal(i, 1);
-		}, 10);
 
-		//should get close number of calls
-		setTimeout(function () {
-			clearInterval(interval);
+	//unbind delegate
+	off(document, 'hello');
 
-			assert.closeTo(i, 5, 1);
-			done();
-		}, 240);
+	//emit bubbling evt on passing element (should be ignored)
+	emit(el, 'hello', null, true);
+	t.equal(i, 1);
+	t.equal(j, 1);
+
+	t.end()
+});
+
+t.skip('Not', function (t) {
+	if (!doc) return;
+
+	var j = 0;
+	var el = document.createElement('div');
+	document.body.appendChild(el);
+
+	var inc = function () {
+		j++;
+	};
+
+	not(document, 'hello', 'p, div, .some', inc);
+
+	var sideLink = document.createElement('span');
+	document.body.appendChild(sideLink);
+
+	//emit not bubbling evt - ignored
+	// console.log('emit body')
+	emit(document.body, 'hello');
+	t.equal(j, 0);
+
+	//emit bubbling evt on ignoring element - ignored
+	// console.log('emit el')
+	emit(el, 'hello', null, true);
+	t.equal(j, 0);
+
+	//emit bubbling evt on some other element - passed
+	// console.log('emit sideLink')
+	emit(sideLink, 'hello', null, true);
+	t.equal(j, 1);
+
+
+	//unbind not
+	off(document, 'hello');
+
+	//emit bubbling evt on passing element (should be ignored)
+	emit(sideLink, 'hello', null, true);
+	t.equal(j, 1);
+});
+
+t.skip(':not on elements which are no more in DOM', function (t) {
+	if (!doc) return;
+
+	var a = document.createElement('div');
+	a.className = 'a';
+	a.innerHTML = '<span class="x"></span>';
+	document.body.appendChild(a);
+
+	var i = 0;
+
+
+	on(a, 'click', function () {
+		// console.log('---a click', this)
+		this.innerHTML = '<span></span>';
 	});
 
-	test('Delegate simple', function () {
-		if (!doc) return;
-
-
-		//TODO: fix this test. Don’t catch bubbling event higher than delegate target
-		var i = 0, j = 0;
-		var el = document.createElement('div');
-		el.className = 'el';
-		document.body.appendChild(el);
-		var el2 = document.createElement('div');
-		el.appendChild(el2);
-		el2.className = 'el2';
-
-		var inc = function () {
-			i++;
-		};
-
-		delegate(el, 'hello', inc, 'p, div, .some');
-
-		var sideLink = document.createElement('span');
-		sideLink.className = 'side';
-		el.appendChild(sideLink);
-
-		on(sideLink, 'hello', function () {
-			j++;
-		});
-
-		//emit not bubbling evt (ignored)
-		emit(el2, 'hello');
-		assert.equal(i, 0);
-
-		//emit bubbling evt too high (ignored)
-		emit(document.body, 'hello', null, true);
-		assert.equal(i, 0);
-
-		//emit bubbling evt on passing element
-		emit(el2, 'hello', null, true);
-		assert.equal(i, 1);
-		emit(el, 'hello', null, true);
-		assert.equal(i, 1);
-
-		//emit not passing element bubbling evt (should be ignored)
-		// console.log('------- emit side');
-		emit(sideLink, 'hello', null, true);
-		assert.equal(i, 1);
-		assert.equal(j, 1);
-
-
-		//unbind delegate
-		// console.log('------- off');
-		off(el, 'hello');
-
-		//emit bubbling evt on passing element (should be ignored cause is off)
-		// console.log('------- emit el');
-		emit(el2, 'hello', null, true);
-		assert.equal(i, 1);
-		assert.equal(j, 1);
+	//look how element caused the event has been removed from DOM in the first callback, but doc is still triggered by it
+	not(document, 'click', '.a', function(e){
+		// console.log('---document click', this, a.innerHTML)
+		i++;
 	});
+	// console.log('----emit click', a.firstChild)
+	emit(a.firstChild, 'click', true, true);
 
-	test('Delegate to element', function () {
-		if (!doc) return;
+	t.equal(i, 0);
+});
 
-		var el = doc.createElement('div');
-		var innerEl = doc.createElement('div');
-		el.appendChild(innerEl);
+t('Throttle', function(t){
+	var i = 0;
+	var a = {};
 
-		doc.body.appendChild(el);
+	//should be called 10 times less often than dispatched event
+	on(a, 'x', function () {
+		i++;
+		// console.log(new Date - initT);
+		t.equal(this, a);
+	}, 50);
 
-		var i = 0;
-
-		delegate(el, 'click', innerEl, function (e) {
-			if (e.delegateTarget === innerEl) i++;
-		});
-
-		innerEl.click();
-
-		assert.equal(i, 1);
-	});
-
-	test('Delegate to list', function () {
-		if (!doc) return;
-
-		var el = doc.createElement('div');
-		var innerEl = doc.createElement('div');
-		var innerEl2 = doc.createElement('div');
-		el.appendChild(innerEl);
-		el.appendChild(innerEl2);
-
-		doc.body.appendChild(el);
-
-		var i = 0;
-
-		delegate(el, 'click', [innerEl, innerEl2], function (e) {
-			if (e.delegateTarget === innerEl) {
-				i++;
-			}
-			else if (e.delegateTarget === innerEl2) {
-				i++;
-			}
-		});
-
-		innerEl.click();
-		innerEl2.click();
-
-		assert.equal(i, 2);
-	});
-
-	test('Keypass', function () {
-		if (!doc) return;
-
-		var k = 0, a = 0, ka=0, z = 0;
-		var el = doc.createElement('div');
-
-		keypass(el, 'keydown', function(e){
-			z++;
-		});
-		keypass(el, 'keydown', function(e){
-			a++;
-		}, 83);
-		keypass(el, 'keydown', function(e){
-			k++;
-		}, 'enter');
-		keypass(el, 'keydown', function(e){
-			ka++;
-		}, [65, 'enter', '68']);
-
-
-		var evt = createKeyEvt('keydown', 65);
-		emit(el, evt);
-		assert.equal(z, 0);
-		assert.equal(a, 0);
-		assert.equal(k, 0);
-		assert.equal(ka, 1);
-
-		// s
-		evt = createKeyEvt('keydown', 83);
-		emit(el, evt);
-		assert.equal(z, 0);
-		assert.equal(a, 1);
-		assert.equal(k, 0);
-		assert.equal(ka, 1);
-
-		// s2
-		evt = createKeyEvt('keydown', 83);
-		emit(el, evt);
-		assert.equal(z, 0);
-		assert.equal(a, 2);
-		assert.equal(k, 0);
-		assert.equal(ka, 1);
-
-		//enter
-		evt = createKeyEvt('keydown', 13);
-		emit(el, evt);
-		assert.equal(z, 0);
-		assert.equal(a, 2);
-		assert.equal(k, 1);
-		assert.equal(ka, 2);
-	});
-
-	test('Later', function(done){
-		var a = {};
-		var i = 0;
-
-		later(a, 'x', 100, function () {
-			i++;
-		});
-
+	var interval = setInterval(function () {
 		emit(a, 'x');
-		assert.equal(i, 0);
+	}, 5);
 
-		setTimeout(function () {
-			assert.equal(i, 0);
-		}, 50);
+	//should be called instantly
+	setTimeout(function () {
+		t.equal(i, 1);
+	}, 10);
 
-		setTimeout(function () {
-			assert.equal(i, 1);
-			done();
-		}, 120);
+	//should get close number of calls
+	setTimeout(function () {
+		clearInterval(interval);
+
+		t.equal(i, 5);
+		t.end();
+	}, 240);
+});
+
+t('Delegate simple', function (t) {
+	if (!doc) return t.end();
+
+	//TODO: fix this t. Don’t catch bubbling event higher than delegate target
+	var i = 0, j = 0;
+	var el = document.createElement('div');
+	el.className = 'el';
+	document.body.appendChild(el);
+	var el2 = document.createElement('div');
+	el.appendChild(el2);
+	el2.className = 'el2';
+
+	var inc = function () {
+		i++;
+	};
+
+	on(el, 'hello', inc, 'p, div, .some');
+
+	var sideLink = document.createElement('span');
+	sideLink.className = 'side';
+	el.appendChild(sideLink);
+
+	on(sideLink, 'hello', function () {
+		j++;
 	});
 
-	test('delegateTarget', function () {
-		if (!doc) return;
+	//emit not bubbling evt (ignored)
+	emit(el2, 'hello');
+	t.equal(i, 0);
 
-		var a = document.createElement('div');
-		a.className = 'd';
-		var b = document.createElement('div');
-		a.appendChild(b);
-		document.body.appendChild(a);
+	//emit bubbling evt too high (ignored)
+	emit(document.body, 'hello', null, true);
+	t.equal(i, 0);
 
-		var cTarget;
-		delegate(document, 'click', '.d', function(e){
-			cTarget = e.delegateTarget;
-		});
-		emit(b, 'click', null, true);
-		assert.equal(cTarget, a);
+	//emit bubbling evt on passing element
+	emit(el2, 'hello', null, true);
+	t.equal(i, 1);
+	emit(el, 'hello', null, true);
+	t.equal(i, 1);
+
+	//emit not passing element bubbling evt (should be ignored)
+	// console.log('------- emit side');
+	emit(sideLink, 'hello', null, true);
+	t.equal(i, 1);
+	t.equal(j, 1);
+
+
+	//unbind delegate
+	// console.log('------- off');
+	off(el, 'hello');
+
+	//emit bubbling evt on passing element (should be ignored cause is off)
+	// console.log('------- emit el');
+	emit(el2, 'hello', null, true);
+	t.equal(i, 1);
+	t.equal(j, 1);
+
+	t.end()
+});
+
+t('Delegate to element', function (t) {
+	if (!doc) return t.end();
+
+	var el = doc.createElement('div');
+	var innerEl = doc.createElement('div');
+	el.appendChild(innerEl);
+
+	doc.body.appendChild(el);
+
+	var i = 0;
+
+	on(el, 'click', innerEl, function (e) {
+		if (e.delegateTarget === innerEl) i++;
 	});
 
-	test('off by className', function () {
-		var el = {};
-		var i = 0;
+	innerEl.click();
 
-		on(el, 'x.1', function () {
-			i++
-		});
-		on(el, 'x.2', function () {
-			i++
-		})
-		on(el, 'y.1', function () {
-			i++
-		});
+	t.equal(i, 1);
 
-		emit(el, 'x');
-		assert.equal(i, 2);
-		emit(el, 'y');
-		assert.equal(i, 3);
+	t.end()
+});
 
-		off(el, '.1');
+t('Delegate to list', function (t) {
+	if (!doc) return t.end();
 
-		emit(el, 'x');
-		assert.equal(i, 4);
-		emit(el, 'y');
-		assert.equal(i, 4);
+	var el = doc.createElement('div');
+	var innerEl = doc.createElement('div');
+	var innerEl2 = doc.createElement('div');
+	el.appendChild(innerEl);
+	el.appendChild(innerEl2);
+
+	doc.body.appendChild(el);
+
+	var i = 0;
+
+	on(el, 'click', [innerEl, innerEl2], function (e) {
+		if (e.delegateTarget === innerEl) {
+			i++;
+		}
+		else if (e.delegateTarget === innerEl2) {
+			i++;
+		}
 	});
 
-	test('off number', function () {
-		var el = {};
-		on(el, 'x.123', function () {
-			i++
-		});
-		off(el, 123);
+	innerEl.click();
+	innerEl2.click();
+
+	t.equal(i, 2);
+
+	t.end()
+});
+
+t.skip('Keypass', function (t) {
+	if (!doc) return;
+
+	var k = 0, a = 0, ka=0, z = 0;
+	var el = doc.createElement('div');
+
+	keypass(el, 'keydown', function(e){
+		z++;
 	});
+	keypass(el, 'keydown', function(e){
+		a++;
+	}, 83);
+	keypass(el, 'keydown', function(e){
+		k++;
+	}, 'enter');
+	keypass(el, 'keydown', function(e){
+		ka++;
+	}, [65, 'enter', '68']);
+
+
+	var evt = createKeyEvt('keydown', 65);
+	emit(el, evt);
+	t.equal(z, 0);
+	t.equal(a, 0);
+	t.equal(k, 0);
+	t.equal(ka, 1);
+
+	// s
+	evt = createKeyEvt('keydown', 83);
+	emit(el, evt);
+	t.equal(z, 0);
+	t.equal(a, 1);
+	t.equal(k, 0);
+	t.equal(ka, 1);
+
+	// s2
+	evt = createKeyEvt('keydown', 83);
+	emit(el, evt);
+	t.equal(z, 0);
+	t.equal(a, 2);
+	t.equal(k, 0);
+	t.equal(ka, 1);
+
+	//enter
+	evt = createKeyEvt('keydown', 13);
+	emit(el, evt);
+	t.equal(z, 0);
+	t.equal(a, 2);
+	t.equal(k, 1);
+	t.equal(ka, 2);
+});
+
+t.skip('Later', function(dtone){
+	var a = {};
+	var i = 0;
+
+	later(a, 'x', 100, function () {
+		i++;
+	});
+
+	emit(a, 'x');
+	t.equal(i, 0);
+
+	setTimeout(function () {
+		t.equal(i, 0);
+	}, 50);
+
+	setTimeout(function () {
+		t.equal(i, 1);
+		done();
+	}, 120);
+});
+
+t('delegateTarget', function (t) {
+	if (!doc) return t.end();
+
+	var a = document.createElement('div');
+	a.className = 'd';
+	var b = document.createElement('div');
+	a.appendChild(b);
+	document.body.appendChild(a);
+
+	var cTarget;
+	on(document, 'click', '.d', function(e){
+		cTarget = e.delegateTarget;
+	});
+	emit(b, 'click', null, true);
+	t.equal(cTarget, a);
+
+	t.end()
+});
+
+t('off by className', function (t) {
+	var el = {};
+	var i = 0;
+
+	on(el, 'x.1', function () {
+		i++
+	});
+	on(el, 'x.2', function () {
+		i++
+	})
+	on(el, 'y.1', function () {
+		i++
+	});
+
+	emit(el, 'x');
+	t.equal(i, 2);
+	emit(el, 'y');
+	t.equal(i, 3);
+
+	off(el, '.1');
+
+	emit(el, 'x');
+	t.equal(i, 4);
+	emit(el, 'y');
+	t.equal(i, 4);
+
+	t.end()
+});
+
+t('off number', function (t) {
+	var el = {};
+	on(el, 'x.123', function () {
+		i++
+	});
+	off(el, 123);
+
+	t.end()
 });
 
 
@@ -812,4 +867,11 @@ function createMouseEvt(name, btn){
 	)
 	evt.which = btn;
 	return evt
+}
+
+
+function delay(n) {
+	return new Promise(function (ok) {
+		setTimeout(ok, n)
+	})
 }
