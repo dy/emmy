@@ -20,13 +20,14 @@ off(el, 'evt')
 
 ## API
 
-### `on(target, event, callback?, opts?)`, `on(target, events)`
+### `on(target, event, callback, opts?)`, `on(target, events, opts?)`
 
 Bind `event` handler to `target` or bind dict of `events`.
 
-* `target` can be any non-primitive object. In case of objects with own events mechanism, such as _HTMLElement_ or _Stream_, the own handler is used but reference to the handler is kept.
-* `event` can be a string with single or multiple events, an array or a dict of events with callbacks. Each event name may have a suffix, ie. `click.tag1.tag2`.
-* `opts` can provide `opts.throttle` and `opts.delegate` params.
+* `target` can be any non-primitive object. In case of objects with own events mechanism, such as _HTMLElement_ or _Stream_, the own events mechanism is used.
+* `event` can be an string or an array of events, optionally with suffixes as `click.tag1.tag2`
+* `events` can be a dict of events with callbacks.
+* `opts` can provide `opts.throttle` and `opts.delegate` params. A number for `throttle` or a string for `delegate` can be passed directly.
 
 ```js
 // dragging scheme
