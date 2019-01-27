@@ -76,9 +76,9 @@ Emit an `event` on a `target`. `event` can be a string or an _Event_ instance. I
 
 ---
 
-### `let emitter = require('emmy')(emitter?)`
+### `let emitter = Emmy(target?)`
 
-Emmy can also be used as events provider for a target.
+`Emmy` can also be used as events provider for a `target`.
 
 ```js
 import Events from 'emmy'
