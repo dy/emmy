@@ -2,10 +2,8 @@
 
 Events micro toolkit.
 
-:heavy_check_mark: Multiple events `on(el, 'click touchstart', cb)`
-
-:heavy_check_mark: Events prefix `on(el, 'click.x', cb); off(el, '.x');`
-
+:heavy_check_mark: Multiple events `on(el, 'click touchstart', cb)`<br/>
+:heavy_check_mark: Events prefix `on(el, 'click.x', cb); off(el, '.x');`<br/>
 :heavy_check_mark: Harnesses target event mechanism, if available.
 
 ## Usage
