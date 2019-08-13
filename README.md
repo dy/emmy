@@ -3,8 +3,9 @@
 Events micro toolkit.
 
 * [x] Multiple events `on(el, 'click touchstart', cb)`
-* [x] Prefixes `on(el, 'click.x', cb), off(el, '.x')`
+* [x] Even classes `on(el, 'click.x', cb), off(el, '.x')`
 * [x] Harnesses native event mechanism, if available.
+* [x] Delegation `on(el, 'click', cb, { delegate: '.subel' })`
 
 ## Usage
 
