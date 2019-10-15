@@ -4,23 +4,12 @@
 
 var t = require('tape');
 var doc = typeof document === 'undefined' ? undefined : document;
-var win = typeof window === 'undefined' ? undefined : window;
+var on = require('../on')
+var off = require('../off')
+var emit = require('../emit')
 
 /** A native env emitter */
 var nativeEmitter = doc ? doc : new (require('events').EventEmitter);
-
-var Emmy = doc && typeof Emitter !== 'undefined' ? Emitter : require('../');
-
-var on = Emmy.on,
-	off = Emmy.off,
-	once = Emmy.once,
-	emit = Emmy.emit,
-	delegate = Emmy.delegate,
-	throttle = Emmy.throttle,
-	later = Emmy.later,
-	not = Emmy.not,
-	keypass = Emmy.keypass;
-
 
 t('on/emit/off', function (t) {
 	var a = {};
@@ -133,63 +122,6 @@ t('Objects artifically implementing Emitter interface', function (t) {
 	t.end()
 });
 
-t.skip('Object inheriting Emitter interface', function (t) {
-	// skip since we don't support that anymore
-	var A = function (){};
-
-	A.prototype = Object.create(Emmy);
-	// Emmy(A.prototype)
-
-	var i = 0;
-	var a = new A;
-	a.on('fn', function () {i++;});
-	a.emit('fn');
-	t.equal(i, 1);
-
-	t.end()
-});
-
-t('Mixin prototype', function (t) {
-	function User(name){
-		this.name = name || 'tobi';
-	}
-
-	var user = new User;
-
-	Emmy(User.prototype);
-
-	var i = 0;
-
-	user.on('hello', function () {i++});
-	user.emit('hello');
-
-	t.equal(i, 1);
-
-	t.end()
-});
-
-t('Mixin object', function (t) {
-	var user = { name: 'tobi' };
-	Emmy(user);
-
-	var i = 0;
-
-	user.on('hello dude', function () {i++});
-	user.emit('hello dude');
-
-	t.equal(i, 2);
-
-	t.end()
-});
-
-t('Emitter instance', function (t) {
-	var emitter = new Emmy, i = 0;
-	emitter.on('something', function () {i++});
-	emitter.emit('something');
-	t.equal(i, 1);
-
-	t.end()
-});
 
 t('Once', function (t) {
 	var a = {}, i = 0, inc = function () {
@@ -234,22 +166,6 @@ t.skip('Chainable static calls (there’re no more static methods)', function ()
 	emit(a, 'x');
 
 	t.equal(i, 3);
-});
-
-t('Chainable instance calls', function (t) {
-	var a = new Emmy, i = 0;
-
-	function inc(){i++};
-
-	a
-	.on('x', inc)
-	.on('x', () => {off(a, inc); inc();})
-	.emit('x')
-	.emit('x');
-
-	t.equal(i, 3);
-
-	t.end()
 });
 
 t.skip('listeners && hasListeners', function (t) {
@@ -360,73 +276,6 @@ t('Does not call natural `on` twice', function (t) {
 	t.end()
 });
 
-t('Unbind multiple namespaced events via throttle', async function (t) {
-	var target = {}//nativeEmitter;
-
-	var log = [];
-
-	on(target, 'x.y', function () {
-		log.push(1);
-	}, 8);
-	on(target, 'x.z', function () {
-		log.push(2);
-	}, 8);
-	on(target, 'x', function () {
-		log.push(3);
-	}, 8);
-
-	emit(target, 'x');
-	emit(target, 'x');
-	emit(target, 'x');
-
-	off(target, 'x.y');
-
-	t.deepEqual(log, [1,2,3]);
-
-	await delay(10)
-	t.deepEqual(log, [1,2,3,2,3]);
-	emit(target, 'x');
-	emit(target, 'x');
-	emit(target, 'x');
-
-	await delay(20)
-	t.deepEqual(log, [1,2,3,2,3,2,3]);
-	await delay(20)
-	t.deepEqual(log, [1,2,3,2,3,2,3]);
-	emit(target, 'x');
-	emit(target, 'x');
-	t.deepEqual(log, [1,2,3,2,3,2,3,2,3]);
-	await delay(20)
-	t.deepEqual(log, [1,2,3,2,3,2,3,2,3,2,3]);
-
-	t.end();
-});
-
-t('Object w/events', function (t) {
-	var el = {};
-	var i = 0, j = 0;
-
-	on(el, {
-		a: function () {i++},
-		b: function () {j++}
-	});
-	emit(el, 'a');
-	emit(el, 'b');
-
-	t.equal(i,1);
-	t.equal(j,1);
-
-	off(el, 'a b');
-
-	emit(el, 'a');
-	emit(el, 'b');
-
-	t.equal(i,1);
-	t.equal(j,1);
-
-	t.end()
-});
-
 t.skip('Return false', function () {
 	if (!doc) return;
 
@@ -453,146 +302,6 @@ t.skip('Return false', function () {
 	t.equal(i,1);
 });
 
-t('Delegate with swapped order of params', function (t) {
-	if (!doc) return t.end();
-
-	var i = 0, j = 0;
-	var el = document.createElement('div');
-	document.body.appendChild(el);
-
-	var inc = function () {
-		i++;
-	};
-
-	on(document, 'hello', 'p, div, .some', inc);
-
-	var sideLink = document.createElement('span');
-	document.body.appendChild(sideLink);
-
-	on(sideLink, 'hello', function () {
-		j++;
-	});
-
-	//emit not bubbling evt
-	emit(document.body, 'hello');
-	t.equal(i, 0);
-
-	//emit bubbling evt on passing element
-	emit(el, 'hello', null, true);
-	t.equal(i, 1);
-
-	//emit not passing element bubbling evt (should be ignored)
-	emit(sideLink, 'hello', null, true);
-	t.equal(i, 1);
-	t.equal(j, 1);
-
-
-	//unbind delegate
-	off(document, 'hello');
-
-	//emit bubbling evt on passing element (should be ignored)
-	emit(el, 'hello', null, true);
-	t.equal(i, 1);
-	t.equal(j, 1);
-
-	t.end()
-});
-
-t.skip('Not', function (t) {
-	if (!doc) return;
-
-	var j = 0;
-	var el = document.createElement('div');
-	document.body.appendChild(el);
-
-	var inc = function () {
-		j++;
-	};
-
-	not(document, 'hello', 'p, div, .some', inc);
-
-	var sideLink = document.createElement('span');
-	document.body.appendChild(sideLink);
-
-	//emit not bubbling evt - ignored
-	// console.log('emit body')
-	emit(document.body, 'hello');
-	t.equal(j, 0);
-
-	//emit bubbling evt on ignoring element - ignored
-	// console.log('emit el')
-	emit(el, 'hello', null, true);
-	t.equal(j, 0);
-
-	//emit bubbling evt on some other element - passed
-	// console.log('emit sideLink')
-	emit(sideLink, 'hello', null, true);
-	t.equal(j, 1);
-
-
-	//unbind not
-	off(document, 'hello');
-
-	//emit bubbling evt on passing element (should be ignored)
-	emit(sideLink, 'hello', null, true);
-	t.equal(j, 1);
-});
-
-t.skip(':not on elements which are no more in DOM', function (t) {
-	if (!doc) return;
-
-	var a = document.createElement('div');
-	a.className = 'a';
-	a.innerHTML = '<span class="x"></span>';
-	document.body.appendChild(a);
-
-	var i = 0;
-
-
-	on(a, 'click', function () {
-		// console.log('---a click', this)
-		this.innerHTML = '<span></span>';
-	});
-
-	//look how element caused the event has been removed from DOM in the first callback, but doc is still triggered by it
-	not(document, 'click', '.a', function(e){
-		// console.log('---document click', this, a.innerHTML)
-		i++;
-	});
-	// console.log('----emit click', a.firstChild)
-	emit(a.firstChild, 'click', true, true);
-
-	t.equal(i, 0);
-});
-
-t('Throttle', function(t){
-	var i = 0;
-	var a = {};
-
-	//should be called 10 times less often than dispatched event
-	on(a, 'x', function () {
-		i++;
-		// console.log(new Date - initT);
-		t.equal(this, a);
-	}, 50);
-
-	var interval = setInterval(function () {
-		emit(a, 'x');
-	}, 5);
-
-	//should be called instantly
-	setTimeout(function () {
-		t.equal(i, 1);
-	}, 10);
-
-	//should get close number of calls
-	setTimeout(function () {
-		clearInterval(interval);
-
-		t.equal(i, 5);
-		t.end();
-	}, 240);
-});
 
 t('Delegate simple', function (t) {
 	if (!doc) return t.end();
@@ -610,7 +319,7 @@ t('Delegate simple', function (t) {
 		i++;
 	};
 
-	on(el, 'hello', inc, 'p, div, .some');
+	on('p, div, .some', 'hello', inc, {target: el});
 
 	var sideLink = document.createElement('span');
 	sideLink.className = 'side';
@@ -665,9 +374,9 @@ t('Delegate to element', function (t) {
 
 	var i = 0;
 
-	on(el, 'click', innerEl, function (e) {
+	on(innerEl, 'click', function (e) {
 		if (e.delegateTarget === innerEl) i++;
-	});
+	}, { target: el });
 
 	innerEl.click();
 
@@ -689,14 +398,14 @@ t('Delegate to list', function (t) {
 
 	var i = 0;
 
-	on(el, 'click', [innerEl, innerEl2], function (e) {
+	on([innerEl, innerEl2], 'click', function (e) {
 		if (e.delegateTarget === innerEl) {
 			i++;
 		}
 		else if (e.delegateTarget === innerEl2) {
 			i++;
 		}
-	});
+	}, { target: el });
 
 	innerEl.click();
 	innerEl2.click();
@@ -789,7 +498,7 @@ t('delegateTarget', function (t) {
 	document.body.appendChild(a);
 
 	var cTarget;
-	on(document, 'click', '.d', function(e){
+	on('.d', 'click', function(e){
 		cTarget = e.delegateTarget;
 	});
 	emit(b, 'click', null, true);

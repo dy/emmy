@@ -5,7 +5,7 @@
 
 var icicle = require('icicle');
 var listeners = require('./listeners');
-var isObject = require('is-plain-obj');
+var off = require('./off')
 
 module.exports = on;
 
@@ -24,44 +24,18 @@ var doc = global.document;
  *
  * @return {object} A target
  */
-function on(target, evt, cb, o){
+function on(target, evt, cb, o={}){
 	if (!target) return target;
 
-	// swap last two arguments
-	if (typeof o === 'function') {
-		var tmp = o;
-		o = cb;
-		cb = tmp;
-	}
-
-	if (typeof o === 'number') {
-		o = { throttle: o }
-	}
-	else if (typeof o === 'string' || (doc && ((o instanceof Node) || Array.isArray(o)))) {
-		o = { delegate: o }
-	}
-
-	// wrap throttle/delegate
-	if (o) {
+	// wrap delegate
+	if (typeof target === 'string' || o.target) {
 		while (cb.__wrapFn) cb = cb.__wrapFn;
-		if (o.throttle != null) {
-			cb.__wrapFn = throttle.bind({target: target, o: o, cb: cb});
-			cb.__wrapFn.__origFn = cb;
-			cb = cb.__wrapFn;
-		}
-		if (o.delegate != null) {
-			cb.__wrapFn = delegate.bind({target: target, o: o, cb: cb});
-			cb.__wrapFn.__origFn = cb;
-			cb = cb.__wrapFn;
-		}
-	}
 
-	//consider object of events
-	if (isObject(evt)) {
-		for(var evtName in evt) {
-			on(target, evtName, evt[evtName]);
-		}
-		return target;
+		var selector = target
+		target = o.target || document
+		cb.__wrapFn = delegate.bind({target: target, selector: selector, cb: cb});
+		cb.__wrapFn.__origFn = cb;
+		cb = cb.__wrapFn;
 	}
 
 	if (!Array.isArray(evt)) evt = (evt + '').split(/\s+/)
@@ -93,47 +67,12 @@ function on(target, evt, cb, o){
 		listeners.add(target, evt, cb, evtParts);
 	});
 
-	return target;
-}
-
-
-
-// callback wrappers to enable utility
-function throttle (e) {
-	var cb = this.cb;
-	var interval = this.o.throttle;
-	var target = this.target;
-
-	//opened state
-	if (!cb.__blocked) {
-		//do call
-		cb.apply(target, arguments);
-
-		var self = this
-
-		//close till the interval is passed
-		cb.__blocked = setTimeout(function () {
-			//reset interval
-			cb.__blocked = false;
-
-			//do after-call
-			if (cb.__planned) {
-				throttle.apply(self, arguments);
-				cb.__planned = null;
-			}
-		}, interval);
-	}
-
-	//closed state
-	else {
-		//if trigger happened during the pause - defer it’s call
-		cb.__planned = true;
-	}
+	return function () { off(target, evt, cb) };
 }
 
 function delegate (e) {
 	var cb = this.cb;
-	var selector = this.o.delegate;
+	var selector = this.selector;
 	var container = this.target;
 
 	var srcEl = e.target;

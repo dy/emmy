@@ -1,11 +1,12 @@
 # Emmy [![Build Status](https://travis-ci.org/dy/emmy.svg?branch=master)](https://travis-ci.org/dy/emmy)
 
-Events micro toolkit.
+Events toolkit.
 
 * [x] Multiple events `on(el, 'click touchstart', cb)`
-* [x] Even classes `on(el, 'click.x', cb), off(el, '.x')`
-* [x] Harnesses native event mechanism, if available.
-* [x] Delegation `on(el, 'click', cb, { delegate: '.subel' })`
+* [x] Event classes `on(el, 'click.x', cb), off(el, '.x')`
+* [x] Uses native events, if available.
+* [x] Delegate `on('.subel', 'click', cb, { target: container })`
+
 
 ## Usage
 
@@ -21,14 +22,13 @@ off(el, 'evt')
 
 ## API
 
-### `on(target, event, callback, opts?)`, `on(target, events, opts?)`
+### `off = on(target, event, handler, opts?)`
 
-Bind `event` handler to `target` or bind dict of `events`.
+Bind `event` handler to `target` events.
 
-* `target` can be any non-primitive object. In case of objects with own events mechanism, such as _HTMLElement_ or _Stream_, the own events mechanism is used.
-* `event` can be an string or an array of events, optionally with suffixes as `click.tag1.tag2`
-* `events` can be a dict of events with callbacks.
-* `opts` can provide `opts.throttle` and `opts.delegate` params. A number for `throttle` or a string for `delegate` can be passed directly.
+* `event` can be a string or an array, optionally with class suffixes `click.tag1.tag2`
+* `target` can be an element, list, or a string to delegate events.
+* `opts` can provide `opts.target` for delegate target and listener props.
 
 ```js
 // dragging scheme
@@ -37,7 +37,7 @@ on(el, 'mousedown touchstart', () => {
 
 	on(el, 'mousemove.drag touchmove.drag', () => {
 		// ...handle drag
-	}, {throttle: raf})
+	})
 
 	on(el, 'mouseup.drag touchend.drag', () => {
 		off(el, '.drag')
@@ -45,11 +45,11 @@ on(el, 'mousedown touchstart', () => {
 	})
 })
 
-// bind events dict
-on(target, {
-	click: handler,
-	mousedown: specialHandler
-})
+// delegate
+let off = on('.selector', 'click', handler, { element: container })
+
+// removeSelector
+off()
 ```
 
 ---
@@ -75,27 +75,6 @@ off(target, '.special')
 
 Emit an `event` on a `target`. `event` can be a string or an _Event_ instance. If `target` is an element then `data` is placed to `e.details`. `options` can define triggering params, eg. `{bubbles: true}`.
 
----
-
-### `let emitter = Emmy(target?)`
-
-`Emmy` can also be used as events provider for a `target`.
-
-```js
-import Events from 'emmy'
-
-// turn target into an event emitter
-Events(target)
-target.on('.x', e => {})
-target.emit('change.x')
-target.off('.x')
-
-// create event emitter instance
-let emitter = new Emitter()
-emitter.on('.x', e => {})
-emitter.emit('a.x b.x')
-emitter.off('a b')
-```
 
 
 ## License

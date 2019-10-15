@@ -7,7 +7,7 @@
     "*.js"
   ],
   "scripts": {
-    "test": "node test",
+    "test": "node -r esm -r ./test/register.js test/index.js",
     "test:browser": "budo test"
   },
   "repository": {
@@ -52,6 +52,8 @@
     "weak-map": "^1.0.5"
   },
   "devDependencies": {
+    "browser-env": "^3.2.6",
+    "esm": "^3.2.25",
     "tape": "^4.9.2"
   }
 }

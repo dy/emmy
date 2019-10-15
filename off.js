@@ -106,16 +106,12 @@ function off(target, evt, fn) {
 			else {
 				return target;
 			}
-
 		}
 
 		// forget callback
 		listeners.remove(target, evt, fn, evtParts);
 	});
 
-	if (fn.__planned) {
-		fn.__planned = false
-	}
 	if (fn.__wrapFn) {
 		var cb = fn.__wrapFn;
 		fn.__wrapFn = null;
