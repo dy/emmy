@@ -15,9 +15,9 @@ Events toolkit.
 ```js
 import {on, off, emit} from 'emmy'
 
-on(el, 'evt', e => {})
+on(el, 'evt.foo', e => {})
 emit(el, 'evt', {x: 1})
-off(el, 'evt')
+off(el, '.foo')
 ```
 
 ## API
@@ -48,7 +48,7 @@ on(el, 'mousedown touchstart', () => {
 // delegate
 let off = on('.selector', 'click', handler, { element: container })
 
-// removeSelector
+// remove listener
 off()
 ```
 
