@@ -46,7 +46,7 @@ on(el, 'mousedown touchstart', () => {
 })
 
 // delegate
-let off = on('.selector', 'click', handler, { element: container })
+let off = on('.selector', 'click', handler, { target: container })
 
 // remove listener
 off()
