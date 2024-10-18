@@ -1,7 +1,7 @@
 {
   "name": "emmy",
   "version": "7.0.0",
-  "description": "Events micro toolkit.",
+  "description": "Events binder.",
   "main": "index.js",
   "files": [
     "*.js"
@@ -45,7 +45,6 @@
   },
   "homepage": "https://github.com/dy/emmy",
   "dependencies": {
-    "global-cache": "^1.2.1",
     "icicle": "^0.1.3",
     "is-browser": "^2.1.0",
     "is-plain-obj": "^1.1.0",

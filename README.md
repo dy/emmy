@@ -1,6 +1,6 @@
 # Emmy [![Build Status](https://travis-ci.org/dy/emmy.svg?branch=master)](https://travis-ci.org/dy/emmy)
 
-Events toolkit.
+Tiny events binder.
 
 * [x] Multiple events `on(el, 'click touchstart', cb)`
 * [x] Event classes `on(el, 'click.x', cb), off(el, '.x')`
@@ -31,7 +31,7 @@ Bind `event` handler to `target` events.
 * `opts` can provide `opts.target` for delegate target and listener props.
 
 ```js
-// dragging scheme
+// dragging
 on(el, 'mousedown touchstart', () => {
 	// ...init drag
 

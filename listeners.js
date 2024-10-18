@@ -5,16 +5,8 @@
  * @module emmy/listeners
  */
 
-var WeakMap = require('weak-map')
-var globalCache = require('global-cache')
-
 // target: {evt: callbacks}
-var LISTENERS = globalCache.get('emmy')
-if (!LISTENERS) {
-	LISTENERS = new WeakMap()
-	globalCache.set('emmy', LISTENERS)
-}
-
+var LISTENERS = new WeakMap()
 
 /**
  * Get listeners for the target/evt (optionally).
@@ -24,7 +16,7 @@ if (!LISTENERS) {
  *
  * @return {(object|array)} List/set of listeners
  */
-function get (target, evt, tags) {
+function get(target, evt, tags) {
 	var cbs = LISTENERS.get(target);
 	var result;
 
@@ -65,7 +57,7 @@ function get (target, evt, tags) {
 /**
  * Remove listener, if any
  */
-function remove (target, evt, cb, tags) {
+function remove(target, evt, cb, tags) {
 	// get callbacks for the evt
 	var evtCallbacks = LISTENERS.get(target);
 	if (!evtCallbacks || !evtCallbacks[evt]) return false;
@@ -89,7 +81,7 @@ function remove (target, evt, cb, tags) {
 /**
  * Add a new listener
  */
-function add (target, evt, cb, tags) {
+function add(target, evt, cb, tags) {
 	if (!cb) return;
 
 	var targetCallbacks = LISTENERS.get(target);
@@ -111,7 +103,7 @@ function add (target, evt, cb, tags) {
 
 
 /** Detect whether an cb has at least one tag from the list */
-function hasTags (cb, tags) {
+function hasTags(cb, tags) {
 	if (!cb._ns) return false
 
 	// if cb is tagged with a ns and includes one of the ns passed - keep it
