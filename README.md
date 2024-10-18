@@ -1,4 +1,4 @@
-# Emmy [![Build Status](https://travis-ci.org/dy/emmy.svg?branch=master)](https://travis-ci.org/dy/emmy)
+# Emmy
 
 Tiny events binder.
 
