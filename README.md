@@ -1,4 +1,4 @@
-# Emmy
+# Emmy [![test](https://github.com/dy/emmy/actions/workflows/test.js.yml/badge.svg)](https://github.com/dy/emmy/actions/workflows/test.js.yml)
 
 DEPRECATED: Just bind events via `addEventListener`.
 
