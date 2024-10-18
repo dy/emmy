@@ -1,6 +1,8 @@
 # Emmy
 
-Tiny events binder.
+DEPRECATED: Just bind events via `addEventListener`.
+
+Events binder.
 
 * [x] Multiple events `on(el, 'click touchstart', cb)`
 * [x] Event classes `on(el, 'click.x', cb), off(el, '.x')`
