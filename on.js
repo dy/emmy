@@ -10,9 +10,6 @@ var off = require('./off')
 module.exports = on;
 
 
-var doc = global.document;
-
-
 /**
  * Bind fn to a target.
  *
@@ -24,7 +21,7 @@ var doc = global.document;
  *
  * @return {object} A target
  */
-function on(target, evt, cb, o={}){
+function on(target, evt, cb, o = {}) {
 	if (!target) return target;
 
 	// wrap delegate
@@ -33,7 +30,7 @@ function on(target, evt, cb, o={}){
 
 		var selector = target
 		target = o.target || document
-		cb.__wrapFn = delegate.bind({target: target, selector: selector, cb: cb});
+		cb.__wrapFn = delegate.bind({ target: target, selector: selector, cb: cb });
 		cb.__wrapFn.__origFn = cb;
 		cb = cb.__wrapFn;
 	}
@@ -42,7 +39,7 @@ function on(target, evt, cb, o={}){
 
 	// get target `on` method, if any
 	// prefer native method name
-	var onMethod =  target.addEventListener || target.addListener || target.attachEvent || target.on;
+	var onMethod = target.addEventListener || target.addListener || target.attachEvent || target.on;
 
 	// invoke method for each space-separated event from a list
 	evt.forEach(function (evt) {
@@ -54,7 +51,7 @@ function on(target, evt, cb, o={}){
 			// avoid self-recursions
 			// if it is frozen - ignore call
 			// FIXME: do better by comparing with self
-			if (icicle.freeze(target, 'on' + evt)){
+			if (icicle.freeze(target, 'on' + evt)) {
 				onMethod.call(target, evt, cb);
 				icicle.unfreeze(target, 'on' + evt);
 			}
@@ -70,7 +67,7 @@ function on(target, evt, cb, o={}){
 	return function () { off(target, evt, cb) };
 }
 
-function delegate (e) {
+function delegate(e) {
 	var cb = this.cb;
 	var selector = this.selector;
 	var container = this.target;
